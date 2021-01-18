@@ -1,10 +1,16 @@
-# main links
-main:
-  - title: "About" # 네비게이션 바에 표시 되는 이름
-    url: "/about/" # 클릭시 이동할 URL
-  - title: "Category"
-    url: "/categories/"
-  # - title: "Sample Collections"
-  #   url: /collection-archive/
-  # - title: "Sitemap"
-  #   url: /sitemap
+docs:
+  - title: 기술 & 개발
+    children:
+      - title: "Java"
+        url: /docs/java/
+      - title: "Spring"
+        url: /docs/spring/
+      - title: "Database"
+        url: /docs/database/
+      - title: "jpa"
+        url: /docs/jpa/
+  - title: 일상
+    children:
+      - title: "회고"
+        url: /docs/java/
+      
