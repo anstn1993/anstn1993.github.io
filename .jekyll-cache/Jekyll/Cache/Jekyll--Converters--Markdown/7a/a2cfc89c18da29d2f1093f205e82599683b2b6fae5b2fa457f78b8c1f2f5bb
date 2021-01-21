@@ -1,0 +1,948 @@
+I""�<h1 id="10-collections">10. Collections</h1>
+
+<p>앞에서 게시물에 대한 페이지를 만들었다면 이번에는 블로그를 여러 저자들이 운영한다고 가정하고 그 저자들별로 개인 페이지가 생기게 만들어본다.</p>
+
+<p>그것을 위해서 Collections를 쓰는데 Posts와 전반적으로 비슷하나 날짜를 기준으로 그룹화가 되지 않는다는 차이가 있다.</p>
+
+<h3 id="_configyml">_config.yml</h3>
+
+<ul>
+  <li>
+    <p>jekyll의 설정파일이다.</p>
+  </li>
+  <li>
+    <p>이 파일에 collectoins에 대한 설정을 해준다.</p>
+  </li>
+  <li>
+    <p>루트에 _config.yml을 생성하고 다음을 추가한다.</p>
+
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">collections</span><span class="pi">:</span>
+<span class="err">	</span><span class="na">authors</span><span class="pi">:</span>
+</code></pre></div>    </div>
+
+    <p>설정파일의 수정사항 반영을 위해서는 서버를 종료하고 다시 시작한다.</p>
+  </li>
+</ul>
+
+<h3 id="authors-추가">authors 추가</h3>
+
+<ul>
+  <li>
+    <p>collections의 item은 우리가 앞에서 본 posts, includes같이 루트에 위치한 디렉토리에 있는 파일들을 의미한다.</p>
+  </li>
+  <li>
+    <p>이 경우 _authors디렉토리를 추가하면 author에 대한 collections가 생성된다고 보면 된다.</p>
+  </li>
+  <li>
+    <p>_authors디렉토리에 author를 추가한다.</p>
+
+    <p>_authors/jill.md파일</p>
+
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+short_name: jill
+name: Jill Smith
+position: Chief Editor
+---
+Jill is an avid fruit grower based in the south of France.
+</code></pre></div>    </div>
+
+    <p>_authors/ted.md파일</p>
+
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+short_name: ted
+name: Ted Doe
+position: Writer
+---
+Ted has been eating fruit since he was baby.
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="staff-페이지-추가">Staff 페이지 추가</h3>
+
+<ul>
+  <li>
+    <p>author들에 대한 정보를 리스팅할 staff 페이지를 루트에 생성한다.</p>
+
+    <p>staff.html파일</p>
+
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+layout: default
+title: Staff
+---
+<span class="nt">&lt;h1&gt;</span>Staff<span class="nt">&lt;/h1&gt;</span>
+  
+<span class="nt">&lt;ul&gt;</span>
+    
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre></div>    </div>
+
+    <p>_authors디렉토리의 author파일의 정보는 site.authors로 접근 가능하다. 그리고 author파일의 확장자가 마크다운이기 때문에 content를 마크다운 필터로 실행해야 한다. 이 처리는 default layout의 &lt;article class="feature-image" &gt;</p>
+    <header id="main" style="">
+  <div class="title-padder">
+      
+    <h1 id="Color+Post" class="title">Color Post</h1>
+      
+
+
+</div></header>
+  </li>
+</ul>
+<div class="post-info"><a href="https://github.com/sylhare" target="_blank">
+      <img src="https://avatars3.githubusercontent.com/u/20642750?s=460&amp;v=4" />
+    
+    <p class="meta">
+      Sylhare - May 18, 2019
+    </p></a></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;/div&gt;
+</code></pre></div></div>
+<p>&lt;/header&gt;</p>
+
+<section class="post-content">
+  
+      <h1 id="what-a-colorful-post">What a colorful post!</h1>
+
+<p>This is an idea that came from <a href="https://github.com/xukimseven/HardCandy-Jekyll">xukimseven/HardCandy-Jekyll</a> 
+looking at this cheerful and colorful them, I wanted to enable something similar for mine.</p>
+
+<p>You can go fork and star hers too! 😉</p>
+
+<!--more-->
+
+<h2 id="how-does-it-work">How does it work?</h2>
+
+<p>Basically you need to add just one thing, the color:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">Color Post</span>
+<span class="na">color</span><span class="pi">:</span> <span class="s">brown</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>It can either be a html color like <code class="language-plaintext highlighter-rouge">brown</code> (which look like red to me). Or with the rgb:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">Color Post</span>
+<span class="na">color</span><span class="pi">:</span> <span class="s">rgb(165,42,42)</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>The background used is <code class="language-plaintext highlighter-rouge">lineart.png</code> from <a href="https://github.com/xukimseven">xukimseven</a> you can edit it in the config file. 
+If you want another one, put it in <code class="language-plaintext highlighter-rouge">/assets/img</code> as well.</p>
+<blockquote>
+  <p>⚠️ It’s a bit hacking the css in the <code class="language-plaintext highlighter-rouge">post.html</code></p>
+</blockquote>
+
+    
+  </section>
+
+<p><!-- Social media shares --></p>
+
+<div class="share-buttons">
+    <ul class="share-buttons">
+        <div class="meta">Share</div>
+        
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title=" Facebook">
+			<i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Facebook</span>
+		</a>
+        </li>
+         
+        <li>
+            <a href="https://twitter.com/intent/tweet?text=Color+Post%20https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title="">
+			<i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Tweet</span>
+		</a>
+        </li>
+            
+        <li>
+            <a href="http://www.reddit.com/submit?url=https://anstn1993.github.io/2019/05/18/color-post.html&amp;title=Color+Post%20%7C%20MunSooKim%27s+dev+blog" target="_blank" title=" Reddit">
+			<i class="fa fa-reddit-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Reddit</span>
+		</a>
+        </li>
+           
+        <li>
+            <a href="mailto:?subject=Color+Post%20%7C%20MunSooKim%27s+dev+blog&amp;body=:%20https://anstn1993.github.io/2019/05/18/color-post.html" target="_blank" title="">
+			<i class="fa fa-envelope-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Email</span>
+		</a>
+        </li>
+        
+    </ul>
+</div>
+
+<p><!-- Tag list --></p>
+
+<footer>
+  <div class="tag-list">
+    
+      <div class="meta">Tags</div>
+    
+
+    
+    <a class="button" href="/tags#Color">
+      <p><i class="fa fa-tag fa-fw"></i> Color</p>
+    </a>
+    
+    <a class="button" href="/tags#Markdown">
+      <p><i class="fa fa-tag fa-fw"></i> Markdown</p>
+    </a>
+    
+    <a class="button" href="/tags#Test">
+      <p><i class="fa fa-tag fa-fw"></i> Test</p>
+    </a>
+    
+  </div>
+</footer>
+
+<p>&lt;/article&gt;</p>
+
+<!-- Disqus -->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'https-anstn1993-github-io';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</div>
+
+<!-- Post navigation -->
+
+<div id="post-nav">
+    
+    <div id="previous-post">
+        <a alt="nhn 입문교육 회고" href="/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html">
+            <p>Previous post</p>
+            nhn 입문교육 회고
+        </a>
+    </div>
+    
+
+    
+    <div id="next-post">
+        <a alt="Feature images" href="/2014/11/29/feature-images.html">
+            <p>Next post</p>
+            Feature images
+        </a>
+    </div>
+    
+</div>
+
+<!-- To change color of links in the page -->
+<style>
+  
+  .feature-image a { color: brown !important; }
+  div#post-nav a { color: brown !important; }
+  footer a { color: brown !important; }
+  .site-header nav a:hover {  color: brown !important; }
+  header#main { background-color: brown !important; }
+  
+
+  header#main {
+    background-repeat:no-repeat;
+  background-image: url('/assets/img/lineart.png');  
+  }
+</style>
+
+<p>부분이 렌더링될 때 자동으로 처리된다.</p>
+
+<ul>
+  <li>
+    <p>이 페이지를 네비게이션에 추가한다.</p>
+
+    <p>_data/navigation.yml파일</p>
+
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Home</span>
+  <span class="na">link</span><span class="pi">:</span> <span class="s">/</span>
+  
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">About</span>
+  <span class="na">link</span><span class="pi">:</span> <span class="s">/about.html</span>
+  
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Blog</span>
+  <span class="na">link</span><span class="pi">:</span> <span class="s">/blog.html</span>
+<span class="c1">#추가된 부분</span>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Staff</span>
+  <span class="na">link</span><span class="pi">:</span> <span class="s">/staff.html</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="staff페이지-출력">Staff페이지 출력</h3>
+
+<ul>
+  <li>
+    <p>기본적으로 Collections는 각 문서들을 위한 정보를 페이지에서 출력하지 않아서 정보에 접근할 수 없다. 우리는 각 저자가 자신의 페이지를 가지게 하는 것이 목적이기 때문에 _config.yml에서 활성화해준다.</p>
+
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">collections</span><span class="pi">:</span>
+  <span class="na">authors</span><span class="pi">:</span>
+    <span class="na">output</span><span class="pi">:</span> <span class="no">true</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>이제 staff페이지에서 author.url을 통해서 각 저자 페이지에 대한 링크를 구할 수 있다.</p>
+
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+layout: default
+title: Staff
+---
+<span class="nt">&lt;h1&gt;</span>Staff<span class="nt">&lt;/h1&gt;</span>
+  
+<span class="nt">&lt;ul&gt;</span>
+    
+<span class="nt">&lt;/ul&gt;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>그럼 author 전용 layout도 생성해준다.</p>
+
+    <p>_layouts/author.html파일</p>
+
+    <h2 id="html">```html</h2>
+    <p>layout: default
+—</p>
+    <h1></h1>
+    <h2></h2>
+
+    <article class="feature-image">
+<header id="main" style="">
+  <div class="title-padder">
+      
+    <h1 id="Color+Post" class="title">Color Post</h1>
+      
+
+
+</div></header></article>
+  </li>
+</ul>
+<div class="post-info"><a href="https://github.com/sylhare" target="_blank">
+      <img src="https://avatars3.githubusercontent.com/u/20642750?s=460&amp;v=4" />
+    
+    <p class="meta">
+      Sylhare - May 18, 2019
+    </p></a></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;/div&gt;
+</code></pre></div></div>
+<p>&lt;/header&gt;</p>
+
+<section class="post-content">
+  
+      <h1 id="what-a-colorful-post">What a colorful post!</h1>
+
+<p>This is an idea that came from <a href="https://github.com/xukimseven/HardCandy-Jekyll">xukimseven/HardCandy-Jekyll</a> 
+looking at this cheerful and colorful them, I wanted to enable something similar for mine.</p>
+
+<p>You can go fork and star hers too! 😉</p>
+
+<!--more-->
+
+<h2 id="how-does-it-work">How does it work?</h2>
+
+<p>Basically you need to add just one thing, the color:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">Color Post</span>
+<span class="na">color</span><span class="pi">:</span> <span class="s">brown</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>It can either be a html color like <code class="language-plaintext highlighter-rouge">brown</code> (which look like red to me). Or with the rgb:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">Color Post</span>
+<span class="na">color</span><span class="pi">:</span> <span class="s">rgb(165,42,42)</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>The background used is <code class="language-plaintext highlighter-rouge">lineart.png</code> from <a href="https://github.com/xukimseven">xukimseven</a> you can edit it in the config file. 
+If you want another one, put it in <code class="language-plaintext highlighter-rouge">/assets/img</code> as well.</p>
+<blockquote>
+  <p>⚠️ It’s a bit hacking the css in the <code class="language-plaintext highlighter-rouge">post.html</code></p>
+</blockquote>
+
+    
+  </section>
+
+<p><!-- Social media shares --></p>
+
+<div class="share-buttons">
+    <ul class="share-buttons">
+        <div class="meta">Share</div>
+        
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title=" Facebook">
+			<i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Facebook</span>
+		</a>
+        </li>
+         
+        <li>
+            <a href="https://twitter.com/intent/tweet?text=Color+Post%20https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title="">
+			<i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Tweet</span>
+		</a>
+        </li>
+            
+        <li>
+            <a href="http://www.reddit.com/submit?url=https://anstn1993.github.io/2019/05/18/color-post.html&amp;title=Color+Post%20%7C%20MunSooKim%27s+dev+blog" target="_blank" title=" Reddit">
+			<i class="fa fa-reddit-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Reddit</span>
+		</a>
+        </li>
+           
+        <li>
+            <a href="mailto:?subject=Color+Post%20%7C%20MunSooKim%27s+dev+blog&amp;body=:%20https://anstn1993.github.io/2019/05/18/color-post.html" target="_blank" title="">
+			<i class="fa fa-envelope-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Email</span>
+		</a>
+        </li>
+        
+    </ul>
+</div>
+
+<p><!-- Tag list --></p>
+
+<footer>
+  <div class="tag-list">
+    
+      <div class="meta">Tags</div>
+    
+
+    
+    <a class="button" href="/tags#Color">
+      <p><i class="fa fa-tag fa-fw"></i> Color</p>
+    </a>
+    
+    <a class="button" href="/tags#Markdown">
+      <p><i class="fa fa-tag fa-fw"></i> Markdown</p>
+    </a>
+    
+    <a class="button" href="/tags#Test">
+      <p><i class="fa fa-tag fa-fw"></i> Test</p>
+    </a>
+    
+  </div>
+</footer>
+
+<p>&lt;/article&gt;</p>
+
+<!-- Disqus -->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'https-anstn1993-github-io';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</div>
+
+<!-- Post navigation -->
+
+<div id="post-nav">
+    
+    <div id="previous-post">
+        <a alt="nhn 입문교육 회고" href="/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html">
+            <p>Previous post</p>
+            nhn 입문교육 회고
+        </a>
+    </div>
+    
+
+    
+    <div id="next-post">
+        <a alt="Feature images" href="/2014/11/29/feature-images.html">
+            <p>Next post</p>
+            Feature images
+        </a>
+    </div>
+    
+</div>
+
+<!-- To change color of links in the page -->
+<style>
+  
+  .feature-image a { color: brown !important; }
+  div#post-nav a { color: brown !important; }
+  footer a { color: brown !important; }
+  .site-header nav a:hover {  color: brown !important; }
+  header#main { background-color: brown !important; }
+  
+
+  header#main {
+    background-repeat:no-repeat;
+  background-image: url('/assets/img/lineart.png');  
+  }
+</style>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+### 머리말 기본값
+
+그런데 뭔가 빠진 것 같은 느낌이 든다. author layout을 만들었으면 author파일에서 레이아웃 지정을 해줘야 하는데 우린 그런 걸 한 적이 없다. 그 설정도 이젠 _config.yml에서 해줄 것이다. 반복을 최소화할 수 있는 것이다. 아래와 같이 설정하면 매번 파일을 만들 때마다 레이아웃 지정을 안 해줘도 이 설정대로 적용이 된다. 
+
+_config.yml파일
+
+```yaml
+collections:
+  authors:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "authors"
+    values:
+      layout: "author"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+</code></pre></div></div>
+
+<p>type에 컬렉션이 들어가고 그 컬렉션의 파일의 머리말에 default로 추가해줄 값을 values아래에 쭉 적어주는 것이다.</p>
+
+<h3 id="author-페이지에서-저자의-게시물만-리스팅하기">author 페이지에서 저자의 게시물만 리스팅하기</h3>
+
+<p>저자의 페이지에서 저자가 작성한 게시물을 리스팅해본다.</p>
+
+<ul>
+  <li>
+    <p>author파일의 short_name값과 post파일의 author값이 일치해야 작성자별 게시물 필터링이 된다.</p>
+  </li>
+  <li>
+    <p>author.html파일에 게시물이 출력되어야 하니까 해당 파일에 필터링된 게시물을 출력해준다.</p>
+
+    <p>_layouts/author.html파일</p>
+
+    <h2 id="html-1">```html</h2>
+    <p>layout: default
+—</p>
+    <h1></h1>
+    <h2></h2>
+
+    <article class="feature-image">
+<header id="main" style="">
+  <div class="title-padder">
+      
+    <h1 id="Color+Post" class="title">Color Post</h1>
+      
+
+
+</div></header></article>
+  </li>
+</ul>
+<div class="post-info"><a href="https://github.com/sylhare" target="_blank">
+      <img src="https://avatars3.githubusercontent.com/u/20642750?s=460&amp;v=4" />
+    
+    <p class="meta">
+      Sylhare - May 18, 2019
+    </p></a></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;/div&gt;
+</code></pre></div></div>
+<p>&lt;/header&gt;</p>
+
+<section class="post-content">
+  
+      <h1 id="what-a-colorful-post">What a colorful post!</h1>
+
+<p>This is an idea that came from <a href="https://github.com/xukimseven/HardCandy-Jekyll">xukimseven/HardCandy-Jekyll</a> 
+looking at this cheerful and colorful them, I wanted to enable something similar for mine.</p>
+
+<p>You can go fork and star hers too! 😉</p>
+
+<!--more-->
+
+<h2 id="how-does-it-work">How does it work?</h2>
+
+<p>Basically you need to add just one thing, the color:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">Color Post</span>
+<span class="na">color</span><span class="pi">:</span> <span class="s">brown</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>It can either be a html color like <code class="language-plaintext highlighter-rouge">brown</code> (which look like red to me). Or with the rgb:</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">Color Post</span>
+<span class="na">color</span><span class="pi">:</span> <span class="s">rgb(165,42,42)</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>The background used is <code class="language-plaintext highlighter-rouge">lineart.png</code> from <a href="https://github.com/xukimseven">xukimseven</a> you can edit it in the config file. 
+If you want another one, put it in <code class="language-plaintext highlighter-rouge">/assets/img</code> as well.</p>
+<blockquote>
+  <p>⚠️ It’s a bit hacking the css in the <code class="language-plaintext highlighter-rouge">post.html</code></p>
+</blockquote>
+
+    
+  </section>
+
+<p><!-- Social media shares --></p>
+
+<div class="share-buttons">
+    <ul class="share-buttons">
+        <div class="meta">Share</div>
+        
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title=" Facebook">
+			<i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Facebook</span>
+		</a>
+        </li>
+         
+        <li>
+            <a href="https://twitter.com/intent/tweet?text=Color+Post%20https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title="">
+			<i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Tweet</span>
+		</a>
+        </li>
+            
+        <li>
+            <a href="http://www.reddit.com/submit?url=https://anstn1993.github.io/2019/05/18/color-post.html&amp;title=Color+Post%20%7C%20MunSooKim%27s+dev+blog" target="_blank" title=" Reddit">
+			<i class="fa fa-reddit-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Reddit</span>
+		</a>
+        </li>
+           
+        <li>
+            <a href="mailto:?subject=Color+Post%20%7C%20MunSooKim%27s+dev+blog&amp;body=:%20https://anstn1993.github.io/2019/05/18/color-post.html" target="_blank" title="">
+			<i class="fa fa-envelope-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Email</span>
+		</a>
+        </li>
+        
+    </ul>
+</div>
+
+<p><!-- Tag list --></p>
+
+<footer>
+  <div class="tag-list">
+    
+      <div class="meta">Tags</div>
+    
+
+    
+    <a class="button" href="/tags#Color">
+      <p><i class="fa fa-tag fa-fw"></i> Color</p>
+    </a>
+    
+    <a class="button" href="/tags#Markdown">
+      <p><i class="fa fa-tag fa-fw"></i> Markdown</p>
+    </a>
+    
+    <a class="button" href="/tags#Test">
+      <p><i class="fa fa-tag fa-fw"></i> Test</p>
+    </a>
+    
+  </div>
+</footer>
+
+<p>&lt;/article&gt;</p>
+
+<!-- Disqus -->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'https-anstn1993-github-io';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</div>
+
+<!-- Post navigation -->
+
+<div id="post-nav">
+    
+    <div id="previous-post">
+        <a alt="nhn 입문교육 회고" href="/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html">
+            <p>Previous post</p>
+            nhn 입문교육 회고
+        </a>
+    </div>
+    
+
+    
+    <div id="next-post">
+        <a alt="Feature images" href="/2014/11/29/feature-images.html">
+            <p>Next post</p>
+            Feature images
+        </a>
+    </div>
+    
+</div>
+
+<!-- To change color of links in the page -->
+<style>
+  
+  .feature-image a { color: brown !important; }
+  div#post-nav a { color: brown !important; }
+  footer a { color: brown !important; }
+  .site-header nav a:hover {  color: brown !important; }
+  header#main { background-color: brown !important; }
+  
+
+  header#main {
+    background-repeat:no-repeat;
+  background-image: url('/assets/img/lineart.png');  
+  }
+</style>
+
+<h2>Posts</h2>
+<ul>
+    
+    
+      <li><a href="/2014/11/29/feature-images.html">Feature images</a></li>
+    
+      <li><a href="/2014/11/26/lorem-ipsum.html">The Real Lorem Ipsum</a></li>
+    
+      <li><a href="/2013/11/02/Tech-stuff-example.html">Tech Stuff example</a></li>
+    
+      <li><a href="/2013/10/18/blogging-with-title.html">Blogging with title 
+</a></li>
+    
+  </ul>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+  * assgin구문: filetered_posts는 site.posts중에 where조건에 해당하는 게시물만 담는다. 
+
+### post 페이지에서 author 링크 출력하기
+
+게시물 페이지에서 저자의 정보가 출력되게 해야 한다. 
+
+* _layouts/post.html파일에 assign구문을 적용한다.
+
+  _layouts/post.html 파일
+
+  ```html
+  ---
+  layout: default
+  ---
+  &lt;h1&gt;nhn 입문교육 회고&lt;/h1&gt;
+  
+  &lt;p&gt;
+    21 Jan 2020
+    
+    
+  &lt;/p&gt;
+  
+  &lt;article class="feature-image" &gt;
+  &lt;header id="main" style=""&gt;
+    &lt;div class="title-padder"&gt;
+      
+      &lt;h1 id="Color+Post" class="title"&gt;Color Post&lt;/h1&gt;
+      
+
+
+&lt;div class="post-info"&gt;&lt;a href="https://github.com/sylhare" target="_blank"&gt;
+      &lt;img src="https://avatars3.githubusercontent.com/u/20642750?s=460&amp;v=4"&gt;
+    
+    &lt;p class="meta"&gt;
+      Sylhare - May 18, 2019
+    &lt;/p&gt;&lt;/a&gt;&lt;/div&gt;
+
+      
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;section class="post-content"&gt;
+  
+      &lt;h1 id="what-a-colorful-post"&gt;What a colorful post!&lt;/h1&gt;
+
+&lt;p&gt;This is an idea that came from &lt;a href="https://github.com/xukimseven/HardCandy-Jekyll"&gt;xukimseven/HardCandy-Jekyll&lt;/a&gt; 
+looking at this cheerful and colorful them, I wanted to enable something similar for mine.&lt;/p&gt;
+
+&lt;p&gt;You can go fork and star hers too! 😉&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h2 id="how-does-it-work"&gt;How does it work?&lt;/h2&gt;
+
+&lt;p&gt;Basically you need to add just one thing, the color:&lt;/p&gt;
+
+&lt;div class="language-yml highlighter-rouge"&gt;&lt;div class="highlight"&gt;&lt;pre class="highlight"&gt;&lt;code&gt;&lt;span class="nn"&gt;---&lt;/span&gt;
+&lt;span class="na"&gt;layout&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;post&lt;/span&gt;
+&lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Color Post&lt;/span&gt;
+&lt;span class="na"&gt;color&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;brown&lt;/span&gt;
+&lt;span class="nn"&gt;---&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It can either be a html color like &lt;code class="language-plaintext highlighter-rouge"&gt;brown&lt;/code&gt; (which look like red to me). Or with the rgb:&lt;/p&gt;
+
+&lt;div class="language-yml highlighter-rouge"&gt;&lt;div class="highlight"&gt;&lt;pre class="highlight"&gt;&lt;code&gt;&lt;span class="nn"&gt;---&lt;/span&gt;
+&lt;span class="na"&gt;layout&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;post&lt;/span&gt;
+&lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;Color Post&lt;/span&gt;
+&lt;span class="na"&gt;color&lt;/span&gt;&lt;span class="pi"&gt;:&lt;/span&gt; &lt;span class="s"&gt;rgb(165,42,42)&lt;/span&gt;
+&lt;span class="nn"&gt;---&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The background used is &lt;code class="language-plaintext highlighter-rouge"&gt;lineart.png&lt;/code&gt; from &lt;a href="https://github.com/xukimseven"&gt;xukimseven&lt;/a&gt; you can edit it in the config file. 
+If you want another one, put it in &lt;code class="language-plaintext highlighter-rouge"&gt;/assets/img&lt;/code&gt; as well.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;⚠️ It’s a bit hacking the css in the &lt;code class="language-plaintext highlighter-rouge"&gt;post.html&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+    
+  &lt;/section&gt;
+
+  &lt;!-- Social media shares --&gt;
+  
+
+&lt;div class="share-buttons"&gt;
+    &lt;ul class="share-buttons"&gt;
+        &lt;div class="meta"&gt;Share&lt;/div&gt;
+        
+        &lt;li&gt;
+            &lt;a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title=" Facebook"&gt;
+			&lt;i class="fa fa-facebook-square fa-2x" aria-hidden="true"&gt;&lt;/i&gt;
+			&lt;span class="sr-only"&gt;Share on Facebook&lt;/span&gt;
+		&lt;/a&gt;
+        &lt;/li&gt;
+         
+        &lt;li&gt;
+            &lt;a href="https://twitter.com/intent/tweet?text=Color+Post%20https%3A%2F%2Fanstn1993.github.io%2F2019%2F05%2F18%2Fcolor-post.html" target="_blank" title=""&gt;
+			&lt;i class="fa fa-twitter-square fa-2x" aria-hidden="true"&gt;&lt;/i&gt;
+			&lt;span class="sr-only"&gt;Tweet&lt;/span&gt;
+		&lt;/a&gt;
+        &lt;/li&gt;
+            
+        &lt;li&gt;
+            &lt;a href="http://www.reddit.com/submit?url=https://anstn1993.github.io/2019/05/18/color-post.html&amp;title=Color+Post%20%7C%20MunSooKim%27s+dev+blog" target="_blank" title=" Reddit"&gt;
+			&lt;i class="fa fa-reddit-square fa-2x" aria-hidden="true"&gt;&lt;/i&gt;
+			&lt;span class="sr-only"&gt;Share on Reddit&lt;/span&gt;
+		&lt;/a&gt;
+        &lt;/li&gt;
+           
+        &lt;li&gt;
+            &lt;a href="mailto:?subject=Color+Post%20%7C%20MunSooKim%27s+dev+blog&amp;body=:%20https://anstn1993.github.io/2019/05/18/color-post.html" target="_blank" title=""&gt;
+			&lt;i class="fa fa-envelope-square fa-2x" aria-hidden="true"&gt;&lt;/i&gt;
+			&lt;span class="sr-only"&gt;Email&lt;/span&gt;
+		&lt;/a&gt;
+        &lt;/li&gt;
+        
+    &lt;/ul&gt;
+&lt;/div&gt;
+
+
+
+
+   &lt;!-- Tag list --&gt;
+  
+  
+
+
+&lt;footer&gt;
+  &lt;div class="tag-list"&gt;
+    
+      &lt;div class="meta"&gt;Tags&lt;/div&gt;
+    
+
+    
+    &lt;a class="button" href="/tags#Color"&gt;
+      &lt;p&gt;&lt;i class="fa fa-tag fa-fw"&gt;&lt;/i&gt; Color&lt;/p&gt;
+    &lt;/a&gt;
+    
+    &lt;a class="button" href="/tags#Markdown"&gt;
+      &lt;p&gt;&lt;i class="fa fa-tag fa-fw"&gt;&lt;/i&gt; Markdown&lt;/p&gt;
+    &lt;/a&gt;
+    
+    &lt;a class="button" href="/tags#Test"&gt;
+      &lt;p&gt;&lt;i class="fa fa-tag fa-fw"&gt;&lt;/i&gt; Test&lt;/p&gt;
+    &lt;/a&gt;
+    
+  &lt;/div&gt;
+&lt;/footer&gt;
+
+
+&lt;/article&gt;
+
+&lt;!-- Disqus --&gt;
+
+&lt;div class="comments"&gt;
+    &lt;div id="disqus_thread"&gt;&lt;/div&gt;
+    &lt;script type="text/javascript"&gt;
+      var disqus_shortname = 'https-anstn1993-github-io';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    &lt;/script&gt;
+    &lt;noscript&gt;Please enable JavaScript to view comments.&lt;/noscript&gt;
+&lt;/div&gt;
+
+
+&lt;!-- Post navigation --&gt;
+
+  &lt;div id="post-nav"&gt;
+    
+    &lt;div id="previous-post"&gt;
+        &lt;a alt="nhn 입문교육 회고" href="/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html"&gt;
+            &lt;p&gt;Previous post&lt;/p&gt;
+            nhn 입문교육 회고
+        &lt;/a&gt;
+    &lt;/div&gt;
+    
+
+    
+    &lt;div id="next-post"&gt;
+        &lt;a alt="Feature images" href="/2014/11/29/feature-images.html"&gt;
+            &lt;p&gt;Next post&lt;/p&gt;
+            Feature images
+        &lt;/a&gt;
+    &lt;/div&gt;
+    
+&lt;/div&gt;
+
+
+
+&lt;!-- To change color of links in the page --&gt;
+&lt;style&gt;
+  
+  .feature-image a { color: brown !important; }
+  div#post-nav a { color: brown !important; }
+  footer a { color: brown !important; }
+  .site-header nav a:hover {  color: brown !important; }
+  header#main { background-color: brown !important; }
+  
+
+  header#main {
+    background-repeat:no-repeat;
+  background-image: url('/assets/img/lineart.png');  
+  }
+&lt;/style&gt;
+
+</code></pre></div></div>
+
+:ET

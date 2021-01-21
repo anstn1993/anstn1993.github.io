@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<!--
+    Type on Strap jekyll theme v2.3.0
+    Copyright 2016-2020 Sylhare
+    Theme free for personal and commercial use under the MIT license
+    https://github.com/sylhare/Type-on-Strap/blob/master/LICENSE
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Main JS (navbar.js, katex_init.js and masonry_init.js)-->
+    <script defer src="/assets/js/main.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/atom+xml" title="MunSooKim's dev blog" href="https://anstn1993.github.io/feed.xml"/>
+    
+    
+
+    <!-- KaTeX 0.12.0 -->
+    
+    <script defer src="/assets/js/vendor/katex.min.js"></script>
+    <script defer src="/assets/js/vendor/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    
+
+    <!-- Mermaid 8.8.2 -->
+    
+    <!-- <script src=”https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.2/mermaid.min.js" onload="mermaid.initialize({startOnLoad:true});"></script> -->
+    <script defer src="/assets/js/vendor/mermaid.min.js" onload="mermaid.initialize({startOnLoad:true});"></script>
+    
+
+    <!-- Simple-Jekyll-Search 1.17.12 -->
+    <script src="/assets/js/vendor/simple-jekyll-search.min.js" type="text/javascript"></script>
+
+    <!-- Google Analytics / Cookie Consent -->
+    <script>
+      const cookieName = 'cookie-notice-dismissed-https://anstn1993.github.io';
+      const isCookieConsent = 'false';
+      const analyticsName = '';
+    </script>
+
+    
+    
+
+    <!-- seo tags -->
+    <meta property="og:image" content="https://anstn1993.github.io/assets/img/pexels/triangular.jpeg">
+    
+    <meta property="og:type" content="website" />
+    
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>nhn 입문교육 회고 | MunSooKim’s dev blog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="nhn 입문교육 회고" />
+<meta name="author" content="Mun Soo Kim" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="설치" />
+<meta property="og:description" content="설치" />
+<link rel="canonical" href="https://anstn1993.github.io/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html" />
+<meta property="og:url" content="https://anstn1993.github.io/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html" />
+<meta property="og:site_name" content="MunSooKim’s dev blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-21T00:00:00+09:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="nhn 입문교육 회고" />
+<script type="application/ld+json">
+{"description":"설치","headline":"nhn 입문교육 회고","dateModified":"2020-01-21T00:00:00+09:00","datePublished":"2020-01-21T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://anstn1993.github.io/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html"},"url":"https://anstn1993.github.io/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html","author":{"@type":"Person","name":"Mun Soo Kim"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <!-- RSS -->
+    <link type="application/atom+xml" rel="alternate" href="https://anstn1993.github.io/feed.xml" title="MunSooKim&apos;s dev blog" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:title" content="nhn 입문교육 회고">
+    <meta name="twitter:description" content="설치      아래 페이지를 참고하여 루비를 설치한다.    https://jekyllrb-ko.github.io/docs/installation/        설치를 완료했으면 터미널에 다음과 같이 치면 루비 설치 완료    gem install jekyll bundler    ...">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://anstn1993.github.io/assets/img/pexels/triangular.jpeg">
+    <meta name="twitter:image:alt" content="nhn 입문교육 회고">
+</head>
+
+  <body>
+    <header class="site-header">
+
+    <!-- Logo and title -->
+	<div class="branding">
+        
+		<a href="/">
+			<img alt="logo img" class="avatar" src="/assets/img/triangle.png" />
+		</a>
+        
+        <a class="site-title" aria-label="MunSooKim's dev blog" href="/">
+        MunSooKim's dev blog
+		</a>
+	</div>
+
+    <!-- Toggle menu -->
+    <nav class="clear">
+    <a aria-label="pull" id="pull" class="toggle" href="#">
+    <i class="fa fa-bars fa-lg"></i>
+    </a>
+
+    <!-- Menu -->
+    <ul class="hide">
+        
+
+        
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="About" title="About" href="/about/">
+                     About 
+                </a>
+            </li>
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Gallery" title="Gallery" href="/gallery/">
+                     Gallery 
+                </a>
+            </li>
+            
+            
+        
+            
+            
+        
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Portfolio" title="Portfolio" href="/portfolio/">
+                     Portfolio 
+                </a>
+            </li>
+            
+            
+        
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Search" title="Search" href="/search/">
+                     <i class="fa fa-search" aria-hidden="true"></i>
+                    
+                </a>
+            </li>
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Tags" title="Tags" href="/tags/">
+                     <i class="fa fa-tags" aria-hidden="true"></i>
+                    
+                </a>
+            </li>
+            
+            
+        
+            
+            
+        
+    </ul>
+
+	</nav>
+</header>
+
+    <div class="content">
+      <article class="feature-image" >
+  <header id="main" style="">
+    <div class="title-padder">
+      
+      <h1 id="nhn+%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1+%ED%9A%8C%EA%B3%A0" class="title">nhn 입문교육 회고</h1>
+      
+
+
+<div class="post-info">
+    <p class="meta">
+      January 21, 2020
+    </p></div>
+
+      
+    </div>
+  </header>
+
+  <section class="post-content">
+  
+      <h3 id="설치">설치</h3>
+
+<ul>
+  <li>
+    <p>아래 페이지를 참고하여 루비를 설치한다.</p>
+
+    <p>https://jekyllrb-ko.github.io/docs/installation/</p>
+  </li>
+  <li>
+    <p>설치를 완료했으면 터미널에 다음과 같이 치면 루비 설치 완료</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gem install jekyll bundler
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Gem의 집합체인 Gemfile은 아래의 명령어로 생성</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle init
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>생성된 Gemfile을 열어서 jekyll을 의존성으로 추가</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vi Gemfile
+gem "jekyll"을 추가
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>블로그 디렉토리를 하나 생성한다. 앞으로의 설명에서는 이 디렉토리를 root로 간주</p>
+  </li>
+  <li>
+    <p>루트에 index.html파일 생성</p>
+
+    <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Home<span class="nt">&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>Hello World!<span class="nt">&lt;/h1&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>빌드</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle exec jekyll build
+</code></pre></div>    </div>
+
+    <p>위의 명령어를 입력하면 빌드가 완료되고 root에 자동으로 _site라는 디렉토리가 생성된 후 index.html파일이 추가된다.</p>
+  </li>
+  <li>
+    <p>서버 실행</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle exec jekyll serve
+</code></pre></div>    </div>
+
+    <p>localhost:4000으로 접근하면 index.html페이지가 보인다.</p>
+  </li>
+</ul>
+
+
+    
+  </section>
+
+  <!-- Social media shares -->
+  
+
+<div class="share-buttons">
+    <ul class="share-buttons">
+        <div class="meta">Share</div>
+        
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fanstn1993.github.io%2F2020%2F01%2F21%2Fnhn-%25EC%259E%2585%25EB%25AC%25B8%25EA%25B5%2590%25EC%259C%25A1-%25ED%259A%258C%25EA%25B3%25A0.html" target="_blank" title=" Facebook">
+			<i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Facebook</span>
+		</a>
+        </li>
+         
+        <li>
+            <a href="https://twitter.com/intent/tweet?text=nhn+%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1+%ED%9A%8C%EA%B3%A0%20https%3A%2F%2Fanstn1993.github.io%2F2020%2F01%2F21%2Fnhn-%25EC%259E%2585%25EB%25AC%25B8%25EA%25B5%2590%25EC%259C%25A1-%25ED%259A%258C%25EA%25B3%25A0.html" target="_blank" title="">
+			<i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Tweet</span>
+		</a>
+        </li>
+            
+        <li>
+            <a href="http://www.reddit.com/submit?url=https://anstn1993.github.io/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html&title=nhn+%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1+%ED%9A%8C%EA%B3%A0%20%7C%20MunSooKim%27s+dev+blog" target="_blank" title=" Reddit">
+			<i class="fa fa-reddit-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Reddit</span>
+		</a>
+        </li>
+           
+        <li>
+            <a href="mailto:?subject=nhn+%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1+%ED%9A%8C%EA%B3%A0%20%7C%20MunSooKim%27s+dev+blog&body=:%20https://anstn1993.github.io/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html" target="_blank" title="">
+			<i class="fa fa-envelope-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Email</span>
+		</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+
+   <!-- Tag list -->
+  
+  
+
+
+<footer>
+  <div class="tag-list">
+    
+      <div class="meta">Tag</div>
+    
+
+    
+    <a class="button" href="/tags#test">
+      <p><i class="fa fa-tag fa-fw"></i> test</p>
+    </a>
+    
+  </div>
+</footer>
+
+
+</article>
+
+<!-- Disqus -->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'https-anstn1993-github-io';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</div>
+
+
+<!-- Post navigation -->
+
+  <div id="post-nav">
+    
+
+    
+</div>
+
+
+
+<!-- To change color of links in the page -->
+<style>
+  
+  .feature-image a { color: brown !important; }
+  div#post-nav a { color: brown !important; }
+  footer a { color: brown !important; }
+  .site-header nav a:hover {  color: brown !important; }
+  header#main { background-color: brown !important; }
+  
+
+  header#main {
+    background-repeat:no-repeat;
+  background-image: url('/assets/img/lineart.png');  
+  }
+</style>
+
+    </div>
+    <footer class="site-footer">
+    <p class="text">
+         </p>
+            <div class="footer-icons">
+                <ul>
+                <!-- Social icons from Font Awesome, if enabled -->
+                
+<li>
+    <a feed.xml href="/feed.xml"
+       title="Follow RSS feed">
+        <span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+        </span>
+    </a>
+</li>
+
+
+
+<li>
+    <a href="mailto:anstn1993@gmail.com" title="Email">
+		<span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+        </span>
+    </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+    <a href="https://github.com/anstn1993" title="Follow on GitHub">
+		<span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+        </span>
+    </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </ul>
+            </div>
+</footer>
+
+
+
+  </body>
+</html>
