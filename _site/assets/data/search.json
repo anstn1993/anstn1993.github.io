@@ -3,121 +3,13 @@
   {
     "title"    : "nhn 입문교육 회고",
     "category" : "",
-    "tags"     : " test",
+    "tags"     : " 회고",
     "url"      : "/2020/01/21/nhn-%EC%9E%85%EB%AC%B8%EA%B5%90%EC%9C%A1-%ED%9A%8C%EA%B3%A0.html",
     "date"     : "January 21, 2020",
     "excerpt"  : "설치\n\n\n  \n    아래 페이지를 참고하여 루비를 설치한다.\n\n    https://jekyllrb-ko.github.io/docs/installation/\n  \n  \n    설치를 완료했으면 터미널에 다음과 같이 치면 루비 설치 완료\n\n    gem install jekyll bundler\n    \n  \n  \n    Gem의 집합체인 Gemfile은 아래의 명령어로 생성\n\n    bundle init\n    \n  \n  \n    생성된 ...",
   "content"  : "설치\n\n\n  \n    아래 페이지를 참고하여 루비를 설치한다.\n\n    https://jekyllrb-ko.github.io/docs/installation/\n  \n  \n    설치를 완료했으면 터미널에 다음과 같이 치면 루비 설치 완료\n\n    gem install jekyll bundler\n    \n  \n  \n    Gem의 집합체인 Gemfile은 아래의 명령어로 생성\n\n    bundle init\n    \n  \n  \n    생성된 Gemfile을 열어서 jekyll을 의존성으로 추가\n\n    vi Gemfile\ngem &quot;jekyll&quot;을 추가\n    \n  \n  \n    블로그 디렉토리를 하나 생성한다. 앞으로의 설명에서는 이 디렉토리를 root로 간주\n  \n  \n    루트에 index.html파일 생성\n\n    &amp;lt;!doctype html&amp;gt;\n&amp;lt;html&amp;gt;\n  &amp;lt;head&amp;gt;\n    &amp;lt;meta charset=&quot;utf-8&quot;&amp;gt;\n    &amp;lt;title&amp;gt;Home&amp;lt;/title&amp;gt;\n  &amp;lt;/head&amp;gt;\n  &amp;lt;body&amp;gt;\n    &amp;lt;h1&amp;gt;Hello World!&amp;lt;/h1&amp;gt;\n  &amp;lt;/body&amp;gt;\n&amp;lt;/html&amp;gt;\n    \n  \n  \n    빌드\n\n    bundle exec jekyll build\n    \n\n    위의 명령어를 입력하면 빌드가 완료되고 root에 자동으로 _site라는 디렉토리가 생성된 후 index.html파일이 추가된다.\n  \n  \n    서버 실행\n\n    bundle exec jekyll serve\n    \n\n    localhost:4000으로 접근하면 index.html페이지가 보인다.\n  \n\n\n"
 } 
   
-  ,
   
-  {
-  
-  "title"    : "Ninja",
-  "category" : "",
-  "tags"     : " Lorem",
-  "url"      : "/portfolio/ninja",
-  "date"     : "April 8, 2014",
-  "excerpt"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem qu...",
-  "content"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\n\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Creative",
-  "category" : "",
-  "tags"     : " Ipsum",
-  "url"      : "/portfolio/safe",
-  "date"     : "August 16, 2014",
-  "excerpt"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia...",
-  "content"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\nUse this area of the page to describe your project. The icon above is part of a free icon set by Flat Icons. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Circus",
-  "category" : "",
-  "tags"     : " Ipsum",
-  "url"      : "/portfolio/circus",
-  "date"     : "September 1, 2014",
-  "excerpt"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem qu...",
-  "content"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\n\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Tower of Hanoi",
-  "category" : "",
-  "tags"     : " ",
-  "url"      : "/portfolio/hanoi",
-  "date"     : "September 1, 2014",
-  "excerpt"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem qu...",
-  "content"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\n\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Tic tac toe",
-  "category" : "",
-  "tags"     : " ",
-  "url"      : "/portfolio/tictactoe",
-  "date"     : "September 1, 2014",
-  "excerpt"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia...",
-  "content"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\n\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Cake",
-  "category" : "",
-  "tags"     : " Lorem, Ipsum, Portfolio",
-  "url"      : "/portfolio/cake",
-  "date"     : "September 27, 2015",
-  "excerpt"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia...",
-  "content"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\nUse this area of the page to describe your project. The icon above is part of a free icon set by Flat Icons. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Jekyll",
-  "category" : "",
-  "tags"     : " ",
-  "url"      : "/portfolio/jekyllblog",
-  "date"     : "May 26, 2017",
-  "excerpt"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia...",
-  "content"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\n\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Lorem Ipsum",
-  "category" : "",
-  "tags"     : " ",
-  "url"      : "/portfolio/submarine",
-  "date"     : "September 3, 2017",
-  "excerpt"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia...",
-  "content"  : "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\nUse this area of the page to describe your project. The icon above is part of a free icon set by Flat Icons. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!\n\n"
-  
-} ,
-  
-  {
-  
-  "title"    : "Github",
-  "category" : "",
-  "tags"     : " Lorem, Portfolio",
-  "url"      : "/portfolio/gitlecture",
-  "date"     : "October 20, 2017",
-  "excerpt"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem qu...",
-  "content"  : "\n\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?\n\n"
-  
-} 
   
 ]

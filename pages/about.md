@@ -2,13 +2,15 @@
 layout: page
 title: About
 permalink: /about/
-feature-img: "assets/img/pexels/travel.jpeg"
-tags: [About, Archive]
+feature-img: "assets/img/pexels/computer.jpeg"
+tags: [About]
 ---
 
-Type on Strap is based on Type Theme, a free and open-source theme for [Jekyll](http://jekyllrb.com/), licensed under the MIT License.
+## 소개
 
-Head over to the [theme's documentation](https://github.io/sylhare/Type-on-Strap) for much more information about Type on Strap or to install this theme on your own Jekyll site.
+github pages를 운영하면서 꾸준히 성장하고 싶은 NHN에서 근무 중인 새내기 개발자 입니다. 
 
-This file is an example of a page in Jekyll, that automatically shows up in the header navigation, you can delete or modify this file freely.
- 
+* 백엔드 개발에 관심이 많습니다. 
+* 하지만 여러 분야에 대해서 폭넓게 배워보고 싶은 욕망도 있습니다.
+* 미루고 미루어왔던 일상, 회고, 개발에 대한 글 업로드를 이제 열심히 해볼 생각입니다.
+* 여담으로 저는 당구를 매우 좋아합니다...(네 당구 좋아하시는 분은 연락 주세요!)
