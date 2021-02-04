@@ -1,0 +1,210 @@
+I"�P<p>spring boot는 순수 spring으로만 개발할 때 개발자가 직접 해야 할 아주 많은 일들을 대신 해줌으로써 생산성을 많이 높여줍니다. 그럼 spring boot가 개발자들을 위해서 어떤 것들을 해주는지 살펴보겠습니다.</p>
+
+<h3 id="의존성-관리">의존성 관리</h3>
+<hr />
+<p>spring boot는 주요 프로젝트들의 의존성을 편리하게 관리해줍니다. 일반적으로 pom.xml파일에 dependency를 추가할 때는 버전 정보를 함께 명시해야 하는데요. spring boot의 dependency를 보시면 버전 정보가 없는 것을 확인하실 수 있습니다.</p>
+
+<ul>
+  <li>pom.xml
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ...
+  <span class="nt">&lt;parent&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
+          <span class="nt">&lt;version&gt;</span>2.3.8.RELEASE<span class="nt">&lt;/version&gt;</span>
+          <span class="nt">&lt;relativePath/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
+  <span class="nt">&lt;/parent&gt;</span>
+  ...
+  <span class="nt">&lt;dependencies&gt;</span>
+      <span class="nt">&lt;dependency&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-data-jpa<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;/dependency&gt;</span>
+      <span class="nt">&lt;dependency&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+</code></pre></div>    </div>
+    <p>위에서 확인할 수 있듯이 버전에 대한 정보를 명시하지 않고 있습니다. spring boot가 알아서 적절한 버전을 가져와주기 때문입니다. 각 프로젝트들의 버전 정보는 parent태그에 명시된 spring-boot-starter-parent artifact에 정의되어 있습니다. 맥은 command를, 윈도우는 control키를 누르고 artifact명을 클릭하면 아래의 파일에 접근하게 됩니다.
+<br /></p>
+  </li>
+  <li>spring-boot-starter-parent-2.3.8.RELEASE.pom
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ...
+  <span class="nt">&lt;parent&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>spring-boot-dependencies<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>2.3.8.RELEASE<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;/parent&gt;</span>
+  ...
+</code></pre></div>    </div>
+    <p>여기서 다시 한 번 spring-boot-dependencies를 타고 들어가봅니다.
+<br /></p>
+  </li>
+  <li>spring-boot-dependencies-2.3.8.RELEASE.pom
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ...
+  <span class="nt">&lt;dependencyManagement&gt;</span>
+      ...
+      <span class="nt">&lt;dependency&gt;</span>
+          <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+          <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+          <span class="nt">&lt;version&gt;</span>2.3.8.RELEASE<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;/dependency&gt;</span>
+      ...
+  <span class="nt">&lt;/dependencyManagement&gt;</span>
+  ...
+</code></pre></div>    </div>
+    <p>네 드디어 도착입니다. 위 파일의 dependencyManagement태그에 각 프로젝트들에 대한 버전 정보를 명시해두고 있습니다. 저희가 pom.xml에 직접 추가하는 프로젝트들에 대한 버전은 이 파일에 명시된 버전으로 설정됩니다. 즉 <strong><em>pom.xml파일은 위의 부모 설정들을 상속받아서 버전을 정의하게 되는 겁니다.</em></strong></p>
+  </li>
+</ul>
+
+<p>그리고 이렇게 버전을 대신 관리해주게 되면 의존성 간의 버전 호환성에 대한 걱정도 할 필요가 없어집니다. spring boot가 의존성을 추가할 때 알아서 설정된 버전과 호환되는 버전으로 추가를 해주기 때문입니다.</p>
+
+<p>만약 pom.xml파일에 의존성을 추가할 때 개발자가 직접 버전을 명시하게 되면 부모 설정을 오버라이딩하여 개발자가 명시한 버전으로 의존성을 추가하게 됩니다.</p>
+
+<h3 id="springbootapplication">@SpringBootApplication</h3>
+<hr />
+<p>spring은 xml이나 자바 설정을 통해서 빈을 ioc컨테이너에 등록할 수 있습니다. 특히 자바 설정을 이용할 때는 자바 config파일을 만들어서 @Configuration, @ComponentScan과 같은 annotation을 사용해서 아래와 같이 만들 수 있습니다.</p>
+
+<ul>
+  <li>AppConfig.java(제가 임의로 만든 파일입니다. spring boot프로젝트에는 존재하지 않습니다.)
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nd">@Configuration</span>
+  <span class="nd">@ComponentScan</span><span class="o">(</span><span class="n">basePackageClass</span> <span class="o">=</span> <span class="nc">SampleTicketApplication</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppConfig</span> <span class="o">{</span>
+        
+  <span class="o">}</span>
+</code></pre></div>    </div>
+    <p>위의 파일을 패키지의 루트에 위치시키면 그 파일과 같은 depth에 위치한 자바 파일과 패키지들에 존재하는 자바 파일까지 스캔을 하면서 @Controller, @Service, @Configuration, @Repository와 같은 컴포넌트 annotation이 붙은 클래스들을 모두 빈으로 등록하게 됩니다.</p>
+
+    <p>하지만 spring boot프로젝트를 만들면 위와 같은 설정 파일이 없음에도 불구하고 빈들이 잘 등록됩니다. 그 역할을 @SpringBootApplication이 하게 됩니다. 이 annotation은 프로젝트를 처음 생성하면 루트 패키지의 Application 클래스에 붙게 됩니다. 
+<br /></p>
+  </li>
+  <li>SampleTicketApplication.class
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nd">@SpringBootApplication</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SampleTicketApplication</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+          <span class="nc">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="nc">SampleTicketApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div>    </div>
+    <p>@SpringBootApplication을 타고 들어가보면 아래와 같은 파일이 나오게 됩니다.
+<br /></p>
+  </li>
+  <li>SpringBootApplication.class
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nd">@Target</span><span class="o">({</span><span class="nc">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">})</span>
+  <span class="nd">@Retention</span><span class="o">(</span><span class="nc">RetentionPolicy</span><span class="o">.</span><span class="na">RUNTIME</span><span class="o">)</span>
+  <span class="nd">@Documented</span>
+  <span class="nd">@Inherited</span>
+  <span class="nd">@SpringBootConfiguration</span>
+  <span class="nd">@EnableAutoConfiguration</span>
+  <span class="nd">@ComponentScan</span><span class="o">(</span>
+      <span class="n">excludeFilters</span> <span class="o">=</span> <span class="o">{</span><span class="nd">@Filter</span><span class="o">(</span>
+      <span class="n">type</span> <span class="o">=</span> <span class="nc">FilterType</span><span class="o">.</span><span class="na">CUSTOM</span><span class="o">,</span>
+      <span class="n">classes</span> <span class="o">=</span> <span class="o">{</span><span class="nc">TypeExcludeFilter</span><span class="o">.</span><span class="na">class</span><span class="o">}</span>
+  <span class="o">),</span> <span class="nd">@Filter</span><span class="o">(</span>
+      <span class="n">type</span> <span class="o">=</span> <span class="nc">FilterType</span><span class="o">.</span><span class="na">CUSTOM</span><span class="o">,</span>
+      <span class="n">classes</span> <span class="o">=</span> <span class="o">{</span><span class="nc">AutoConfigurationExcludeFilter</span><span class="o">.</span><span class="na">class</span><span class="o">}</span>
+  <span class="o">)}</span>
+  <span class="o">)</span>
+  <span class="kd">public</span> <span class="nd">@interface</span> <span class="nc">SpringBootApplication</span> <span class="o">{</span>
+      <span class="o">...</span>
+  <span class="o">}</span>
+</code></pre></div>    </div>
+    <p>@SpringBootApplication에 @ComponentScan과 @SpringBootConfiguration이 붙은 것을 확인하실 수 있습니다. @SpringBootConfiguration을 타고 들어가보시면 @Configuration이 붙은 것을 확인하실 수 있습니다. 즉 <strong><em>@SpringBootApplication이 붙은 Application 클래스가 빈을 등록하기 위한 자바 설정 파일의 역할을 겸하고 있는 것입니다.</em></strong></p>
+  </li>
+</ul>
+
+<h3 id="자동-설정">자동 설정</h3>
+<hr />
+<p>@SpringBootApplication을 통해서 컴포넌트 annotation이 붙은 클래스들을 알아서 빈으로 등록해준다는 것을 확인했습니다. 그런데 이렇게 개발자가 직접 정의한 빈 이외에도 spring boot가 정의해둔 유용한 빈들이 ioc컨테이너에 추가됩니다. 이 기능도 @SpringBootApplication에 붙은 <strong><em>@EnableAutoConfiguration</em></strong> 때문에 동작합니다.</p>
+
+<p>그럼 이 자동으로 등록되는 빈은 어디에서 스캔되는 걸까요? 
+<img width="207" alt="스크린샷 2021-02-04 오후 11 44 40" src="https://user-images.githubusercontent.com/56672937/106908903-12c06300-6743-11eb-9ad0-f8400cbcf2c6.png" />
+<img width="539" alt="스크린샷 2021-02-04 오후 11 47 14" src="https://user-images.githubusercontent.com/56672937/106909149-561ad180-6743-11eb-9b5b-4658129f9475.png" />
+IntelliJ의 좌측 프로잭트 구조에서 하단의 External Libraries에 여러 의존성들 중 위의 이미지에 보이는 spring-boot-autoconfigure프로젝트의 spriing.factories파일에 명시되어 있습니다.</p>
+
+<ul>
+  <li>
+    <p>spring.factories</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # Auto Configure
+  org.springframework.boot.autoconfigure.EnableAutoConfiguration=<span class="k">\
+  </span>...
+  org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration,<span class="k">\
+  </span>org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration,<span class="k">\
+  </span>org.springframework.boot.autoconfigure.websocket.reactive.WebSocketReactiveAutoConfiguration,<span class="k">\
+  </span>org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration,<span class="k">\
+  </span>org.springframework.boot.autoconfigure.websocket.servlet.WebSocketMessagingAutoConfiguration,<span class="k">\
+  </span>...
+</code></pre></div>    </div>
+    <p>위와 같이 EnableAutoConfiguration에 명시된 Configuration파일들이 빈으로 등록됩니다. 대표적으로 WebMvcAutoConfiguration만 살펴보겠습니다.
+<br /></p>
+    <ul>
+      <li>WebMvcAutoConfiguration.java
+        <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nd">@Configuration</span><span class="o">(</span>
+  <span class="n">proxyBeanMethods</span> <span class="o">=</span> <span class="kc">false</span>
+  <span class="o">)</span>
+  <span class="nd">@ConditionalOnWebApplication</span><span class="o">(</span>
+  <span class="n">type</span> <span class="o">=</span> <span class="nc">Type</span><span class="o">.</span><span class="na">SERVLET</span>
+  <span class="o">)</span>
+  <span class="nd">@ConditionalOnClass</span><span class="o">({</span><span class="nc">Servlet</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nc">DispatcherServlet</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nc">WebMvcConfigurer</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+  <span class="nd">@ConditionalOnMissingBean</span><span class="o">({</span><span class="nc">WebMvcConfigurationSupport</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+  <span class="nd">@AutoConfigureOrder</span><span class="o">(-</span><span class="mi">2147483638</span><span class="o">)</span>
+  <span class="nd">@AutoConfigureAfter</span><span class="o">({</span><span class="nc">DispatcherServletAutoConfiguration</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nc">TaskExecutionAutoConfiguration</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nc">ValidationAutoConfiguration</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">WebMvcAutoConfiguration</span> <span class="o">{</span>
+
+  <span class="o">...</span>
+
+  <span class="nd">@Configuration</span><span class="o">(</span>
+      <span class="n">proxyBeanMethods</span> <span class="o">=</span> <span class="kc">false</span>
+  <span class="o">)</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">EnableWebMvcConfiguration</span> <span class="kd">extends</span> <span class="nc">DelegatingWebMvcConfiguration</span> <span class="kd">implements</span> <span class="nc">ResourceLoaderAware</span> <span class="o">{</span>
+
+      <span class="o">...</span>
+
+      <span class="nd">@Bean</span>
+      <span class="kd">public</span> <span class="nc">RequestMappingHandlerAdapter</span> <span class="nf">requestMappingHandlerAdapter</span><span class="o">(</span><span class="nd">@Qualifier</span><span class="o">(</span><span class="s">"mvcContentNegotiationManager"</span><span class="o">)</span> <span class="nc">ContentNegotiationManager</span> <span class="n">contentNegotiationManager</span><span class="o">,</span> <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">"mvcConversionService"</span><span class="o">)</span> <span class="nc">FormattingConversionService</span> <span class="n">conversionService</span><span class="o">,</span> <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">"mvcValidator"</span><span class="o">)</span> <span class="nc">Validator</span> <span class="n">validator</span><span class="o">)</span> <span class="o">{</span>
+          <span class="nc">RequestMappingHandlerAdapter</span> <span class="n">adapter</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">requestMappingHandlerAdapter</span><span class="o">(</span><span class="n">contentNegotiationManager</span><span class="o">,</span> <span class="n">conversionService</span><span class="o">,</span> <span class="n">validator</span><span class="o">);</span>
+          <span class="n">adapter</span><span class="o">.</span><span class="na">setIgnoreDefaultModelOnRedirect</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">mvcProperties</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="k">this</span><span class="o">.</span><span class="na">mvcProperties</span><span class="o">.</span><span class="na">isIgnoreDefaultModelOnRedirect</span><span class="o">());</span>
+          <span class="k">return</span> <span class="n">adapter</span><span class="o">;</span>
+      <span class="o">}</span>
+
+      <span class="o">...</span>
+
+      <span class="nd">@Bean</span>
+      <span class="nd">@Primary</span>
+      <span class="kd">public</span> <span class="nc">RequestMappingHandlerMapping</span> <span class="nf">requestMappingHandlerMapping</span><span class="o">(</span><span class="nd">@Qualifier</span><span class="o">(</span><span class="s">"mvcContentNegotiationManager"</span><span class="o">)</span> <span class="nc">ContentNegotiationManager</span> <span class="n">contentNegotiationManager</span><span class="o">,</span> <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">"mvcConversionService"</span><span class="o">)</span> <span class="nc">FormattingConversionService</span> <span class="n">conversionService</span><span class="o">,</span> <span class="nd">@Qualifier</span><span class="o">(</span><span class="s">"mvcResourceUrlProvider"</span><span class="o">)</span> <span class="nc">ResourceUrlProvider</span> <span class="n">resourceUrlProvider</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">requestMappingHandlerMapping</span><span class="o">(</span><span class="n">contentNegotiationManager</span><span class="o">,</span> <span class="n">conversionService</span><span class="o">,</span> <span class="n">resourceUrlProvider</span><span class="o">);</span>
+      <span class="o">}</span>
+
+      <span class="o">...</span>
+  <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div>        </div>
+        <p>위 설정 파일을 보면 @Configuration이 붙어있습니다. 즉 spring.factories에 명시된 설정 파일을 빈으로 등록하고 그 설정 파일에 있는 빈들이 등록되는 것입니다. 여러 빈들 중 HandlerMapping, HandlerAdapter와 같이 spring mvc가 제공하는 dispatcher servlet의 전략 인터페이스들이 빈으로 등록되는 것을 확인할 수 있습니다.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>정리해보면 spring boot는 사용자가 정의한 빈을 등록하고 자동 설정에 등록된 빈을 등록하는 두 단계를 거치게 되는 겁니다.</p>
+
+<h3 id="내장-was">내장 was</h3>
+<p>spring boot는 was가 프로젝트에 내장되어 있습니다. 즉 jar로 패키징을 해서 실행을 하는 것만으로 서버에 애플리케이션을 바로 띄울 수 있게 됩니다. 이 기능도 앞서 살펴본 자동 설정과 관련됩니다.</p>
+
+<ul>
+  <li>
+    <p>spring.factories</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # Auto Configure
+  org.springframework.boot.autoconfigure.EnableAutoConfiguration=<span class="k">\
+  </span>...
+  org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration,<span class="k">\
+  </span>...
+</code></pre></div>    </div>
+    <p>앞서 살펴본 spring.factories파일에 명시된 ServletWebServerFactoryAutoConfiguration.java에 내장 was와 관련된 빈들이 등록되어 있습니다.</p>
+  </li>
+</ul>
+
+<h3 id="마치며">마치며</h3>
+<p>지금까지 spring boot가 어떤 역할을 하는지 몇 가지 살펴봤는데요. 이외에도 spring boot가 우리에게 제공해주는 효용은 더 많습니다. 저도 공부를 하는 입장이다보니 다 알지 못 하고 틀린 내용이 있을 수 있습니다. 틀린 내용이 있거나 다른 좋은 기능이 있다면 댓글로 알려주시면 굉장히 감사할 것 같습니다. 긴 글 읽어주셔서 감사합니다~!</p>
+:ET
