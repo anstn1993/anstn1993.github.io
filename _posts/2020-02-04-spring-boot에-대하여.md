@@ -132,8 +132,12 @@ spring은 xml이나 자바 설정을 통해서 빈을 ioc컨테이너에 등록�
 @SpringBootApplication을 통해서 컴포넌트 annotation이 붙은 클래스들을 알아서 빈으로 등록해준다는 것을 확인했습니다. 그런데 이렇게 개발자가 직접 정의한 빈 이외에도 spring boot가 정의해둔 유용한 빈들이 ioc컨테이너에 추가됩니다. 이 기능도 @SpringBootApplication에 붙은 ***@EnableAutoConfiguration*** 때문에 동작합니다. 
 
 그럼 이 자동으로 등록되는 빈은 어디에서 스캔되는 걸까요? 
-<img width="207" alt="스크린샷 2021-02-04 오후 11 44 40" src="https://user-images.githubusercontent.com/56672937/106908903-12c06300-6743-11eb-9ad0-f8400cbcf2c6.png">
-<img width="539" alt="스크린샷 2021-02-04 오후 11 47 14" src="https://user-images.githubusercontent.com/56672937/106909149-561ad180-6743-11eb-9b5b-4658129f9475.png">
+<div>
+    <img width="400" alt="스크린샷 2021-02-04 오후 11 44 40" src="https://user-images.githubusercontent.com/56672937/106908903-12c06300-6743-11eb-9ad0-f8400cbcf2c6.png">
+</div>
+<div>
+    <img width="539" alt="스크린샷 2021-02-04 오후 11 47 14" src="https://user-images.githubusercontent.com/56672937/106909149-561ad180-6743-11eb-9b5b-4658129f9475.png">
+</div>
 IntelliJ의 좌측 프로잭트 구조에서 하단의 External Libraries에 여러 의존성들 중 위의 이미지에 보이는 spring-boot-autoconfigure프로젝트의 spriing.factories파일에 명시되어 있습니다.
 
 * spring.factories

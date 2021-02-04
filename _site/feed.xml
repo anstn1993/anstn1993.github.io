@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-02-05T00:38:17+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">nhn 기술교육 2주차 회고</title><link href="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html" rel="alternate" type="text/html" title="nhn 기술교육 2주차 회고" /><published>2020-02-04T00:00:00+09:00</published><updated>2020-02-04T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0%20copy</id><content type="html" xml:base="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html">&lt;p&gt;기술 교육 2주차에 대한 회고록이다. 1주차는 사전 과제를 주로 진행했다면 2주차부터는 본격적으로 서비스 개발의 프로세스를 직접 밟아가기 시작했다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-02-05T00:44:57+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">nhn 기술교육 2주차 회고</title><link href="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html" rel="alternate" type="text/html" title="nhn 기술교육 2주차 회고" /><published>2020-02-04T00:00:00+09:00</published><updated>2020-02-04T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0%20copy</id><content type="html" xml:base="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html">&lt;p&gt;기술 교육 2주차에 대한 회고록이다. 1주차는 사전 과제를 주로 진행했다면 2주차부터는 본격적으로 서비스 개발의 프로세스를 직접 밟아가기 시작했다.&lt;/p&gt;
 
 &lt;h3 id=&quot;기획은-처음이라&quot;&gt;기획은 처음이라..&lt;/h3&gt;
 &lt;hr /&gt;
@@ -160,10 +160,14 @@
 &lt;hr /&gt;
 &lt;p&gt;@SpringBootApplication을 통해서 컴포넌트 annotation이 붙은 클래스들을 알아서 빈으로 등록해준다는 것을 확인했습니다. 그런데 이렇게 개발자가 직접 정의한 빈 이외에도 spring boot가 정의해둔 유용한 빈들이 ioc컨테이너에 추가됩니다. 이 기능도 @SpringBootApplication에 붙은 &lt;strong&gt;&lt;em&gt;@EnableAutoConfiguration&lt;/em&gt;&lt;/strong&gt; 때문에 동작합니다.&lt;/p&gt;
 
-&lt;p&gt;그럼 이 자동으로 등록되는 빈은 어디에서 스캔되는 걸까요? 
-&lt;img width=&quot;207&quot; alt=&quot;스크린샷 2021-02-04 오후 11 44 40&quot; src=&quot;https://user-images.githubusercontent.com/56672937/106908903-12c06300-6743-11eb-9ad0-f8400cbcf2c6.png&quot; /&gt;
-&lt;img width=&quot;539&quot; alt=&quot;스크린샷 2021-02-04 오후 11 47 14&quot; src=&quot;https://user-images.githubusercontent.com/56672937/106909149-561ad180-6743-11eb-9b5b-4658129f9475.png&quot; /&gt;
-IntelliJ의 좌측 프로잭트 구조에서 하단의 External Libraries에 여러 의존성들 중 위의 이미지에 보이는 spring-boot-autoconfigure프로젝트의 spriing.factories파일에 명시되어 있습니다.&lt;/p&gt;
+&lt;p&gt;그럼 이 자동으로 등록되는 빈은 어디에서 스캔되는 걸까요?&lt;/p&gt;
+&lt;div&gt;
+    &lt;img width=&quot;400&quot; alt=&quot;스크린샷 2021-02-04 오후 11 44 40&quot; src=&quot;https://user-images.githubusercontent.com/56672937/106908903-12c06300-6743-11eb-9ad0-f8400cbcf2c6.png&quot; /&gt;
+&lt;/div&gt;
+&lt;div&gt;
+    &lt;img width=&quot;539&quot; alt=&quot;스크린샷 2021-02-04 오후 11 47 14&quot; src=&quot;https://user-images.githubusercontent.com/56672937/106909149-561ad180-6743-11eb-9b5b-4658129f9475.png&quot; /&gt;
+&lt;/div&gt;
+&lt;p&gt;IntelliJ의 좌측 프로잭트 구조에서 하단의 External Libraries에 여러 의존성들 중 위의 이미지에 보이는 spring-boot-autoconfigure프로젝트의 spriing.factories파일에 명시되어 있습니다.&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
