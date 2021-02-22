@@ -1,4 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-02-05T00:44:57+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">nhn 기술교육 2주차 회고</title><link href="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html" rel="alternate" type="text/html" title="nhn 기술교육 2주차 회고" /><published>2020-02-04T00:00:00+09:00</published><updated>2020-02-04T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0%20copy</id><content type="html" xml:base="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html">&lt;p&gt;기술 교육 2주차에 대한 회고록이다. 1주차는 사전 과제를 주로 진행했다면 2주차부터는 본격적으로 서비스 개발의 프로세스를 직접 밟아가기 시작했다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-02-22T23:36:44+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">nhn 기술교육 sprint5 회고</title><link href="https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 sprint5 회고" /><published>2020-02-22T00:00:00+09:00</published><updated>2020-02-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;sprint5에 대한 회고록이다. 이전 sprint에서 기획과 db 모델링 등의 전반적인 설계를 마친 후 본격적인 개발에 착수한 한 주였다.&lt;/p&gt;
+
+&lt;h3 id=&quot;협업&quot;&gt;협업&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이전엔 이렇다 할 협업 경험이 없어서 걱정 반, 기대 반으로 sprint를 시작했다. 예상했던 대로 혼자 할 때와는 달리 많은 것들을 팀원들과 논의하고 정하면서 개발을 진행했다. 깃의 커밋 메시지나 코드의 변수명에 대한 컨벤션을 정하는 것과 같은 큰 틀에서의 합의부터 시작해서, 각자 맡은 기능과 기능의 접점에서 어떻게 로직이 이어지게 할지와 같은 세부적인 합의까지 진행했다. 혼자 개발을 하는 것이 아니기 때문에 이런 합의들은 너무나도 필수적인 과정이었고 이런 과정들이 생각보다 많은 비용과 노력이 필요했다.&lt;/p&gt;
+
+&lt;p&gt;하지만 그 과정이 고통스럽진 않았다. 앞으로 개발자로서 늘 하게 될 협업이라는 것을 직접 해보고 있다는 생각에 오히려 즐거웠다.(어쩌면 내가 낸 의견을 팀원들이 그냥 다 잘 받아줘서 재밌었던 것일지도…) 그리고 또 다른 재미는 내가 담당하지 않은 기능들이 시간이 지나면서 조금씩 완성되어간다는 점이다. 이게 당연한 얘기이긴 하지만 내가 작성한 적이 없는 코드가 시간이 지나면 나의 로컬 프로젝트 리포지토리에 추가되고 코드들이 하나로 조립되어 문제없이 동작하는 것을 확인하는 재미가 쏠쏠했다.&lt;/p&gt;
+
+&lt;h3 id=&quot;개발&quot;&gt;개발&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;내가 맡은 페이지는 좌석 선택 페이지, 예매 최종 확인 페이지, 예매 관리를 할 수 있는 admin 페이지였다. 좌석 선택 페이지의 경우에는 백엔드 로직보단 프론트엔드의 로직을 구성하는 게 더 난이도 있는 작업이었다. 인원수에 따라서 좌석을 선택했을 때의 동작이 달라져야 하고 설정한 인원수와 선택한 좌석의 수가 같아지기 전엔 다음 스텝으로 넘어가는 버튼을 비활성화해야 하는 등의 다양한 예외 처리를 고려해야 했다.&lt;/p&gt;
+
+&lt;p&gt;예매 최종 확인 페이지의 경우 페이지를 구성하고 선택한 데이터를 조회하는 작업은 어렵지 않았지만 해당 페이지 요청 핸들러에서 선점 기능을 같이 구현해야 했기 때문에 그 작업이 가장 큰 허들이었다. 멘토님의 피드백을 받기 전까진 말이다. 처음에는 선점이 1분 뒤에 풀리니까 선점 데이터도 1분 뒤에 db에서 ‘삭제돼야 한다’라고 생각했다. 삭제에 초점을 맞추다 보니 1분 뒤에 삭제 이벤트를 db에서 트리거 하겠다는 복잡한 구현 방식을 생각하게 됐는데 멘토님이 나의 이런 원대한(?) 계획을 들으시더니 “선점 시간이 지난 데이터를 꼭 삭제해야만 할까요?”라는 피드백을 주셨다. 이 말을 들은 순간 머리를 망치로 맞은 느낌이 들면서 훨씬 간단한 방식이 떠올랐다. 그냥 선점 데이터 중 1분이 지난 데이터는 제외하고 조회하면 해결될 것이라고 생각했고 최종적으로 구현도 그렇게 하게 됐다. 이 피드백을 다행히도 선점 기능 개발을 시작하기 전에 받아서 시간을 많이 절약할 수 있었다고 생각한다. 멘토님 감사합니다!&lt;/p&gt;
+
+&lt;p&gt;예매 데이터를 조회하고 추가/삭제할 수 있는 관리자 페이지도 만들었는데 이미 앞에서 구현해둔 페이지들의 코드를 조금만 수정하는 수준에서 금방 구현할 수 있었다.&lt;/p&gt;
+
+&lt;h3 id=&quot;정해진-마감-기한&quot;&gt;정해진 마감 기한&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;이번 sprint에서 처음 경험한 것이 하나 더 있는데 그게 바로 마감기한 안에 개발을 완료하는 것이었다. sprint 초반에만 해도 일정 안에 큰 무리 없이 마무리를 할 수 있겠다고 생각했는데, 중반으로 갈수록 무리를 해야 마무리를 할 수 있겠다고 생각이 바뀌었고 실제로도 잠을 거의 포기하면서, 주말에도 개발을 하면서 겨우겨우 시연 발표 전까지 완성할 수 있었다. dev 서버에 배포도 해야 하고 배포된 환경에서 잘 동작하는지 확인을 하는 과정도 꼭 필요한데 이 과정에서 버그가 팡팡 터진다는 점을 간과했다. 그래도 배포 스크립트를 작성해둬서 깃허브 마스터 브랜치로 푸시만 하고 스크립트를 실행하는 두 단계만으로 재배포가 가능했기 때문에 빠르게 수정을 할 수 있었던 것 같다. 이렇게 열정적으로 불코딩을 한 게 얼마 만인지…동기들아 우리 너무 수고했다 ㅜㅜ&lt;/p&gt;
+
+&lt;h3 id=&quot;기대되는-이후-일정들&quot;&gt;기대되는 이후 일정들&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;초기 개발이 끝났다. 앞으로는 코드 리뷰와 리팩토링의 과정이 진행될 것 같은데 오늘 시연 발표를 마치고 운영진 한 분이 앞으로의 교육이 ‘진짜’라고 말씀하셨다. 그게 이번 sprint에서의 고생은 아무것도 아니라는 것인지, 기술 교육에서 정말 중요하고 가치 있는 내용이 앞으로 나온다는 것인지, 아니면 둘 다인지는 모르겠지만 앞으로 배울 내용들은 정말 혼자서는 배우고 익히기 어려운 내용들이 될 것 같아서 더더욱 기대된다!&lt;/p&gt;
+
+&lt;p&gt;회고 끝!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="회고" /><summary type="html">sprint5에 대한 회고록이다. 이전 sprint에서 기획과 db 모델링 등의 전반적인 설계를 마친 후 본격적인 개발에 착수한 한 주였다.</summary></entry><entry><title type="html">nhn 기술교육 2주차 회고</title><link href="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 2주차 회고" /><published>2020-02-04T00:00:00+09:00</published><updated>2020-02-04T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2020/02/04/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-2%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;기술 교육 2주차에 대한 회고록이다. 1주차는 사전 과제를 주로 진행했다면 2주차부터는 본격적으로 서비스 개발의 프로세스를 직접 밟아가기 시작했다.&lt;/p&gt;
 
 &lt;h3 id=&quot;기획은-처음이라&quot;&gt;기획은 처음이라..&lt;/h3&gt;
 &lt;hr /&gt;
@@ -255,7 +287,7 @@
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;마치며&quot;&gt;마치며&lt;/h3&gt;
-&lt;p&gt;지금까지 spring boot가 어떤 역할을 하는지 몇 가지 살펴봤는데요. 저의 글이 조금이나마 도움이 됐으면 좋겠습니다. 이외에도 spring boot가 우리에게 제공해주는 효용은 더 많습니다. 저도 공부를 하는 입장이다보니 다 알지 못 하고 틀린 내용이 있을 수 있습니다. 틀린 내용이 있거나 다른 좋은 기능이 있다면 댓글로 알려주시면 굉장히 감사할 것 같습니다. 긴 글 읽어주셔서 감사합니다~!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><category term="spring" /><summary type="html">spring boot는 순수 spring으로만 개발할 때 개발자가 직접 해야 할 아주 많은 일들을 대신 해줌으로써 생산성을 많이 높여줍니다. 그럼 spring boot가 개발자들을 위해서 어떤 것들을 해주는지 살펴보겠습니다.</summary></entry><entry><title type="html">nhn 기술교육 1주차 회고</title><link href="https://anstn1993.github.io/2020/01/21/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html" rel="alternate" type="text/html" title="nhn 기술교육 1주차 회고" /><published>2020-01-21T00:00:00+09:00</published><updated>2020-01-21T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/01/21/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0%20copy</id><content type="html" xml:base="https://anstn1993.github.io/2020/01/21/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0-copy.html">&lt;p&gt;기술 교육 1주차 일정이 모두 끝났다. 방금 사전과제에 대한 시험을 마치고 이 글을 바로 작성한다. 기억은 시간이 지나면 지날수록 희석되기 때문에 최대한 선명할 때 지난 일주일 간의 기억을 바로 기록하겠다.&lt;/p&gt;
+&lt;p&gt;지금까지 spring boot가 어떤 역할을 하는지 몇 가지 살펴봤는데요. 저의 글이 조금이나마 도움이 됐으면 좋겠습니다. 이외에도 spring boot가 우리에게 제공해주는 효용은 더 많습니다. 저도 공부를 하는 입장이다보니 다 알지 못 하고 틀린 내용이 있을 수 있습니다. 틀린 내용이 있거나 다른 좋은 기능이 있다면 댓글로 알려주시면 굉장히 감사할 것 같습니다. 긴 글 읽어주셔서 감사합니다~!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><category term="spring" /><summary type="html">spring boot는 순수 spring으로만 개발할 때 개발자가 직접 해야 할 아주 많은 일들을 대신 해줌으로써 생산성을 많이 높여줍니다. 그럼 spring boot가 개발자들을 위해서 어떤 것들을 해주는지 살펴보겠습니다.</summary></entry><entry><title type="html">nhn 기술교육 1주차 회고</title><link href="https://anstn1993.github.io/2020/01/21/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 1주차 회고" /><published>2020-01-21T00:00:00+09:00</published><updated>2020-01-21T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/01/21/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2020/01/21/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-1%EC%A3%BC%EC%B0%A8-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;기술 교육 1주차 일정이 모두 끝났다. 방금 사전과제에 대한 시험을 마치고 이 글을 바로 작성한다. 기억은 시간이 지나면 지날수록 희석되기 때문에 최대한 선명할 때 지난 일주일 간의 기억을 바로 기록하겠다.&lt;/p&gt;
 
 &lt;h3 id=&quot;처음-써보는-맥북&quot;&gt;처음 써보는 맥북&lt;/h3&gt;
 
