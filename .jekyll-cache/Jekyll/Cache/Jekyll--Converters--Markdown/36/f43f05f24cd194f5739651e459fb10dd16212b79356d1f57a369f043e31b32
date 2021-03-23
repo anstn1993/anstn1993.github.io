@@ -1,6 +1,6 @@
-I"h"<p>이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.</p>
+I"9%<p>이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.</p>
 
-<h3 id="oauth-이전-인증-방식의-문제점">OAuth 이전 인증 방식의 문제점</h3>
+<h2 id="oauth-이전-인증-방식의-문제점">OAuth 이전 인증 방식의 문제점</h2>
 
 <hr />
 
@@ -16,13 +16,19 @@
   <li>
     <p>서드파티 앱은 결국 자신이 의존하고 있는 서비스들의 리소스에 광범위하게 접근이 가능해집니다.</p>
   </li>
+  <li>
+    <p>유저가 비밀번호를 바꾸면 그 유저의 리소스에 의존하는 애플리케이션의 정상 동작을 보장할 수 없습니다.</p>
+  </li>
+  <li>
+    <p>서드파티 앱의 리소스 접근에 대한 권한을 폐기하기 위해서는 비밀번호를 바꾸는 방법밖에 없습니다.</p>
+  </li>
 </ol>
 
-<h3 id="oauth2의-인증-방식">OAuth2의 인증 방식</h3>
+<h2 id="oauth2의-인증-방식">OAuth2의 인증 방식</h2>
 
 <hr />
 
-<p>OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다.</p>
+<p>OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다. 이 방식을 통해서 안전한 방법으로 제한된 리소스에만 접근할 수 있게 할 수 있고, 권한 삭제와 같은 권한 관리가 편리해집니다.</p>
 
 <p>OAuth2 인증 과정에는 4개의 주체들이 상호작용하게 됩니다. 4개의 주체들에 대해서 먼저 살펴보겠습니다.</p>
 
@@ -66,19 +72,21 @@
 
 <p>OAuth2는 위와 같이 다소 복잡한 방식으로 인증을 진행하게 됩니다. 하지만 그런 복잡함 덕분에 client가 resource owner의 인증 정보를 가지게 되는 기존의 방식과는 달리 권한 증서만을 가지고 resource owner의 resource에 접근하게 되는 보안적인 안전성을 취하게 됐습니다.</p>
 
-<h3 id="authorization-grant">Authorization Grant</h3>
+<h2 id="authorization-grant">Authorization Grant</h2>
 
 <hr />
 
-<p>앞서 client가 authorization grant를 이용해서 resource owner의 resource에 접근하기 위해서 필요한 access token을 발급받는 과정을 봤습니다. 이 권한 증서에도 여러 타입이 존재합니다. 권한 증서의 타입에 따라서 실제 인증 절차의 구현에도 차이가 생기게 되는데요. 여러 타입 중에서 2가지를 살펴보겠습니다.</p>
+<p>앞서 client가 authorization grant를 이용해서 resource owner의 resource에 접근하기 위해서 필요한 access token을 발급받는 과정을 봤습니다. 이 권한 증서에도 여러 타입이 존재합니다. 권한 증서의 타입에 따라서 실제 인증 절차의 구현에도 차이가 생기게 되는데요. 여러 타입 중에서 3가지를 살펴보겠습니다.</p>
 
-<h5 id="1-authorization-code">1. Authorization code</h5>
+<h4 id="1-authorization-code">1. Authorization code</h4>
 
-<p>authorization server가 client와 resource owner 사이의 중개인 역할을 하여 resource owner로부터 바로 권한을 요청하는 대신 resource owner가 authorization server에 직접 접근해서 인증을 하게 하고 그로 인해서 발급되는 authorization code(권한 증서)를 client에게 전달해 주고, client는 그 권한 증서를 이용하여 authorization server에게 access token을 요청하는 방식입니다. 요즘엔 대부분의 서비스에서 제공하는 sns 로그인을 생각해 봅시다. sns 로그인 버튼을 누르게 되면 유저의 credentials 정보를 client 서비스가 아닌 해당 sns 서비스에서 직접 입력하게 됩니다. 그리고 로그인을 시도하게 되면 sns 서비스는 aurhorization code를 client에게 발급하고 client는 그 code를 다시 sns 서비스의 authorization server에 보내서 access token을 받게 됩니다. 이 모든 일들이 사용자가 로그인 버튼을 누르고 난 후 매우 짧은 시간 내에 일어나게 됩니다. 이처럼 클라이언트가 권한 증서를 받게 되기 전에 resource owner가 authorization server에 직접 인증을 하게 되기 때문에 resource owner의 credentials는 절대 client에 노출되지 않습니다.</p>
+<p>authorization server가 client와 resource owner 사이의 중개인 역할을 하여 resource owner로부터 바로 권한을 요청하는 대신 resource owner가 authorization server에 직접 접근해서 인증을 하게 하고 그로 인해서 발급되는 authorization code(권한 증서)를 client에게 전달해 주고, client는 그 권한 증서를 이용하여 authorization server에게 access token을 요청하는 방식입니다. 요즘엔 대부분의 서비스에서 제공하는 sns 로그인을 생각해 봅시다. sns 로그인 버튼을 누르게 되면 유저의 credentials 정보를 client 서비스가 아닌 해당 sns 서비스에서 직접 입력하게 됩니다. 그리고 로그인을 시도하게 되면 sns 서비스는 aurhorization code를 client에게 발급하고 client는 그 code를 다시 sns 서비스의 authorization server에 보내서 access token을 받게 됩니다.(일반적으로 토큰 발급 요청은 server to server로 일어납니다.) 이 모든 일들이 사용자가 로그인 버튼을 누르고 난 후 매우 짧은 시간 내에 일어나게 됩니다. 이처럼 클라이언트가 권한 증서를 받게 되기 전에 resource owner가 authorization server에 직접 인증을 하게 되기 때문에 resource owner의 credentials는 절대 client에 노출되지 않습니다. 가장 일반적인 인증 방식입니다.</p>
 
-<h5 id="2-resource-owner-password-credentials">2. Resource Owner Password Credentials</h5>
+<h4 id="2-implicit-grant">2. Implicit Grant</h4>
 
-<p>resource owner의 password가 access token을 획득하기 위한 authorization grant로 활용되는 방식입니다. 유저의 비밀번호를 권한 증서로 사용하는 것이기 때문에 일반적으로 client와 resource server가 다른 경우에는 사용하면 안 되는 방식입니다. 단일 서비스에서의 인증을 하는 경우나 resource owner와 client 사이의 깊은 신뢰관계가 보장되는 경우에 한해서 사용하는 방식입니다. 계정 정보(user name, password)를 통해서 바로 access token을 발급받게 됩니다.</p>
+<h4 id="3-resource-owner-password-credentials">3. Resource Owner Password Credentials</h4>
+
+<p>resource owner의 password가 access token을 획득하기 위한 authorization grant로 활용되는 방식입니다. 유저의 비밀번호를 권한 증서로 사용하는 것이기 때문에 일반적으로 client와 resource server가 다른 경우에는 사용하면 안 되는 방식입니다. 단일 서비스에서의 인증을 하는 경우나 resource owner와 client 사이의 깊은 신뢰관계가 보장되는 경우에 한해서 사용하는 방식입니다. 계정 정보(user name, password)를 통해서 바로 access token을 발급받게 됩니다. 그렇게 권장되는 방식은 아닙니다.</p>
 
 <p><br /></p>
 

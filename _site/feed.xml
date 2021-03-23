@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-03-23T18:11:38+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">AJP - Tomcat과 Apache의 만남</title><link href="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" rel="alternate" type="text/html" title="AJP - Tomcat과 Apache의 만남" /><published>2020-03-22T00:00:00+09:00</published><updated>2020-03-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html">&lt;p&gt;이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-03-23T18:23:54+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">AJP - Tomcat과 Apache의 만남</title><link href="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" rel="alternate" type="text/html" title="AJP - Tomcat과 Apache의 만남" /><published>2020-03-22T00:00:00+09:00</published><updated>2020-03-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html">&lt;p&gt;이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;tomcat의-connector&quot;&gt;Tomcat의 Connector&lt;/h2&gt;
 
@@ -622,7 +622,7 @@ worker.worker1.port=8001
 
 &lt;p&gt;회고 끝!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="회고" /><summary type="html">sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.</summary></entry><entry><title type="html">OAuth2에 대하여</title><link href="https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html" rel="alternate" type="text/html" title="OAuth2에 대하여" /><published>2020-03-09T00:00:00+09:00</published><updated>2020-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html">&lt;p&gt;이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;oauth-이전-인증-방식의-문제점&quot;&gt;OAuth 이전 인증 방식의 문제점&lt;/h3&gt;
+&lt;h2 id=&quot;oauth-이전-인증-방식의-문제점&quot;&gt;OAuth 이전 인증 방식의 문제점&lt;/h2&gt;
 
 &lt;hr /&gt;
 
@@ -646,7 +646,7 @@ worker.worker1.port=8001
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h3 id=&quot;oauth2의-인증-방식&quot;&gt;OAuth2의 인증 방식&lt;/h3&gt;
+&lt;h2 id=&quot;oauth2의-인증-방식&quot;&gt;OAuth2의 인증 방식&lt;/h2&gt;
 
 &lt;hr /&gt;
 
@@ -694,19 +694,23 @@ worker.worker1.port=8001
 
 &lt;p&gt;OAuth2는 위와 같이 다소 복잡한 방식으로 인증을 진행하게 됩니다. 하지만 그런 복잡함 덕분에 client가 resource owner의 인증 정보를 가지게 되는 기존의 방식과는 달리 권한 증서만을 가지고 resource owner의 resource에 접근하게 되는 보안적인 안전성을 취하게 됐습니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;authorization-grant&quot;&gt;Authorization Grant&lt;/h3&gt;
+&lt;h2 id=&quot;authorization-grant&quot;&gt;Authorization Grant&lt;/h2&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;앞서 client가 authorization grant를 이용해서 resource owner의 resource에 접근하기 위해서 필요한 access token을 발급받는 과정을 봤습니다. 이 권한 증서에도 여러 타입이 존재합니다. 권한 증서의 타입에 따라서 실제 인증 절차의 구현에도 차이가 생기게 되는데요. 여러 타입 중에서 2가지를 살펴보겠습니다.&lt;/p&gt;
+&lt;p&gt;앞서 client가 authorization grant를 이용해서 resource owner의 resource에 접근하기 위해서 필요한 access token을 발급받는 과정을 봤습니다. 이 권한 증서에도 여러 타입이 존재합니다. 권한 증서의 타입에 따라서 실제 인증 절차의 구현에도 차이가 생기게 되는데요. 여러 타입 중에서 3가지를 살펴보겠습니다.&lt;/p&gt;
 
-&lt;h5 id=&quot;1-authorization-code&quot;&gt;1. Authorization code&lt;/h5&gt;
+&lt;h4 id=&quot;1-authorization-code&quot;&gt;1. Authorization code&lt;/h4&gt;
 
-&lt;p&gt;authorization server가 client와 resource owner 사이의 중개인 역할을 하여 resource owner로부터 바로 권한을 요청하는 대신 resource owner가 authorization server에 직접 접근해서 인증을 하게 하고 그로 인해서 발급되는 authorization code(권한 증서)를 client에게 전달해 주고, client는 그 권한 증서를 이용하여 authorization server에게 access token을 요청하는 방식입니다. 요즘엔 대부분의 서비스에서 제공하는 sns 로그인을 생각해 봅시다. sns 로그인 버튼을 누르게 되면 유저의 credentials 정보를 client 서비스가 아닌 해당 sns 서비스에서 직접 입력하게 됩니다. 그리고 로그인을 시도하게 되면 sns 서비스는 aurhorization code를 client에게 발급하고 client는 그 code를 다시 sns 서비스의 authorization server에 보내서 access token을 받게 됩니다. 이 모든 일들이 사용자가 로그인 버튼을 누르고 난 후 매우 짧은 시간 내에 일어나게 됩니다. 이처럼 클라이언트가 권한 증서를 받게 되기 전에 resource owner가 authorization server에 직접 인증을 하게 되기 때문에 resource owner의 credentials는 절대 client에 노출되지 않습니다.&lt;/p&gt;
+&lt;p&gt;authorization server가 client와 resource owner 사이의 중개인 역할을 하여 resource owner로부터 바로 권한을 요청하는 대신 resource owner가 authorization server에 직접 접근해서 인증을 하게 하고 그로 인해서 발급되는 authorization code(권한 증서)를 client에게 전달해 주고, client는 그 권한 증서를 이용하여 authorization server에게 access token을 요청하는 방식입니다. 요즘엔 대부분의 서비스에서 제공하는 sns 로그인을 생각해 봅시다. sns 로그인 버튼을 누르게 되면 유저의 credentials 정보를 client 서비스가 아닌 해당 sns 서비스에서 직접 입력하게 됩니다. 그리고 로그인을 시도하게 되면 sns 서비스는 aurhorization code를 client에게 발급하고 client는 그 code를 다시 sns 서비스의 authorization server에 보내서 access token을 받게 됩니다.(일반적으로 토큰 발급 요청은 server to server로 일어납니다.) 이 모든 일들이 사용자가 로그인 버튼을 누르고 난 후 매우 짧은 시간 내에 일어나게 됩니다. 이처럼 클라이언트가 권한 증서를 받게 되기 전에 resource owner가 authorization server에 직접 인증을 하게 되기 때문에 resource owner의 credentials는 절대 client에 노출되지 않습니다. 가장 일반적인 인증 방식입니다.&lt;/p&gt;
 
-&lt;h5 id=&quot;2-resource-owner-password-credentials&quot;&gt;2. Resource Owner Password Credentials&lt;/h5&gt;
+&lt;h4 id=&quot;2-implicit-grant&quot;&gt;2. Implicit Grant&lt;/h4&gt;
 
-&lt;p&gt;resource owner의 password가 access token을 획득하기 위한 authorization grant로 활용되는 방식입니다. 유저의 비밀번호를 권한 증서로 사용하는 것이기 때문에 일반적으로 client와 resource server가 다른 경우에는 사용하면 안 되는 방식입니다. 단일 서비스에서의 인증을 하는 경우나 resource owner와 client 사이의 깊은 신뢰관계가 보장되는 경우에 한해서 사용하는 방식입니다. 계정 정보(user name, password)를 통해서 바로 access token을 발급받게 됩니다.&lt;/p&gt;
+&lt;p&gt;Authorization code와 달리 권한 요청과 함께 access token 발급이 일어납니다. 즉 중간에 Authorization code를 통한 access token 발급 절차가 사라지는 겁니다. 이 방식은 client to server 요청이기 때문에 spa 애플리케이션에서 주로 사용하는 방식입니다. 하지만 클라이언트로 토큰이 바로 내려온다는 점에서 보안적으로 Authorization code보다는 위험합니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;3-resource-owner-password-credentials&quot;&gt;3. Resource Owner Password Credentials&lt;/h4&gt;
+
+&lt;p&gt;resource owner의 password가 access token을 획득하기 위한 authorization grant로 활용되는 방식입니다. 유저의 비밀번호를 권한 증서로 사용하는 것이기 때문에 일반적으로 client와 resource server가 다른 경우에는 사용하면 안 되는 방식입니다. 단일 서비스에서의 인증을 하는 경우나 resource owner와 client 사이의 깊은 신뢰관계가 보장되는 경우에 한해서 사용하는 방식입니다. 계정 정보(user name, password)를 통해서 바로 access token을 발급받게 됩니다. 그렇게 권장되는 방식은 아닙니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
