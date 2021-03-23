@@ -60,8 +60,8 @@
 <meta property="og:title" content="AJP - Tomcat과 Apache의 만남" />
 <meta name="author" content="Mun Soo Kim" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다." />
-<meta property="og:description" content="이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다." />
+<meta name="description" content="이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다." />
+<meta property="og:description" content="이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다." />
 <link rel="canonical" href="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" />
 <meta property="og:url" content="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" />
 <meta property="og:site_name" content="MunSooKim’s devlog" />
@@ -70,7 +70,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="AJP - Tomcat과 Apache의 만남" />
 <script type="application/ld+json">
-{"description":"이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다.","headline":"AJP - Tomcat과 Apache의 만남","dateModified":"2020-03-22T00:00:00+09:00","datePublished":"2020-03-22T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html"},"url":"https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html","author":{"@type":"Person","name":"Mun Soo Kim"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"description":"이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.","headline":"AJP - Tomcat과 Apache의 만남","dateModified":"2020-03-22T00:00:00+09:00","datePublished":"2020-03-22T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html"},"url":"https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html","author":{"@type":"Person","name":"Mun Soo Kim"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -79,7 +79,7 @@
 
     <!-- Twitter Cards -->
     <meta name="twitter:title" content="AJP - Tomcat과 Apache의 만남">
-    <meta name="twitter:description" content="이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다.Tomcat의 ConnectorTomcat이 외부의 요청을 어떻게 받는지 먼저 살펴보겠습니다. Tomcat은 다...">
+    <meta name="twitter:description" content="이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.Tomcat의 ConnectorTomcat이 외부의 요청을 어떻게 받는지 먼저 살펴보겠습니다. Tomcat은 다...">
     
     <meta name="twitter:card" content="summary">
     <meta name="twitter:image" content="https://anstn1993.github.io/assets/img/pexels/triangular.jpeg">
@@ -187,7 +187,7 @@
 
   <section class="post-content">
   
-      <p>이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다.</p>
+      <p>이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.</p>
 
 <h2 id="tomcat의-connector">Tomcat의 Connector</h2>
 

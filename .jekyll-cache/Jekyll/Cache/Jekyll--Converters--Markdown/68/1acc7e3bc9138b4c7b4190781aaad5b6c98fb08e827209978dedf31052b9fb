@@ -1,12 +1,12 @@
-I"�&<p>이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 프록시 서버가 됩니다.</p>
+I"�&<p>이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.</p>
 
 <h2 id="tomcat의-connector">Tomcat의 Connector</h2>
 
 <hr />
 
-<p>Tomcat이 외부의 요청을 어떻게 받는지 먼저 살펴보겠습니다. Tomcat은 다양한 컴포넌트들로 구성이 되는데, 그 중 Catalina가 외부 요청을 받을 수 있게 처리하는 컴포넌트가 Connector 입니다. Connector는 하나의 서비스 내에서 여러 개로 구성할 수 있으며 각각 요청을 받아서 적절한 Context(Web Application)로 요청을 전달해주고 동적으로 생성된 응답 컨텐츠를 받아서 응답해주는 역할을 수행합니다.</p>
+<p>Tomcat이 외부의 요청을 어떻게 받는지 먼저 살펴보겠습니다. Tomcat은 다양한 컴포넌트들로 구성이 되는데, 그중 Catalina가 외부 요청을 받을 수 있게 처리하는 컴포넌트가 Connector입니다. Connector는 하나의 서비스 내에서 여러 개로 구성될 수 있으며 각각 요청을 받아서 적절한 Context(Web Application)로 요청을 전달해 주고 동적으로 생성된 응답 콘텐츠를 받아서 응답해 주는 역할을 수행합니다.</p>
 
-<p>각각의 Connector들에게 위와 같은 역할을 수행하게 하기 위해서는 가장 기본적으로는 2가지를 설정해줘야 합니다.</p>
+<p>각각의 Connector들이 위와 같은 역할을 수행하기 위해서는 기본적으로 2가지를 설정해줘야 합니다.</p>
 
 <ol>
   <li>요청을 listen하기 위한 포트 번호</li>
@@ -34,7 +34,7 @@
 &lt;/Server&gt;
 </code></pre></div>    </div>
 
-    <p>Server 엘리먼트의 하위 엘리먼트로는 Service 엘리먼트가 들어가고 이 엘리먼트의 하위 엘리먼트로 Connector엘리먼트와 Engine엘리먼트가 들어가게 됩니다. 위의 설정을 살펴보면 Tomcat 서버의 Connector는 두개가 되고 8000, 8001번 포트에서 요청을 listen하게 됩니다. 즉 저 두 포트로 요청을 보내면 Connector가 받아서 Engine으로 요청을 전달하게 됩니다.</p>
+    <p>Server 엘리먼트의 하위 엘리먼트로는 Service 엘리먼트가 들어가고 이 엘리먼트의 하위 엘리먼트로 Connector 엘리먼트와 Engine 엘리먼트가 들어가게 됩니다. 위의 설정을 살펴보면 Tomcat 서버의 Connector는 두 개가 되고 8000, 8001번 포트에서 요청을 listen하게 됩니다. 즉 저 두 포트로 요청을 보내면 Connector가 받아서 Engine으로 요청을 전달하게 됩니다.</p>
 
     <p>아래와 같이 설정할 수도 있습니다.</p>
 
@@ -58,7 +58,7 @@
 &lt;/Server&gt;
 </code></pre></div>    </div>
 
-    <p>한 서버에서 두개의 Service를 구성하고 각각 Connector를 구성하여 포트별로 요청이 전달되는 Engine이 달라지게 구성할 수도 있습니다.</p>
+    <p>한 서버에서 두 개의 Service를 구성하고 각각 Connector를 구성하여 포트별로 요청이 전달되는 Engine이 달라지게 구성할 수도 있습니다.</p>
   </li>
 </ul>
 
@@ -74,7 +74,7 @@
 
 <h4 id="ajp-connector">AJP Connector</h4>
 
-<p>AJP는 Apache JServ Protocol의 약자로 Apache 웹 서버와 통신을 하기 위해서 고안된 HTTP 바이너리 프로토콜 입니다. 즉 AJP Connector는 아파치를 통해서 전달되는 요청을 받아서 처리하는 역할을 담당하는 특화된 Connector라고 볼 수 있습니다. 당연히 Apache와의 연동이기 때문에 양쪽 모두에 별도의 설정을 해줘야 합니다.</p>
+<p>AJP는 Apache JServ Protocol의 약자로 Apache 웹 서버와 통신을 하기 위해서 고안된 HTTP 바이너리 프로토콜입니다. 즉 AJP Connector는 Apache를 통해서 전달되는 요청을 받아서 처리하는 역할을 담당하는 특화된 Connector라고 볼 수 있습니다. 당연히 Apache와의 연동이기 때문에 양쪽 모두에 별도의 설정을 해줘야 합니다.</p>
 
 <h2 id="ajp-configuration">AJP Configuration</h2>
 
@@ -99,7 +99,7 @@
     &lt;/Service&gt;
 &lt;/Server&gt;
 </code></pre></div>    </div>
-    <p>Connector의 프로토콜을 AJP로 설정해줬고 포트는 8001번으로 설정했습니다. 간단하죠?</p>
+    <p>Connector의 프로토콜을 AJP로 설정해 줬고 포트는 8001번으로 설정했습니다. 간단하죠?</p>
   </li>
 </ul>
 
@@ -113,7 +113,7 @@
 
 <h5 id="2-mod_jk-설치">2. mod_jk 설치</h5>
 
-<p>다운로드된 패키지에 있는 mod_jk모듈을 찾아서 그 파일을 Apache의 modules디렉토리로 옮겨줍니다.(리눅스의 경우 mod_jk.so, 윈도우의 경우 mod_jk.dll)</p>
+<p>다운로드된 패키지에 있는 mod_jk 모듈을 찾아서 그 파일을 Apache의 modules 디렉터리로 옮겨줍니다.(리눅스의 경우 mod_jk.so, 윈도우의 경우 mod_jk.dll)</p>
 
 <h5 id="3-httpdconf-설정">3. httpd.conf 설정</h5>
 
@@ -154,7 +154,7 @@ JkMount  /examples/* worker1
 
 <h5 id="4-worker-설정">4. Worker 설정</h5>
 
-<p>3번에서 JkMount설정으로 worker1을 지정해줬지만 그 Worker에 대한 정보가 아직 존재하지 않습니다. Worker에 대한 정보는 workers.properties에서 설정해주게 됩니다.</p>
+<p>3번에서 JkMount 설정으로 worker1을 지정해 줬지만 그 Worker에 대한 정보가 아직 존재하지 않습니다. Worker에 대한 정보는 workers.properties에서 설정하게 됩니다.</p>
 
 <ul>
   <li>workers.properties
@@ -178,5 +178,7 @@ worker.worker1.port=8001
 
 <hr />
 
-<p>기술교육 프로젝트의 웹 서버 구성이 Apache + Tomcat이었는데 정확히 어떻게 연동이 되는지 잘 모르고 사용을 해왔던 터라 공부 차원에서 이 글을 작성합니다. 위의 설정들은 정말 기본적인 설정들이고 그 외에도 사용자의 니즈에 따른 다양한 설정들이 가능합니다. 이런 설정들도 앞으로 개발을 해나가면서 하나하나 익혀야겠다는 생각이 듭니다.</p>
+<p>기술교육 프로젝트의 웹 서버 구성이 Apache + Tomcat이었는데 정확히 어떻게 연동이 되는지 잘 모르고 사용을 해왔던 터라 공부 차원에서 이 글을 작성합니다. 위의 설정들은 정말 기본적인 설정들이고 그 외에도 사용자의 니즈에 따른 다양한 설정들이 가능합니다. 이런 설정들도 앞으로 개발을 하면서 하나하나 익혀야겠다는 생각이 듭니다.</p>
+
+<p>읽어주셔서 감사합니다!</p>
 :ET

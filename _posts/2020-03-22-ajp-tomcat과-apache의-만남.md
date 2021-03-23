@@ -7,7 +7,7 @@ author: "Mun Soo Kim"
 tags: [기술]
 ---
 
-이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다.
+이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.
 
 ## Tomcat의 Connector
 
