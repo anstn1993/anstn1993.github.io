@@ -70,7 +70,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="OAuth2에 대하여" />
 <script type="application/ld+json">
-{"description":"이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.","headline":"OAuth2에 대하여","dateModified":"2020-03-09T00:00:00+09:00","datePublished":"2020-03-09T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html"},"url":"https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html","author":{"@type":"Person","name":"Mun Soo Kim"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"description":"이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.","mainEntityOfPage":{"@type":"WebPage","@id":"https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html"},"datePublished":"2020-03-09T00:00:00+09:00","url":"https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html","author":{"@type":"Person","name":"Mun Soo Kim"},"headline":"OAuth2에 대하여","@type":"BlogPosting","dateModified":"2020-03-09T00:00:00+09:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -205,13 +205,19 @@
   <li>
     <p>서드파티 앱은 결국 자신이 의존하고 있는 서비스들의 리소스에 광범위하게 접근이 가능해집니다.</p>
   </li>
+  <li>
+    <p>유저가 비밀번호를 바꾸면 그 유저의 리소스에 의존하는 애플리케이션의 정상 동작을 보장할 수 없습니다.</p>
+  </li>
+  <li>
+    <p>서드파티 앱의 리소스 접근에 대한 권한을 폐기하기 위해서는 비밀번호를 바꾸는 방법밖에 없습니다.</p>
+  </li>
 </ol>
 
 <h3 id="oauth2의-인증-방식">OAuth2의 인증 방식</h3>
 
 <hr />
 
-<p>OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다.</p>
+<p>OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다. 이 방식을 통해서 안전한 방법으로 제한된 리소스에만 접근할 수 있게 할 수 있고, 권한 삭제와 같은 권한 관리가 편리해집니다.</p>
 
 <p>OAuth2 인증 과정에는 4개의 주체들이 상호작용하게 됩니다. 4개의 주체들에 대해서 먼저 살펴보겠습니다.</p>
 

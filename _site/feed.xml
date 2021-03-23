@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-03-23T17:58:15+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">AJP - Tomcat과 Apache의 만남</title><link href="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" rel="alternate" type="text/html" title="AJP - Tomcat과 Apache의 만남" /><published>2020-03-22T00:00:00+09:00</published><updated>2020-03-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html">&lt;p&gt;이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-03-23T18:11:38+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">AJP - Tomcat과 Apache의 만남</title><link href="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" rel="alternate" type="text/html" title="AJP - Tomcat과 Apache의 만남" /><published>2020-03-22T00:00:00+09:00</published><updated>2020-03-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html">&lt;p&gt;이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;tomcat의-connector&quot;&gt;Tomcat의 Connector&lt;/h2&gt;
 
@@ -638,13 +638,19 @@ worker.worker1.port=8001
   &lt;li&gt;
     &lt;p&gt;서드파티 앱은 결국 자신이 의존하고 있는 서비스들의 리소스에 광범위하게 접근이 가능해집니다.&lt;/p&gt;
   &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;유저가 비밀번호를 바꾸면 그 유저의 리소스에 의존하는 애플리케이션의 정상 동작을 보장할 수 없습니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;서드파티 앱의 리소스 접근에 대한 권한을 폐기하기 위해서는 비밀번호를 바꾸는 방법밖에 없습니다.&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;h3 id=&quot;oauth2의-인증-방식&quot;&gt;OAuth2의 인증 방식&lt;/h3&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다.&lt;/p&gt;
+&lt;p&gt;OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다. 이 방식을 통해서 안전한 방법으로 제한된 리소스에만 접근할 수 있게 할 수 있고, 권한 삭제와 같은 권한 관리가 편리해집니다.&lt;/p&gt;
 
 &lt;p&gt;OAuth2 인증 과정에는 4개의 주체들이 상호작용하게 됩니다. 4개의 주체들에 대해서 먼저 살펴보겠습니다.&lt;/p&gt;
 
