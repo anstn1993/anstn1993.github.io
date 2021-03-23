@@ -1,137 +1,186 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-03-18T12:20:26+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">OAuth2에 대하여</title><link href="https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html" rel="alternate" type="text/html" title="OAuth2에 대하여" /><published>2020-03-09T00:00:00+09:00</published><updated>2020-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html">&lt;p&gt;이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-03-23T17:55:17+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">AJP - Tomcat과 Apache의 만남</title><link href="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" rel="alternate" type="text/html" title="AJP - Tomcat과 Apache의 만남" /><published>2020-03-22T00:00:00+09:00</published><updated>2020-03-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html">&lt;p&gt;이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;oauth-이전-인증-방식의-문제점&quot;&gt;OAuth 이전 인증 방식의 문제점&lt;/h3&gt;
+&lt;h2 id=&quot;tomcat의-connector&quot;&gt;Tomcat의 Connector&lt;/h2&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;전통적인 클라이언트-서버 인증 모델에서는 클라이언트가 접근이 제한된(인증이 필요한) 리소스에 접근 요청을 할 때 사용자의 credentials(아이디, 비밀번호)를 이용해서 인증을 처리했습니다. 이런 방식은 단일 서비스에서는 문제가 없습니다. 하지만 오늘날의 많은 서비스들은 다른 서비스의 api를 활용해서 자신의 서비스를 구성하는 경우가 많고 이는 그런 api에 의존하게 되는 서드 파티 앱에서 인증 요청을 해야 하는 경우가 발생함을 의미합니다. 가령 A 서비스에서 B 서비스의 인증이 필요한 리소스에 접근해야 한다면 A 서비스는 유저의 B 서비스에 대한 credentials 정보를 받아서 인증을 진행해야 합니다. 이는 다음의 문제를 야기합니다.&lt;/p&gt;
+&lt;p&gt;Tomcat이 외부의 요청을 어떻게 받는지 먼저 살펴보겠습니다. Tomcat은 다양한 컴포넌트들로 구성이 되는데, 그중 Catalina가 외부 요청을 받을 수 있게 처리하는 컴포넌트가 Connector입니다. Connector는 하나의 서비스 내에서 여러 개로 구성될 수 있으며 각각 요청을 받아서 적절한 Context(Web Application)로 요청을 전달해 주고 동적으로 생성된 응답 콘텐츠를 받아서 응답해 주는 역할을 수행합니다.&lt;/p&gt;
+
+&lt;p&gt;각각의 Connector들이 위와 같은 역할을 수행하기 위해서는 기본적으로 2가지를 설정해줘야 합니다.&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;서드파티 앱에 유저의 credentials 정보가 노출됩니다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;서드파티 앱이 의존하고 있는 서비스들은 1번과 같은 보안상의 이슈에도 불구하고 비밀번호 인증 방식을 제공해야만 합니다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;서드파티 앱은 결국 자신이 의존하고 있는 서비스들의 리소스에 광범위하게 접근이 가능해집니다.&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;요청을 listen하기 위한 포트 번호&lt;/li&gt;
+  &lt;li&gt;통신 프로토콜&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h3 id=&quot;oauth2의-인증-방식&quot;&gt;OAuth2의 인증 방식&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다.&lt;/p&gt;
-
-&lt;p&gt;OAuth2 인증 과정에는 4개의 주체들이 상호작용하게 됩니다. 4개의 주체들에 대해서 먼저 살펴보겠습니다.&lt;/p&gt;
+&lt;p&gt;위와 같은 Connector 설정은 Tomcat의 주요 설정 파일 중 하나인 server.xml에서 하게 됩니다.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;resource owner&lt;/strong&gt;: 제한된 리소스(protected resource)에 접근 권한을 가지는 주체입니다. 만약 resource owner가 사람인 경우에는 end-user라고 칭하기도 합니다. 대부분의 서비스에는 회원이라는 주체가 존재하고 그 회원은 자신이 생성한 리소스에 대한 접근 권한을 가집니다. 예를 들면, 뮤지컬 서비스의 회원은 자신의 예매 정보, 뮤지컬에 대한 평가, 댓글 등과 같은 리소스를 생성한 주체가 되고 그 리소스의 소유자가 됩니다. 즉 회원이 resource owner가 되는 것입니다.
-&lt;br /&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;resource server&lt;/strong&gt;: 제한된 리소스(protected resource)를 제공하는 서버입니다. resource owner가 resource server에 직접 접근을 한다면 아이디, 비밀번호로 인증을 받게 되고, resource owner가 이용하는 서드 파티 앱이 resource owner의 리소스에 접근하는 경우에는 서드파티 앱에게 access token을 요구하게 됩니다. 예를 들면 resource owner의 예시에서 나왔던 뮤지컬 서비스가 resource server가 됩니다.
-&lt;br /&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;client&lt;/strong&gt;: resource owner의 resource에 접근하기 위해서 resource server에게 토큰을 이용해서 요청을 보내는 주체가 됩니다. 여기서 client는 OAuth2 인증을 제공하는 서버와의 관계에서 인증을 요청하는 쪽이라는 의미를 담고 있습니다. 뮤지컬 서비스(resource server)가 특정 사용자(resource owner)에 대한 예매 내역(protected resource)을 조회할 수 있는 api를 제공하고 있다고 가정해보겠습니다. 그리고 서드파티 앱에서 그 api를 이용하고 있다면 인증을 해야만 합니다. 즉, 이 경우에는 서드파티 앱이 client가 됩니다.
-&lt;br /&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;authorization server&lt;/strong&gt;: client가 성공적으로 resource owner에 대한 인증을 하게 되면 access token을 발급해 주는 주체입니다.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;server.xml&lt;/p&gt;
+
+    &lt;div class=&quot;language-tex highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;Server&amp;gt;
+    &amp;lt;Service&amp;gt;
+        &amp;lt;Connector port=&quot;8000&quot; protocol=&quot;HTTP/1.1&quot;/&amp;gt;
+        &amp;lt;Connector port=&quot;8001&quot; protocol=&quot;HTTP/1.1&quot;/&amp;gt;
+
+        &amp;lt;Engine&amp;gt;
+            &amp;lt;Host name=&quot;yourhostname&quot;&amp;gt;
+                &amp;lt;Context path=&quot;/webapp1&quot;/&amp;gt;
+                &amp;lt;Context path=&quot;/webapp2&quot;/&amp;gt;
+            &amp;lt;/Host&amp;gt;
+        &amp;lt;/Engine&amp;gt;
+    &amp;lt;/Service&amp;gt;
+&amp;lt;/Server&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;Server 엘리먼트의 하위 엘리먼트로는 Service 엘리먼트가 들어가고 이 엘리먼트의 하위 엘리먼트로 Connector 엘리먼트와 Engine 엘리먼트가 들어가게 됩니다. 위의 설정을 살펴보면 Tomcat 서버의 Connector는 두 개가 되고 8000, 8001번 포트에서 요청을 listen하게 됩니다. 즉 저 두 포트로 요청을 보내면 Connector가 받아서 Engine으로 요청을 전달하게 됩니다.&lt;/p&gt;
+
+    &lt;p&gt;아래와 같이 설정할 수도 있습니다.&lt;/p&gt;
+
+    &lt;div class=&quot;language-tex highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;Server&amp;gt;
+    &amp;lt;Service name=&quot;Catalina8000&quot;&amp;gt;
+        &amp;lt;Connector port=&quot;8000&quot; protocol=&quot;HTTP/1.1&quot;/&amp;gt;
+        &amp;lt;Engine&amp;gt;
+            &amp;lt;Host name=&quot;yourhostname&quot;&amp;gt;
+                &amp;lt;Context path=&quot;/webapp1&quot;/&amp;gt;
+            &amp;lt;/Host&amp;gt;
+        &amp;lt;/Engine&amp;gt;
+&amp;lt;/Service&amp;gt;
+&amp;lt;Service name=&quot;Catalina8001&quot;&amp;gt;
+        &amp;lt;Connector port=&quot;8001&quot; protocol=&quot;HTTP/1.1&quot;/&amp;gt;
+        &amp;lt;Engine&amp;gt;
+            &amp;lt;Host name=&quot;yourhostname&quot;&amp;gt;
+                &amp;lt;Context path=&quot;/webapp2&quot;/&amp;gt;
+            &amp;lt;/Host&amp;gt;
+        &amp;lt;/Engine&amp;gt;
+&amp;lt;/Service&amp;gt;
+&amp;lt;/Server&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;한 서버에서 두 개의 Service를 구성하고 각각 Connector를 구성하여 포트별로 요청이 전달되는 Engine이 달라지게 구성할 수도 있습니다.&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;그럼 각 주체들이 어떻게 상호작용하게 되는지 sequence diagram을 통해서 좀 더 구체적으로 살펴보겠습니다.&lt;/p&gt;
-
-&lt;div&gt;
-    &lt;img style=&quot;border: 1px solid #000;&quot; alt=&quot;스크린샷 2021-02-04 오후 11 47 14&quot; src=&quot;https://user-images.githubusercontent.com/56672937/110352344-28de7d80-8079-11eb-8acf-496931def7be.png&quot; /&gt;
-&lt;/div&gt;
-
-&lt;p&gt;(1): client가 resource owner에게 접근하고자 하는 resource server에 대한 접근 권한을 요청하는 단계입니다. 클라이언트 입장에서는 authorization grant(권한 증서)를 발급받기 위해서 필요한 과정입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;(2): Resource owner가 권한을 허가하면 클라이언트는 authorization grant를 받게 됩니다. Authorization grant는 일종의 권한 증서로 client가 resource server의 resource에 접근할 수 있는 권한을 resource owner에게 부여받았다는 확인증이라고 생각하시면 됩니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;(3): client는 Authorization Server에 authorization grant를 제시하여 access token을 요청합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;(4): authorization server는 authorization grant가 유효한 경우에 한해서 클라이언트에게 access token을 발급하게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;(5): client는 access token을 요청에 담아서 resource server의 protected resource에 접근하게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;(6): resource server는 client에게 받은 access token이 유효하면 요청한 resource를 반환해 주게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;OAuth2는 위와 같이 다소 복잡한 방식으로 인증을 진행하게 됩니다. 하지만 그런 복잡함 덕분에 client가 resource owner의 인증 정보를 가지게 되는 기존의 방식과는 달리 권한 증서만을 가지고 resource owner의 resource에 접근하게 되는 보안적인 안전성을 취하게 됐습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;authorization-grant&quot;&gt;Authorization Grant&lt;/h3&gt;
+&lt;h2 id=&quot;ajp&quot;&gt;AJP&lt;/h2&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;앞서 client가 authorization grant를 이용해서 resource owner의 resource에 접근하기 위해서 필요한 access token을 발급받는 과정을 봤습니다. 이 권한 증서에도 여러 타입이 존재합니다. 권한 증서의 타입에 따라서 실제 인증 절차의 구현에도 차이가 생기게 되는데요. 여러 타입 중에서 2가지를 살펴보겠습니다.&lt;/p&gt;
+&lt;p&gt;앞서 Connector의 통신 프로토콜을 설정할 수 있다고 언급했습니다. 대표적으로 두 가지 타입이 있는데 하나가 우리에게 익숙한 HTTP이고, 다른 하나가 AJP라는 녀석입니다.&lt;/p&gt;
 
-&lt;h5 id=&quot;1-authorization-code&quot;&gt;1. Authorization code&lt;/h5&gt;
+&lt;h4 id=&quot;http-connector&quot;&gt;HTTP Connector&lt;/h4&gt;
 
-&lt;p&gt;authorization server가 client와 resource owner 사이의 중개인 역할을 하여 resource owner로부터 바로 권한을 요청하는 대신 resource owner가 authorization server에 직접 접근해서 인증을 하게 하고 그로 인해서 발급되는 authorization code(권한 증서)를 client에게 전달해 주고, client는 그 권한 증서를 이용하여 authorization server에게 access token을 요청하는 방식입니다. 요즘엔 대부분의 서비스에서 제공하는 sns 로그인을 생각해 봅시다. sns 로그인 버튼을 누르게 되면 유저의 credentials 정보를 client 서비스가 아닌 해당 sns 서비스에서 직접 입력하게 됩니다. 그리고 로그인을 시도하게 되면 sns 서비스는 aurhorization code를 client에게 발급하고 client는 그 code를 다시 sns 서비스의 authorization server에 보내서 access token을 받게 됩니다. 이 모든 일들이 사용자가 로그인 버튼을 누르고 난 후 매우 짧은 시간 내에 일어나게 됩니다. 이처럼 클라이언트가 권한 증서를 받게 되기 전에 resource owner가 authorization server에 직접 인증을 하게 되기 때문에 resource owner의 credentials는 절대 client에 노출되지 않습니다.&lt;/p&gt;
+&lt;p&gt;Tomcat은 그 자체만으로 독립적 웹 서버로 작동합니다. 그게 가능한 이유가 바로 HTTP Connector라는 컴포넌트가 있기 때문입니다. HTTP Connector는 HTTP/1.1 버전을 지원하면서 웹상의 HTTP 요청을 모두 받아줍니다.&lt;/p&gt;
 
-&lt;h5 id=&quot;2-resource-owner-password-credentials&quot;&gt;2. Resource Owner Password Credentials&lt;/h5&gt;
+&lt;h4 id=&quot;ajp-connector&quot;&gt;AJP Connector&lt;/h4&gt;
 
-&lt;p&gt;resource owner의 password가 access token을 획득하기 위한 authorization grant로 활용되는 방식입니다. 유저의 비밀번호를 권한 증서로 사용하는 것이기 때문에 일반적으로 client와 resource server가 다른 경우에는 사용하면 안 되는 방식입니다. 단일 서비스에서의 인증을 하는 경우나 resource owner와 client 사이의 깊은 신뢰관계가 보장되는 경우에 한해서 사용하는 방식입니다. 계정 정보(user name, password)를 통해서 바로 access token을 발급받게 됩니다.&lt;/p&gt;
+&lt;p&gt;AJP는 Apache JServ Protocol의 약자로 Apache 웹 서버와 통신을 하기 위해서 고안된 HTTP 바이너리 프로토콜입니다. 즉 AJP Connector는 Apache를 통해서 전달되는 요청을 받아서 처리하는 역할을 담당하는 특화된 Connector라고 볼 수 있습니다. 당연히 Apache와의 연동이기 때문에 양쪽 모두에 별도의 설정을 해줘야 합니다.&lt;/p&gt;
 
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;지금까지 OAuth2 인증 방식에 대해서 간단하게 살펴봤습니다. 긴 글 읽어주셔서 감사합니다~!&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;참고: &lt;a href=&quot;https://tools.ietf.org/html/rfc6749&quot;&gt;https://tools.ietf.org/html/rfc6749&lt;/a&gt;&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><summary type="html">이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.</summary></entry><entry><title type="html">nhn 기술교육 sprint6, 7 회고</title><link href="https://anstn1993.github.io/2020/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 sprint6, 7 회고" /><published>2020-03-09T00:00:00+09:00</published><updated>2020-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.&lt;/p&gt;
-
-&lt;h3 id=&quot;sprint6---개발만-했다고-끝이-아니다-꾸준한-개선의-연속&quot;&gt;sprint6 - 개발만 했다고 끝이 아니다. 꾸준한 개선의 연속&lt;/h3&gt;
+&lt;h2 id=&quot;ajp-configuration&quot;&gt;AJP Configuration&lt;/h2&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;sprint 6의 메인 과제는 우리가 개발 기간에 작성한 덩어리 같은 코드들을 깨끗한, 유지 보수에 좀 더 용이한 코드로 개선하는 것이었다.&lt;/p&gt;
+&lt;p&gt;Apache와 Tomcat의 연동을 위한 설정을 살펴보겠습니다.&lt;/p&gt;
 
-&lt;h5 id=&quot;코드리뷰&quot;&gt;코드리뷰&lt;/h5&gt;
+&lt;h4 id=&quot;tomcat-configuration&quot;&gt;Tomcat Configuration&lt;/h4&gt;
 
-&lt;p&gt;코드 리뷰를 처음 진행해봤다. 우리 TF는 이사님에게 리뷰를 받았는데 친절하고 유쾌하면서도 핵심은 놓치지 않고 콕콕 찌르는 지적을 받게 됐다. 많은 내용들을 배울 수 있었는데, 크게 코딩 스타일과 책임의 적절한 분리에 대해서 다시 생각해 보게 됐다. 특히 책임의 적절한 분리에 대해서 얘기를 해보자면, 서비스 레이어가 가져가야 할 책임이 컨트롤러 레이어에게 전가되고 있는 문제가 있었다. 이사님의 표현을 빌리자면 값싼 알바(?)인 컨트롤러는 흐름 제어라는 최소한의 역할만 수행하고 실제 비즈니스 로직은 고오급 인력(?)인 서비스가 담당하게 해야 한다. 앞으로는 이 내용을 잊지 않고 주의하면서 코딩을 해야겠다.&lt;/p&gt;
+&lt;p&gt;먼저 상대적으로 간단한 Tomcat부터 살펴보겠습니다.&lt;/p&gt;
 
-&lt;h5 id=&quot;소나큐브를-통한-코드-개선&quot;&gt;소나큐브를 통한 코드 개선&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;server.xml
+    &lt;div class=&quot;language-tex highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;Server&amp;gt;
+    &amp;lt;Service name=&quot;Catalina&quot;&amp;gt;
+        &amp;lt;Connector port=&quot;8001&quot; protocol=&quot;AJP/1.3&quot;/&amp;gt;
+        &amp;lt;Engine name=&quot;Catalina&quot;&amp;gt;
+            &amp;lt;Host name=&quot;localhost&quot;/&amp;gt;
+                &amp;lt;Context path=&quot;/&quot;/&amp;gt;
+            &amp;lt;/Host&amp;gt;
+        &amp;lt;/Engine&amp;gt;
+    &amp;lt;/Service&amp;gt;
+&amp;lt;/Server&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;Connector의 프로토콜을 AJP로 설정해 줬고 포트는 8001번으로 설정했습니다. 간단하죠?&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;정적 분석 툴인 소나 큐브를 처음 접했다. 젠킨스로 우리 프로젝트를 빌드 하면 그 결과가 소나 큐브에 반영되는데 우리가 작성한 코드에 어떤 문제나 잠재적 위험이 존재하는지, 테스트 코드 커버리지는 얼마나 되는지 등의 정보를 제공해 준다. 이 툴을 이용해서 코드 개선 작업을 진행했다. 일차적으로 코드 스멜을 많이 없애는 작업을 진행했고, 이후에는 코드 리뷰 때 받은 지적사항들을 개선하는 작업을 진행했다. 그리고 junit5를 이용해서 테스트 코드를 작성했고, 커버리지를 높일 수 있었다.(테스트 코드 자체가 잘 작성됐는지는 미지수지만…)
-코드 개선 방향에 무조건적인 정답은 있을 수 없겠지만, 소나 큐브가 어느 정도 기준점이 되어줬다. 코드 스타일이 전반적으로 통일되고, 잠재적 위험을 많이 제거했으며, 커버리지를 높여서 서비스의 신뢰성을 확보할 수 있었다. 이런 좋은 툴을 알게 되어서 아주 기쁘다.&lt;/p&gt;
+&lt;h4 id=&quot;apache-configuration&quot;&gt;Apache Configuration&lt;/h4&gt;
 
-&lt;h5 id=&quot;cli-구축&quot;&gt;cli 구축&lt;/h5&gt;
+&lt;p&gt;Apache에서 필요한 설정을 살펴보겠습니다.&lt;/p&gt;
 
-&lt;p&gt;cli 환경에서 이벤트의 예약 리스트 및 상세 예약 내역을 조회할 수 있도록 구현하는 과제를 받았다. 과제의 의도는 코드 리뷰 때 받았던 지적과 맥을 함께 한다. 이 과제는 컨트롤러와 서비스의 책임 분리가 잘 되어있어야 쉽게 구현할 수 있기 때문이다. 만약 그렇지 않다면 이 과제를 통해서 책임을 올바르게 분리하라는 의도로 과제를 내주신 것 같다. 서비스는 인터페이스 환경과 무관하게 비즈니스 로직을 처리하는 역할만 수행해야 한다. 만약 서비스 레이어에 웹과 관련된 컴포넌트가 들어오게 된다면 cli에서는 재사용할 수 없게 될 가능성이 높아진다. 사실 처음에는 이 과제의 의도가 도대체 뭘까 생각을 했는데, 의도를 들은 순간 무릎을 탁! 치게 됐다. 다시 한번 각 레이어의 책임에 대해서 생각해 볼 수 있었다.&lt;/p&gt;
+&lt;h5 id=&quot;1-mod_jk-다운로드&quot;&gt;1. mod_jk 다운로드&lt;/h5&gt;
 
-&lt;h3 id=&quot;sprint7---스케일-아웃&quot;&gt;sprint7 - 스케일 아웃&lt;/h3&gt;
+&lt;p&gt;mod_jk는 Apache의 HTTPD가 Tomcat과 AJP 프로토콜로 통신을 할 수 있게 해주는 Apache 모듈입니다. 이 모듈을 다운로드합니다. (&lt;a href=&quot;http://tomcat.apache.org/download-connectors.cgi&quot;&gt;mod_jk 다운로드 링크&lt;/a&gt;)&lt;/p&gt;
+
+&lt;h5 id=&quot;2-mod_jk-설치&quot;&gt;2. mod_jk 설치&lt;/h5&gt;
+
+&lt;p&gt;다운로드된 패키지에 있는 mod_jk 모듈을 찾아서 그 파일을 Apache의 modules 디렉터리로 옮겨줍니다.(리눅스의 경우 mod_jk.so, 윈도우의 경우 mod_jk.dll)&lt;/p&gt;
+
+&lt;h5 id=&quot;3-httpdconf-설정&quot;&gt;3. httpd.conf 설정&lt;/h5&gt;
+
+&lt;p&gt;모듈을 옮겨줬으면 설정 파일에서 그 모듈을 사용하겠다고 선언을 해야 합니다. 아래에 나오는 설정은 mod_jk 모듈이 정상적으로 동작하는 데 필요한 설정들입니다.(각종 파일들의 경로는 예시로 작성된 것이기 때문에 실제 자신의 파일의 경로를 넣어주면 됩니다.)&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;httpd.conf&lt;/p&gt;
+
+    &lt;div class=&quot;language-tex highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Load the mod&lt;span class=&quot;p&quot;&gt;_&lt;/span&gt;jk module.
+LoadModule    jk&lt;span class=&quot;p&quot;&gt;_&lt;/span&gt;module  path/to/mod&lt;span class=&quot;p&quot;&gt;_&lt;/span&gt;jk.so
+
+# Declare the module for use with the &amp;lt;IfModule directive&amp;gt; element.  (This only applies to versions of HTTPD below 2.x.  For 2.x and above, REMOVE THIS LINE.)
+AddModule     mod&lt;span class=&quot;p&quot;&gt;_&lt;/span&gt;jk.c
+
+# Set path to workers.properties. We will create this file in the next step.  The file will be placed in the same directory as httpd.conf.
+JkWorkersFile /path/to/httpd/conf/workers.properties
+
+# Set path to jk shared memory.  Generally, you&apos;ll want this to point to your local state or logs directory.
+JkShmFile     /path/to/log/httpd/mod&lt;span class=&quot;p&quot;&gt;_&lt;/span&gt;jk.shm
+
+# Set path to jk logs.  This path should point to the same logs directory as the HTTPD access&lt;span class=&quot;p&quot;&gt;_&lt;/span&gt;log.
+JkLogFile     /path/to/log/httpd/mod&lt;span class=&quot;p&quot;&gt;_&lt;/span&gt;jk.log
+
+# Set the jk log level.  Valid values for this setting are &apos;debug&apos;, &apos;error&apos;, or &apos;info&apos;.
+JkLogLevel    level
+
+# Set timestamp log format.  Use provided variables to customize.
+JkLogStampFormat &quot;[&lt;span class=&quot;c&quot;&gt;%a %b %d %H:%M:%S %Y] &quot;&lt;/span&gt;
+
+# Map a worker to a namespace.  Workers represent Tomcat instances that are listening for requests.  We&apos;ll configure these in the next section.  For the sake of this example, Tomcat&apos;s &quot;examples&quot; context is used, and a default worker named &apos;worker1&apos;, which we will create in Step 4, is designated.  Multiple JkMount attributes can be used simultaneously.
+JkMount  /examples/* worker1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;위의 설정에서 JkMount를 보면 worker에 대한 mapping 설정이 존재합니다. Worker는 Tomcat 인스턴스를 의미합니다. 위의 설정을 해석해보자면 /examples/ 이하로 들어오는 요청은 모두 worker1로 라우팅을 해주라는 의미가 됩니다. 즉 요청이 들어오면 ajp로 Tomcat에게 요청을 전달하라는 의미입니다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;4-worker-설정&quot;&gt;4. Worker 설정&lt;/h5&gt;
+
+&lt;p&gt;3번에서 JkMount 설정으로 worker1을 지정해 줬지만 그 Worker에 대한 정보가 아직 존재하지 않습니다. Worker에 대한 정보는 workers.properties에서 설정하게 됩니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;workers.properties
+    &lt;div class=&quot;language-tex highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;worker.list=worker1
+worker.worker1.type=ajp13
+worker.worker1.host=localhost
+worker.worker1.port=8001
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;ul&gt;
+      &lt;li&gt;worker.list: Worker의 namespace를 지정합니다. 복수의 Worker를 지정하고 싶다면 ‘,’를 쓰고 이어나가면 됩니다.&lt;/li&gt;
+      &lt;li&gt;worker.worker1.type: worker1과의 통신 프로토콜을 지정합니다.&lt;/li&gt;
+      &lt;li&gt;worker.worker1.host: worker1의 주소를 지정합니다.&lt;/li&gt;
+      &lt;li&gt;worker.worker1.port: worker1의 포트번호를 지정합니다. 앞선 Tomcat설정에서 AJP Connector의 포트 번호를 8001로 설정했습니다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;여기까지가 Apache와 Tomcat이 AJP를 통해서 통신하기 위한 기본적인 설정 입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;sprint7 때는 웹 서버가 여러 대로 늘어나는 상황에 대해서 배웠다. 그리고 그런 상황에서 필요한 것들을 사전 준비하는 느낌의 과제들을 진행했다.&lt;/p&gt;
+&lt;p&gt;기술교육 프로젝트의 웹 서버 구성이 Apache + Tomcat이었는데 정확히 어떻게 연동이 되는지 잘 모르고 사용을 해왔던 터라 공부 차원에서 이 글을 작성합니다. 위의 설정들은 정말 기본적인 설정들이고 그 외에도 사용자의 니즈에 따른 다양한 설정들이 가능합니다. 이런 설정들도 앞으로 개발을 하면서 하나하나 익혀야겠다는 생각이 듭니다.&lt;/p&gt;
 
-&lt;h5 id=&quot;세션의-구현&quot;&gt;세션의 구현&lt;/h5&gt;
-
-&lt;p&gt;세션을 직접 구현하라는 과제가 주어졌다. 웹 서버가 여러 대로 늘어나게 되면 세션을 관리가 큰 이슈가 된다. 여러 방법이 있지만 이번 교육에서는 여러 웹 서버가 공유해서 사용할 수 있는 세션 스토리지를 만드는 방식을 채택했다. 여기에 추가적으로 세션 스토리지를 db, redis 두 가지 스토리지로 구현해야 된다는 조건이 붙었다. 우리 TF는 세션을 관리하는 데 필요한 기능들을 추상화하여 인터페이스로 먼저 뽑아내고 db session과 redis session이라는 구현체를 만드는 방식으로 진행했다. redis는 처음 접해봤고 심지어 세션 기능도 직접 만들어보는 건 처음이라서 아주 재밌었던 과제였다.&lt;/p&gt;
-
-&lt;h5 id=&quot;object-storage&quot;&gt;object storage&lt;/h5&gt;
-
-&lt;p&gt;기존에는 웹 서버가 하나였기 때문에 뮤지컬 이미지와 같은 리소스들은 서버에서 별도의 디렉토리를 만들어서 관리했다. 하지만 여러 노드에 웹 서버가 운영되면 웹 서버가 공통적으로 참조해야 할 스토리지가 필요해진다. 그래서 nhn cloud의 object storage에서 이미지를 관리하는 방식으로 변경하라는 과제가 주어졌다. 특정 운영 서버가 아닌 클라우드 환경에 별도 저장을 하게 되기 때문에 문제가 해결된다. api 이용 가이드도 너무 잘 돼있어서 금방 적용할 수 있었다.&lt;/p&gt;
-
-&lt;h5 id=&quot;deploy를-이용한-배포&quot;&gt;deploy를 이용한 배포&lt;/h5&gt;
-
-&lt;p&gt;배포를 nhn cloud의 deploy를 이용해서 하는 방식으로 바꾸라는 과제도 주어졌다. 기존에는 서버에 직접 접근해서 스크립트를 실행하여 배포를 진행했는데 deploy를 이용하면 간단한 설정과 시나리오를 적용해서 클릭 한 번으로 배포를 완료할 수 있게 된다. 배포에 대한 부담감이 줄어들어서 개발한 내용을 좀 더 빠르게 적용할 수 있게 된 것 같다.&lt;/p&gt;
-
-&lt;h3 id=&quot;마치며&quot;&gt;마치며&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;매 sprint마다 그랬지만 이번 sprint는 특히 처음 접해보고, 시도해보는 것들이 많아서 개인적으로 더 좋았던 것 같고 자신감도 붙은 것 같다. 이때 배운 내용들을 잘 기억하고 익혀서 부서 배치를 받고 나서도 잘 활용할 수 있게 되면 좋겠다.&lt;/p&gt;
-
-&lt;p&gt;회고 끝!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="회고" /><summary type="html">sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.</summary></entry><entry><title type="html">객체지향 정리</title><link href="https://anstn1993.github.io/2020/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC.html" rel="alternate" type="text/html" title="객체지향 정리" /><published>2020-03-09T00:00:00+09:00</published><updated>2020-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC.html">&lt;p&gt;이번 글에서는 최범균님이 집필하신 [개발자가 반드시 정복해야 할 객체 지향과 디자인 패턴]이라는 책의 객체 지향 파트에 대해서 정리해보려고 합니다.&lt;/p&gt;
+&lt;p&gt;읽어주셔서 감사합니다!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><summary type="html">이번 글에서는 tomcat과 apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 apache는 tomcat의 앞단에 위치한 Proxy 서버가 됩니다.</summary></entry><entry><title type="html">객체지향 정리</title><link href="https://anstn1993.github.io/2020/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC.html" rel="alternate" type="text/html" title="객체지향 정리" /><published>2020-03-09T00:00:00+09:00</published><updated>2020-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC.html">&lt;p&gt;이번 글에서는 최범균님이 집필하신 [개발자가 반드시 정복해야 할 객체 지향과 디자인 패턴]이라는 책의 객체 지향 파트에 대해서 정리해보려고 합니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;객체-지향&quot;&gt;객체 지향&lt;/h3&gt;
 
@@ -526,7 +575,140 @@
   &lt;li&gt;파일에 바이터 데이터를 쓴다.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;모두 고수준 모듈의 추상적으로 나열되었던 기능들이 구체화되어서 명시된 것을 확인할 수 있습니다.&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><summary type="html">이번 글에서는 최범균님이 집필하신 [개발자가 반드시 정복해야 할 객체 지향과 디자인 패턴]이라는 책의 객체 지향 파트에 대해서 정리해보려고 합니다.</summary></entry><entry><title type="html">nhn 기술교육 sprint5 회고</title><link href="https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 sprint5 회고" /><published>2020-02-22T00:00:00+09:00</published><updated>2020-02-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;sprint5에 대한 회고록이다. 이전 sprint에서 기획과 db 모델링 등의 전반적인 설계를 마친 후 본격적인 개발에 착수한 한 주였다.&lt;/p&gt;
+&lt;p&gt;모두 고수준 모듈의 추상적으로 나열되었던 기능들이 구체화되어서 명시된 것을 확인할 수 있습니다.&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><summary type="html">이번 글에서는 최범균님이 집필하신 [개발자가 반드시 정복해야 할 객체 지향과 디자인 패턴]이라는 책의 객체 지향 파트에 대해서 정리해보려고 합니다.</summary></entry><entry><title type="html">nhn 기술교육 sprint6, 7 회고</title><link href="https://anstn1993.github.io/2020/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 sprint6, 7 회고" /><published>2020-03-09T00:00:00+09:00</published><updated>2020-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.&lt;/p&gt;
+
+&lt;h3 id=&quot;sprint6---개발만-했다고-끝이-아니다-꾸준한-개선의-연속&quot;&gt;sprint6 - 개발만 했다고 끝이 아니다. 꾸준한 개선의 연속&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;sprint 6의 메인 과제는 우리가 개발 기간에 작성한 덩어리 같은 코드들을 깨끗한, 유지 보수에 좀 더 용이한 코드로 개선하는 것이었다.&lt;/p&gt;
+
+&lt;h5 id=&quot;코드리뷰&quot;&gt;코드리뷰&lt;/h5&gt;
+
+&lt;p&gt;코드 리뷰를 처음 진행해봤다. 우리 TF는 이사님에게 리뷰를 받았는데 친절하고 유쾌하면서도 핵심은 놓치지 않고 콕콕 찌르는 지적을 받게 됐다. 많은 내용들을 배울 수 있었는데, 크게 코딩 스타일과 책임의 적절한 분리에 대해서 다시 생각해 보게 됐다. 특히 책임의 적절한 분리에 대해서 얘기를 해보자면, 서비스 레이어가 가져가야 할 책임이 컨트롤러 레이어에게 전가되고 있는 문제가 있었다. 이사님의 표현을 빌리자면 값싼 알바(?)인 컨트롤러는 흐름 제어라는 최소한의 역할만 수행하고 실제 비즈니스 로직은 고오급 인력(?)인 서비스가 담당하게 해야 한다. 앞으로는 이 내용을 잊지 않고 주의하면서 코딩을 해야겠다.&lt;/p&gt;
+
+&lt;h5 id=&quot;소나큐브를-통한-코드-개선&quot;&gt;소나큐브를 통한 코드 개선&lt;/h5&gt;
+
+&lt;p&gt;정적 분석 툴인 소나 큐브를 처음 접했다. 젠킨스로 우리 프로젝트를 빌드 하면 그 결과가 소나 큐브에 반영되는데 우리가 작성한 코드에 어떤 문제나 잠재적 위험이 존재하는지, 테스트 코드 커버리지는 얼마나 되는지 등의 정보를 제공해 준다. 이 툴을 이용해서 코드 개선 작업을 진행했다. 일차적으로 코드 스멜을 많이 없애는 작업을 진행했고, 이후에는 코드 리뷰 때 받은 지적사항들을 개선하는 작업을 진행했다. 그리고 junit5를 이용해서 테스트 코드를 작성했고, 커버리지를 높일 수 있었다.(테스트 코드 자체가 잘 작성됐는지는 미지수지만…)
+코드 개선 방향에 무조건적인 정답은 있을 수 없겠지만, 소나 큐브가 어느 정도 기준점이 되어줬다. 코드 스타일이 전반적으로 통일되고, 잠재적 위험을 많이 제거했으며, 커버리지를 높여서 서비스의 신뢰성을 확보할 수 있었다. 이런 좋은 툴을 알게 되어서 아주 기쁘다.&lt;/p&gt;
+
+&lt;h5 id=&quot;cli-구축&quot;&gt;cli 구축&lt;/h5&gt;
+
+&lt;p&gt;cli 환경에서 이벤트의 예약 리스트 및 상세 예약 내역을 조회할 수 있도록 구현하는 과제를 받았다. 과제의 의도는 코드 리뷰 때 받았던 지적과 맥을 함께 한다. 이 과제는 컨트롤러와 서비스의 책임 분리가 잘 되어있어야 쉽게 구현할 수 있기 때문이다. 만약 그렇지 않다면 이 과제를 통해서 책임을 올바르게 분리하라는 의도로 과제를 내주신 것 같다. 서비스는 인터페이스 환경과 무관하게 비즈니스 로직을 처리하는 역할만 수행해야 한다. 만약 서비스 레이어에 웹과 관련된 컴포넌트가 들어오게 된다면 cli에서는 재사용할 수 없게 될 가능성이 높아진다. 사실 처음에는 이 과제의 의도가 도대체 뭘까 생각을 했는데, 의도를 들은 순간 무릎을 탁! 치게 됐다. 다시 한번 각 레이어의 책임에 대해서 생각해 볼 수 있었다.&lt;/p&gt;
+
+&lt;h3 id=&quot;sprint7---스케일-아웃&quot;&gt;sprint7 - 스케일 아웃&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;sprint7 때는 웹 서버가 여러 대로 늘어나는 상황에 대해서 배웠다. 그리고 그런 상황에서 필요한 것들을 사전 준비하는 느낌의 과제들을 진행했다.&lt;/p&gt;
+
+&lt;h5 id=&quot;세션의-구현&quot;&gt;세션의 구현&lt;/h5&gt;
+
+&lt;p&gt;세션을 직접 구현하라는 과제가 주어졌다. 웹 서버가 여러 대로 늘어나게 되면 세션을 관리가 큰 이슈가 된다. 여러 방법이 있지만 이번 교육에서는 여러 웹 서버가 공유해서 사용할 수 있는 세션 스토리지를 만드는 방식을 채택했다. 여기에 추가적으로 세션 스토리지를 db, redis 두 가지 스토리지로 구현해야 된다는 조건이 붙었다. 우리 TF는 세션을 관리하는 데 필요한 기능들을 추상화하여 인터페이스로 먼저 뽑아내고 db session과 redis session이라는 구현체를 만드는 방식으로 진행했다. redis는 처음 접해봤고 심지어 세션 기능도 직접 만들어보는 건 처음이라서 아주 재밌었던 과제였다.&lt;/p&gt;
+
+&lt;h5 id=&quot;object-storage&quot;&gt;object storage&lt;/h5&gt;
+
+&lt;p&gt;기존에는 웹 서버가 하나였기 때문에 뮤지컬 이미지와 같은 리소스들은 서버에서 별도의 디렉토리를 만들어서 관리했다. 하지만 여러 노드에 웹 서버가 운영되면 웹 서버가 공통적으로 참조해야 할 스토리지가 필요해진다. 그래서 nhn cloud의 object storage에서 이미지를 관리하는 방식으로 변경하라는 과제가 주어졌다. 특정 운영 서버가 아닌 클라우드 환경에 별도 저장을 하게 되기 때문에 문제가 해결된다. api 이용 가이드도 너무 잘 돼있어서 금방 적용할 수 있었다.&lt;/p&gt;
+
+&lt;h5 id=&quot;deploy를-이용한-배포&quot;&gt;deploy를 이용한 배포&lt;/h5&gt;
+
+&lt;p&gt;배포를 nhn cloud의 deploy를 이용해서 하는 방식으로 바꾸라는 과제도 주어졌다. 기존에는 서버에 직접 접근해서 스크립트를 실행하여 배포를 진행했는데 deploy를 이용하면 간단한 설정과 시나리오를 적용해서 클릭 한 번으로 배포를 완료할 수 있게 된다. 배포에 대한 부담감이 줄어들어서 개발한 내용을 좀 더 빠르게 적용할 수 있게 된 것 같다.&lt;/p&gt;
+
+&lt;h3 id=&quot;마치며&quot;&gt;마치며&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;매 sprint마다 그랬지만 이번 sprint는 특히 처음 접해보고, 시도해보는 것들이 많아서 개인적으로 더 좋았던 것 같고 자신감도 붙은 것 같다. 이때 배운 내용들을 잘 기억하고 익혀서 부서 배치를 받고 나서도 잘 활용할 수 있게 되면 좋겠다.&lt;/p&gt;
+
+&lt;p&gt;회고 끝!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="회고" /><summary type="html">sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.</summary></entry><entry><title type="html">OAuth2에 대하여</title><link href="https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html" rel="alternate" type="text/html" title="OAuth2에 대하여" /><published>2020-03-09T00:00:00+09:00</published><updated>2020-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC</id><content type="html" xml:base="https://anstn1993.github.io/2020/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html">&lt;p&gt;이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;oauth-이전-인증-방식의-문제점&quot;&gt;OAuth 이전 인증 방식의 문제점&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;전통적인 클라이언트-서버 인증 모델에서는 클라이언트가 접근이 제한된(인증이 필요한) 리소스에 접근 요청을 할 때 사용자의 credentials(아이디, 비밀번호)를 이용해서 인증을 처리했습니다. 이런 방식은 단일 서비스에서는 문제가 없습니다. 하지만 오늘날의 많은 서비스들은 다른 서비스의 api를 활용해서 자신의 서비스를 구성하는 경우가 많고 이는 그런 api에 의존하게 되는 서드 파티 앱에서 인증 요청을 해야 하는 경우가 발생함을 의미합니다. 가령 A 서비스에서 B 서비스의 인증이 필요한 리소스에 접근해야 한다면 A 서비스는 유저의 B 서비스에 대한 credentials 정보를 받아서 인증을 진행해야 합니다. 이는 다음의 문제를 야기합니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;서드파티 앱에 유저의 credentials 정보가 노출됩니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;서드파티 앱이 의존하고 있는 서비스들은 1번과 같은 보안상의 이슈에도 불구하고 비밀번호 인증 방식을 제공해야만 합니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;서드파티 앱은 결국 자신이 의존하고 있는 서비스들의 리소스에 광범위하게 접근이 가능해집니다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;oauth2의-인증-방식&quot;&gt;OAuth2의 인증 방식&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;OAuth2는 앞에서 살펴본 기존 인증 방식의 문제를 해결하기 위해서 나온 대안으로 http 프로토콜 레이어에서 사용자 credentials가 아닌 토큰을 통해서 인증을 처리합니다.&lt;/p&gt;
+
+&lt;p&gt;OAuth2 인증 과정에는 4개의 주체들이 상호작용하게 됩니다. 4개의 주체들에 대해서 먼저 살펴보겠습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;resource owner&lt;/strong&gt;: 제한된 리소스(protected resource)에 접근 권한을 가지는 주체입니다. 만약 resource owner가 사람인 경우에는 end-user라고 칭하기도 합니다. 대부분의 서비스에는 회원이라는 주체가 존재하고 그 회원은 자신이 생성한 리소스에 대한 접근 권한을 가집니다. 예를 들면, 뮤지컬 서비스의 회원은 자신의 예매 정보, 뮤지컬에 대한 평가, 댓글 등과 같은 리소스를 생성한 주체가 되고 그 리소스의 소유자가 됩니다. 즉 회원이 resource owner가 되는 것입니다.
+&lt;br /&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;resource server&lt;/strong&gt;: 제한된 리소스(protected resource)를 제공하는 서버입니다. resource owner가 resource server에 직접 접근을 한다면 아이디, 비밀번호로 인증을 받게 되고, resource owner가 이용하는 서드 파티 앱이 resource owner의 리소스에 접근하는 경우에는 서드파티 앱에게 access token을 요구하게 됩니다. 예를 들면 resource owner의 예시에서 나왔던 뮤지컬 서비스가 resource server가 됩니다.
+&lt;br /&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;client&lt;/strong&gt;: resource owner의 resource에 접근하기 위해서 resource server에게 토큰을 이용해서 요청을 보내는 주체가 됩니다. 여기서 client는 OAuth2 인증을 제공하는 서버와의 관계에서 인증을 요청하는 쪽이라는 의미를 담고 있습니다. 뮤지컬 서비스(resource server)가 특정 사용자(resource owner)에 대한 예매 내역(protected resource)을 조회할 수 있는 api를 제공하고 있다고 가정해보겠습니다. 그리고 서드파티 앱에서 그 api를 이용하고 있다면 인증을 해야만 합니다. 즉, 이 경우에는 서드파티 앱이 client가 됩니다.
+&lt;br /&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;authorization server&lt;/strong&gt;: client가 성공적으로 resource owner에 대한 인증을 하게 되면 access token을 발급해 주는 주체입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;그럼 각 주체들이 어떻게 상호작용하게 되는지 sequence diagram을 통해서 좀 더 구체적으로 살펴보겠습니다.&lt;/p&gt;
+
+&lt;div&gt;
+    &lt;img style=&quot;border: 1px solid #000;&quot; alt=&quot;스크린샷 2021-02-04 오후 11 47 14&quot; src=&quot;https://user-images.githubusercontent.com/56672937/110352344-28de7d80-8079-11eb-8acf-496931def7be.png&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(1): client가 resource owner에게 접근하고자 하는 resource server에 대한 접근 권한을 요청하는 단계입니다. 클라이언트 입장에서는 authorization grant(권한 증서)를 발급받기 위해서 필요한 과정입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;(2): Resource owner가 권한을 허가하면 클라이언트는 authorization grant를 받게 됩니다. Authorization grant는 일종의 권한 증서로 client가 resource server의 resource에 접근할 수 있는 권한을 resource owner에게 부여받았다는 확인증이라고 생각하시면 됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;(3): client는 Authorization Server에 authorization grant를 제시하여 access token을 요청합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;(4): authorization server는 authorization grant가 유효한 경우에 한해서 클라이언트에게 access token을 발급하게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;(5): client는 access token을 요청에 담아서 resource server의 protected resource에 접근하게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;(6): resource server는 client에게 받은 access token이 유효하면 요청한 resource를 반환해 주게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;OAuth2는 위와 같이 다소 복잡한 방식으로 인증을 진행하게 됩니다. 하지만 그런 복잡함 덕분에 client가 resource owner의 인증 정보를 가지게 되는 기존의 방식과는 달리 권한 증서만을 가지고 resource owner의 resource에 접근하게 되는 보안적인 안전성을 취하게 됐습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;authorization-grant&quot;&gt;Authorization Grant&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;앞서 client가 authorization grant를 이용해서 resource owner의 resource에 접근하기 위해서 필요한 access token을 발급받는 과정을 봤습니다. 이 권한 증서에도 여러 타입이 존재합니다. 권한 증서의 타입에 따라서 실제 인증 절차의 구현에도 차이가 생기게 되는데요. 여러 타입 중에서 2가지를 살펴보겠습니다.&lt;/p&gt;
+
+&lt;h5 id=&quot;1-authorization-code&quot;&gt;1. Authorization code&lt;/h5&gt;
+
+&lt;p&gt;authorization server가 client와 resource owner 사이의 중개인 역할을 하여 resource owner로부터 바로 권한을 요청하는 대신 resource owner가 authorization server에 직접 접근해서 인증을 하게 하고 그로 인해서 발급되는 authorization code(권한 증서)를 client에게 전달해 주고, client는 그 권한 증서를 이용하여 authorization server에게 access token을 요청하는 방식입니다. 요즘엔 대부분의 서비스에서 제공하는 sns 로그인을 생각해 봅시다. sns 로그인 버튼을 누르게 되면 유저의 credentials 정보를 client 서비스가 아닌 해당 sns 서비스에서 직접 입력하게 됩니다. 그리고 로그인을 시도하게 되면 sns 서비스는 aurhorization code를 client에게 발급하고 client는 그 code를 다시 sns 서비스의 authorization server에 보내서 access token을 받게 됩니다. 이 모든 일들이 사용자가 로그인 버튼을 누르고 난 후 매우 짧은 시간 내에 일어나게 됩니다. 이처럼 클라이언트가 권한 증서를 받게 되기 전에 resource owner가 authorization server에 직접 인증을 하게 되기 때문에 resource owner의 credentials는 절대 client에 노출되지 않습니다.&lt;/p&gt;
+
+&lt;h5 id=&quot;2-resource-owner-password-credentials&quot;&gt;2. Resource Owner Password Credentials&lt;/h5&gt;
+
+&lt;p&gt;resource owner의 password가 access token을 획득하기 위한 authorization grant로 활용되는 방식입니다. 유저의 비밀번호를 권한 증서로 사용하는 것이기 때문에 일반적으로 client와 resource server가 다른 경우에는 사용하면 안 되는 방식입니다. 단일 서비스에서의 인증을 하는 경우나 resource owner와 client 사이의 깊은 신뢰관계가 보장되는 경우에 한해서 사용하는 방식입니다. 계정 정보(user name, password)를 통해서 바로 access token을 발급받게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;지금까지 OAuth2 인증 방식에 대해서 간단하게 살펴봤습니다. 긴 글 읽어주셔서 감사합니다~!&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;참고: &lt;a href=&quot;https://tools.ietf.org/html/rfc6749&quot;&gt;https://tools.ietf.org/html/rfc6749&lt;/a&gt;&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><summary type="html">이번 글에서는 OAuth2에 대해서 간단하게 살펴보도록 하겠습니다. 과제를 진행하던 중 토큰을 이용해서 다른 서비스의 인증 처리를 해야 할 일이 생겨서 그에 대한 정리 차원에서 이 글을 작성합니다.</summary></entry><entry><title type="html">nhn 기술교육 sprint5 회고</title><link href="https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 sprint5 회고" /><published>2020-02-22T00:00:00+09:00</published><updated>2020-02-22T00:00:00+09:00</updated><id>https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2020/02/22/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint5-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;sprint5에 대한 회고록이다. 이전 sprint에서 기획과 db 모델링 등의 전반적인 설계를 마친 후 본격적인 개발에 착수한 한 주였다.&lt;/p&gt;
 
 &lt;h3 id=&quot;협업&quot;&gt;협업&lt;/h3&gt;
 
