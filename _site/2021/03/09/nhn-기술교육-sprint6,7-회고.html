@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<!--
+    Type on Strap jekyll theme v2.3.0
+    Copyright 2016-2020 Sylhare
+    Theme free for personal and commercial use under the MIT license
+    https://github.com/sylhare/Type-on-Strap/blob/master/LICENSE
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Main JS (navbar.js, katex_init.js and masonry_init.js)-->
+    <script defer src="/assets/js/main.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/atom+xml" title="MunSooKim's devlog" href="https://anstn1993.github.io/feed.xml"/>
+    
+    
+
+    <!-- KaTeX 0.12.0 -->
+    
+    <script defer src="/assets/js/vendor/katex.min.js"></script>
+    <script defer src="/assets/js/vendor/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    
+
+    <!-- Mermaid 8.8.2 -->
+    
+    <!-- <script src=”https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.2/mermaid.min.js" onload="mermaid.initialize({startOnLoad:true});"></script> -->
+    <script defer src="/assets/js/vendor/mermaid.min.js" onload="mermaid.initialize({startOnLoad:true});"></script>
+    
+
+    <!-- Simple-Jekyll-Search 1.17.12 -->
+    <script src="/assets/js/vendor/simple-jekyll-search.min.js" type="text/javascript"></script>
+
+    <!-- Google Analytics / Cookie Consent -->
+    <script>
+      const cookieName = 'cookie-notice-dismissed-https://anstn1993.github.io';
+      const isCookieConsent = 'false';
+      const analyticsName = '';
+    </script>
+
+    
+    
+
+    <!-- seo tags -->
+    <meta property="og:image" content="https://anstn1993.github.io/assets/img/pexels/triangular.jpeg">
+    
+    <meta property="og:type" content="website" />
+    
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>nhn 기술교육 sprint6, 7 회고 | MunSooKim’s devlog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="nhn 기술교육 sprint6, 7 회고" />
+<meta name="author" content="Mun Soo Kim" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다." />
+<meta property="og:description" content="sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다." />
+<link rel="canonical" href="https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html" />
+<meta property="og:url" content="https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html" />
+<meta property="og:site_name" content="MunSooKim’s devlog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-03-09T00:00:00+09:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="nhn 기술교육 sprint6, 7 회고" />
+<script type="application/ld+json">
+{"description":"sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.","headline":"nhn 기술교육 sprint6, 7 회고","dateModified":"2021-03-09T00:00:00+09:00","datePublished":"2021-03-09T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html"},"url":"https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html","author":{"@type":"Person","name":"Mun Soo Kim"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <!-- RSS -->
+    <link type="application/atom+xml" rel="alternate" href="https://anstn1993.github.io/feed.xml" title="MunSooKim&apos;s devlog" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:title" content="nhn 기술교육 sprint6, 7 회고">
+    <meta name="twitter:description" content="sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.spr...">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://anstn1993.github.io/assets/img/pexels/triangular.jpeg">
+    <meta name="twitter:image:alt" content="nhn 기술교육 sprint6, 7 회고">
+</head>
+
+  <body>
+    <header class="site-header">
+
+    <!-- Logo and title -->
+	<div class="branding">
+        
+		<a href="/">
+			<img alt="logo img" class="avatar" src="/assets/img/triangle.png" />
+		</a>
+        
+        <a class="site-title" aria-label="MunSooKim's devlog" href="/">
+        MunSooKim's devlog
+		</a>
+	</div>
+
+    <!-- Toggle menu -->
+    <nav class="clear">
+    <a aria-label="pull" id="pull" class="toggle" href="#">
+    <i class="fa fa-bars fa-lg"></i>
+    </a>
+
+    <!-- Menu -->
+    <ul class="hide">
+        
+
+        
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="About" title="About" href="/about">
+                     About 
+                </a>
+            </li>
+            
+            
+        
+            
+            
+        
+            
+            
+        
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Search" title="Search" href="/search">
+                     <i class="fa fa-search" aria-hidden="true"></i>
+                    
+                </a>
+            </li>
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Tags" title="Tags" href="/tags">
+                     <i class="fa fa-tags" aria-hidden="true"></i>
+                    
+                </a>
+            </li>
+            
+            
+        
+            
+            
+        
+            
+            
+        
+    </ul>
+
+	</nav>
+</header>
+
+    <div class="content">
+      <article class="feature-image" >
+  <header id="main" style="">
+    <div class="title-padder">
+      
+      <h1 id="nhn+%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1+sprint6%2C+7+%ED%9A%8C%EA%B3%A0" class="title">nhn 기술교육 sprint6, 7 회고</h1>
+      
+
+
+<div class="post-info">
+    <p class="meta">
+      March 9, 2021
+    </p></div>
+
+      
+    </div>
+  </header>
+
+  <section class="post-content">
+  
+      <p>sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.</p>
+
+<h3 id="sprint6---개발만-했다고-끝이-아니다-꾸준한-개선의-연속">sprint6 - 개발만 했다고 끝이 아니다. 꾸준한 개선의 연속</h3>
+
+<hr />
+
+<p>sprint 6의 메인 과제는 우리가 개발 기간에 작성한 덩어리 같은 코드들을 깨끗한, 유지 보수에 좀 더 용이한 코드로 개선하는 것이었다.</p>
+
+<h5 id="코드리뷰">코드리뷰</h5>
+
+<p>코드 리뷰를 처음 진행해봤다. 우리 TF는 이사님에게 리뷰를 받았는데 친절하고 유쾌하면서도 핵심은 놓치지 않고 콕콕 찌르는 지적을 받게 됐다. 많은 내용들을 배울 수 있었는데, 크게 코딩 스타일과 책임의 적절한 분리에 대해서 다시 생각해 보게 됐다. 특히 책임의 적절한 분리에 대해서 얘기를 해보자면, 서비스 레이어가 가져가야 할 책임이 컨트롤러 레이어에게 전가되고 있는 문제가 있었다. 이사님의 표현을 빌리자면 값싼 알바(?)인 컨트롤러는 흐름 제어라는 최소한의 역할만 수행하고 실제 비즈니스 로직은 고오급 인력(?)인 서비스가 담당하게 해야 한다. 앞으로는 이 내용을 잊지 않고 주의하면서 코딩을 해야겠다.</p>
+
+<h5 id="소나큐브를-통한-코드-개선">소나큐브를 통한 코드 개선</h5>
+
+<p>정적 분석 툴인 소나 큐브를 처음 접했다. 젠킨스로 우리 프로젝트를 빌드 하면 그 결과가 소나 큐브에 반영되는데 우리가 작성한 코드에 어떤 문제나 잠재적 위험이 존재하는지, 테스트 코드 커버리지는 얼마나 되는지 등의 정보를 제공해 준다. 이 툴을 이용해서 코드 개선 작업을 진행했다. 일차적으로 코드 스멜을 많이 없애는 작업을 진행했고, 이후에는 코드 리뷰 때 받은 지적사항들을 개선하는 작업을 진행했다. 그리고 junit5를 이용해서 테스트 코드를 작성했고, 커버리지를 높일 수 있었다.(테스트 코드 자체가 잘 작성됐는지는 미지수지만…)
+코드 개선 방향에 무조건적인 정답은 있을 수 없겠지만, 소나 큐브가 어느 정도 기준점이 되어줬다. 코드 스타일이 전반적으로 통일되고, 잠재적 위험을 많이 제거했으며, 커버리지를 높여서 서비스의 신뢰성을 확보할 수 있었다. 이런 좋은 툴을 알게 되어서 아주 기쁘다.</p>
+
+<h5 id="cli-구축">cli 구축</h5>
+
+<p>cli 환경에서 이벤트의 예약 리스트 및 상세 예약 내역을 조회할 수 있도록 구현하는 과제를 받았다. 과제의 의도는 코드 리뷰 때 받았던 지적과 맥을 함께 한다. 이 과제는 컨트롤러와 서비스의 책임 분리가 잘 되어있어야 쉽게 구현할 수 있기 때문이다. 만약 그렇지 않다면 이 과제를 통해서 책임을 올바르게 분리하라는 의도로 과제를 내주신 것 같다. 서비스는 인터페이스 환경과 무관하게 비즈니스 로직을 처리하는 역할만 수행해야 한다. 만약 서비스 레이어에 웹과 관련된 컴포넌트가 들어오게 된다면 cli에서는 재사용할 수 없게 될 가능성이 높아진다. 사실 처음에는 이 과제의 의도가 도대체 뭘까 생각을 했는데, 의도를 들은 순간 무릎을 탁! 치게 됐다. 다시 한번 각 레이어의 책임에 대해서 생각해 볼 수 있었다.</p>
+
+<h3 id="sprint7---스케일-아웃">sprint7 - 스케일 아웃</h3>
+
+<hr />
+
+<p>sprint7 때는 웹 서버가 여러 대로 늘어나는 상황에 대해서 배웠다. 그리고 그런 상황에서 필요한 것들을 사전 준비하는 느낌의 과제들을 진행했다.</p>
+
+<h5 id="세션의-구현">세션의 구현</h5>
+
+<p>세션을 직접 구현하라는 과제가 주어졌다. 웹 서버가 여러 대로 늘어나게 되면 세션을 관리가 큰 이슈가 된다. 여러 방법이 있지만 이번 교육에서는 여러 웹 서버가 공유해서 사용할 수 있는 세션 스토리지를 만드는 방식을 채택했다. 여기에 추가적으로 세션 스토리지를 db, redis 두 가지 스토리지로 구현해야 된다는 조건이 붙었다. 우리 TF는 세션을 관리하는 데 필요한 기능들을 추상화하여 인터페이스로 먼저 뽑아내고 db session과 redis session이라는 구현체를 만드는 방식으로 진행했다. redis는 처음 접해봤고 심지어 세션 기능도 직접 만들어보는 건 처음이라서 아주 재밌었던 과제였다.</p>
+
+<h5 id="object-storage">object storage</h5>
+
+<p>기존에는 웹 서버가 하나였기 때문에 뮤지컬 이미지와 같은 리소스들은 서버에서 별도의 디렉토리를 만들어서 관리했다. 하지만 여러 노드에 웹 서버가 운영되면 웹 서버가 공통적으로 참조해야 할 스토리지가 필요해진다. 그래서 nhn cloud의 object storage에서 이미지를 관리하는 방식으로 변경하라는 과제가 주어졌다. 특정 운영 서버가 아닌 클라우드 환경에 별도 저장을 하게 되기 때문에 문제가 해결된다. api 이용 가이드도 너무 잘 돼있어서 금방 적용할 수 있었다.</p>
+
+<h5 id="deploy를-이용한-배포">deploy를 이용한 배포</h5>
+
+<p>배포를 nhn cloud의 deploy를 이용해서 하는 방식으로 바꾸라는 과제도 주어졌다. 기존에는 서버에 직접 접근해서 스크립트를 실행하여 배포를 진행했는데 deploy를 이용하면 간단한 설정과 시나리오를 적용해서 클릭 한 번으로 배포를 완료할 수 있게 된다. 배포에 대한 부담감이 줄어들어서 개발한 내용을 좀 더 빠르게 적용할 수 있게 된 것 같다.</p>
+
+<h3 id="마치며">마치며</h3>
+
+<hr />
+
+<p>매 sprint마다 그랬지만 이번 sprint는 특히 처음 접해보고, 시도해보는 것들이 많아서 개인적으로 더 좋았던 것 같고 자신감도 붙은 것 같다. 이때 배운 내용들을 잘 기억하고 익혀서 부서 배치를 받고 나서도 잘 활용할 수 있게 되면 좋겠다.</p>
+
+<p>회고 끝!</p>
+
+    
+  </section>
+
+  <!-- Social media shares -->
+  
+
+<div class="share-buttons">
+    <ul class="share-buttons">
+        <div class="meta">Share</div>
+        
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fanstn1993.github.io%2F2021%2F03%2F09%2Fnhn-%25EA%25B8%25B0%25EC%2588%25A0%25EA%25B5%2590%25EC%259C%25A1-sprint6%2C7-%25ED%259A%258C%25EA%25B3%25A0.html" target="_blank" title=" Facebook">
+			<i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Facebook</span>
+		</a>
+        </li>
+         
+        <li>
+            <a href="https://twitter.com/intent/tweet?text=nhn+%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1+sprint6%2C+7+%ED%9A%8C%EA%B3%A0%20https%3A%2F%2Fanstn1993.github.io%2F2021%2F03%2F09%2Fnhn-%25EA%25B8%25B0%25EC%2588%25A0%25EA%25B5%2590%25EC%259C%25A1-sprint6%2C7-%25ED%259A%258C%25EA%25B3%25A0.html" target="_blank" title="">
+			<i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Tweet</span>
+		</a>
+        </li>
+            
+        <li>
+            <a href="http://www.reddit.com/submit?url=https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html&title=nhn+%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1+sprint6%2C+7+%ED%9A%8C%EA%B3%A0%20%7C%20MunSooKim%27s+devlog" target="_blank" title=" Reddit">
+			<i class="fa fa-reddit-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Reddit</span>
+		</a>
+        </li>
+           
+        <li>
+            <a href="mailto:?subject=nhn+%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1+sprint6%2C+7+%ED%9A%8C%EA%B3%A0%20%7C%20MunSooKim%27s+devlog&body=:%20https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html" target="_blank" title="">
+			<i class="fa fa-envelope-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Email</span>
+		</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+
+   <!-- Tag list -->
+  
+  
+
+
+<footer>
+  <div class="tag-list">
+    
+      <div class="meta">Tag</div>
+    
+
+    
+    <a class="button" href="/tags#%ED%9A%8C%EA%B3%A0">
+      <p><i class="fa fa-tag fa-fw"></i> 회고</p>
+    </a>
+    
+  </div>
+</footer>
+
+
+</article>
+
+<!-- Disqus -->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'https-anstn1993-github-io';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</div>
+
+
+<!-- Post navigation -->
+
+  <div id="post-nav">
+    
+    <div id="previous-post">
+        <a alt="객체지향 정리" href="/2021/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC.html">
+            <p>Previous post</p>
+            객체지향 정리
+        </a>
+    </div>
+    
+
+    
+    <div id="next-post">
+        <a alt="OAuth2에 대하여" href="/2021/03/09/OAuth2%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC.html">
+            <p>Next post</p>
+            OAuth2에 대하여
+        </a>
+    </div>
+    
+</div>
+
+
+
+<!-- To change color of links in the page -->
+<style>
+  
+  .feature-image a { color: brown !important; }
+  div#post-nav a { color: brown !important; }
+  footer a { color: brown !important; }
+  .site-header nav a:hover {  color: brown !important; }
+  header#main { background-color: brown !important; }
+  
+
+  header#main {
+    background-repeat:no-repeat;
+  background-image: url('/assets/img/lineart.png');  
+  }
+</style>
+
+    </div>
+    <footer class="site-footer">
+    <p class="text">
+         </p>
+            <div class="footer-icons">
+                <ul>
+                <!-- Social icons from Font Awesome, if enabled -->
+                
+
+
+<li>
+    <a href="mailto:anstn1993@gmail.com" title="Email">
+		<span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+        </span>
+    </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+    <a href="https://github.com/anstn1993" title="Follow on GitHub">
+		<span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+        </span>
+    </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </ul>
+            </div>
+</footer>
+
+
+
+  </body>
+</html>

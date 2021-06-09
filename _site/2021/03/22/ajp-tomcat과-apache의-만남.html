@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<!--
+    Type on Strap jekyll theme v2.3.0
+    Copyright 2016-2020 Sylhare
+    Theme free for personal and commercial use under the MIT license
+    https://github.com/sylhare/Type-on-Strap/blob/master/LICENSE
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Main JS (navbar.js, katex_init.js and masonry_init.js)-->
+    <script defer src="/assets/js/main.min.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+
+    <!--Favicon-->
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/atom+xml" title="MunSooKim's devlog" href="https://anstn1993.github.io/feed.xml"/>
+    
+    
+
+    <!-- KaTeX 0.12.0 -->
+    
+    <script defer src="/assets/js/vendor/katex.min.js"></script>
+    <script defer src="/assets/js/vendor/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    
+
+    <!-- Mermaid 8.8.2 -->
+    
+    <!-- <script src=”https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.8.2/mermaid.min.js" onload="mermaid.initialize({startOnLoad:true});"></script> -->
+    <script defer src="/assets/js/vendor/mermaid.min.js" onload="mermaid.initialize({startOnLoad:true});"></script>
+    
+
+    <!-- Simple-Jekyll-Search 1.17.12 -->
+    <script src="/assets/js/vendor/simple-jekyll-search.min.js" type="text/javascript"></script>
+
+    <!-- Google Analytics / Cookie Consent -->
+    <script>
+      const cookieName = 'cookie-notice-dismissed-https://anstn1993.github.io';
+      const isCookieConsent = 'false';
+      const analyticsName = '';
+    </script>
+
+    
+    
+
+    <!-- seo tags -->
+    <meta property="og:image" content="https://anstn1993.github.io/assets/img/pexels/triangular.jpeg">
+    
+    <meta property="og:type" content="website" />
+    
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>AJP - Tomcat과 Apache의 만남 | MunSooKim’s devlog</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="AJP - Tomcat과 Apache의 만남" />
+<meta name="author" content="Mun Soo Kim" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다." />
+<meta property="og:description" content="이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다." />
+<link rel="canonical" href="https://anstn1993.github.io/2021/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" />
+<meta property="og:url" content="https://anstn1993.github.io/2021/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" />
+<meta property="og:site_name" content="MunSooKim’s devlog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-03-22T00:00:00+09:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AJP - Tomcat과 Apache의 만남" />
+<script type="application/ld+json">
+{"description":"이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.","headline":"AJP - Tomcat과 Apache의 만남","dateModified":"2021-03-22T00:00:00+09:00","datePublished":"2021-03-22T00:00:00+09:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://anstn1993.github.io/2021/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html"},"url":"https://anstn1993.github.io/2021/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html","author":{"@type":"Person","name":"Mun Soo Kim"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <!-- RSS -->
+    <link type="application/atom+xml" rel="alternate" href="https://anstn1993.github.io/feed.xml" title="MunSooKim&apos;s devlog" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:title" content="AJP - Tomcat과 Apache의 만남">
+    <meta name="twitter:description" content="이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.Tomcat의 ConnectorTomcat이 외부의 요청을 어떻게 받는지 먼저 살펴보겠습니다. Tomcat은 다...">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:image" content="https://anstn1993.github.io/assets/img/pexels/triangular.jpeg">
+    <meta name="twitter:image:alt" content="AJP - Tomcat과 Apache의 만남">
+</head>
+
+  <body>
+    <header class="site-header">
+
+    <!-- Logo and title -->
+	<div class="branding">
+        
+		<a href="/">
+			<img alt="logo img" class="avatar" src="/assets/img/triangle.png" />
+		</a>
+        
+        <a class="site-title" aria-label="MunSooKim's devlog" href="/">
+        MunSooKim's devlog
+		</a>
+	</div>
+
+    <!-- Toggle menu -->
+    <nav class="clear">
+    <a aria-label="pull" id="pull" class="toggle" href="#">
+    <i class="fa fa-bars fa-lg"></i>
+    </a>
+
+    <!-- Menu -->
+    <ul class="hide">
+        
+
+        
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="About" title="About" href="/about">
+                     About 
+                </a>
+            </li>
+            
+            
+        
+            
+            
+        
+            
+            
+        
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Search" title="Search" href="/search">
+                     <i class="fa fa-search" aria-hidden="true"></i>
+                    
+                </a>
+            </li>
+            
+            
+        
+            
+            <li class="separator"> | </li>
+            <li>
+                <a class="clear" aria-label="Tags" title="Tags" href="/tags">
+                     <i class="fa fa-tags" aria-hidden="true"></i>
+                    
+                </a>
+            </li>
+            
+            
+        
+            
+            
+        
+            
+            
+        
+    </ul>
+
+	</nav>
+</header>
+
+    <div class="content">
+      <article class="feature-image" >
+  <header id="main" style="">
+    <div class="title-padder">
+      
+      <h1 id="AJP+-+Tomcat%EA%B3%BC+Apache%EC%9D%98+%EB%A7%8C%EB%82%A8" class="title">AJP - Tomcat과 Apache의 만남</h1>
+      
+
+
+<div class="post-info">
+    <p class="meta">
+      March 22, 2021
+    </p></div>
+
+      
+    </div>
+  </header>
+
+  <section class="post-content">
+  
+      <p>이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.</p>
+
+<h2 id="tomcat의-connector">Tomcat의 Connector</h2>
+
+<hr />
+
+<p>Tomcat이 외부의 요청을 어떻게 받는지 먼저 살펴보겠습니다. Tomcat은 다양한 컴포넌트들로 구성이 되는데, 그중 Catalina가 외부 요청을 받을 수 있게 처리하는 컴포넌트가 Connector입니다. Connector는 하나의 서비스 내에서 여러 개로 구성될 수 있으며 각각 요청을 받아서 적절한 Context(Web Application)로 요청을 전달해 주고 동적으로 생성된 응답 콘텐츠를 받아서 응답해 주는 역할을 수행합니다.</p>
+
+<p>각각의 Connector들이 위와 같은 역할을 수행하기 위해서는 기본적으로 2가지를 설정해줘야 합니다.</p>
+
+<ol>
+  <li>요청을 listen하기 위한 포트 번호</li>
+  <li>통신 프로토콜</li>
+</ol>
+
+<p>위와 같은 Connector 설정은 Tomcat의 주요 설정 파일 중 하나인 server.xml에서 하게 됩니다.</p>
+
+<ul>
+  <li>
+    <p>server.xml</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Server&gt;
+    &lt;Service&gt;
+        &lt;Connector port="8000" protocol="HTTP/1.1"/&gt;
+        &lt;Connector port="8001" protocol="HTTP/1.1"/&gt;
+
+        &lt;Engine&gt;
+            &lt;Host name="yourhostname"&gt;
+                &lt;Context path="/webapp1"/&gt;
+                &lt;Context path="/webapp2"/&gt;
+            &lt;/Host&gt;
+        &lt;/Engine&gt;
+    &lt;/Service&gt;
+&lt;/Server&gt;
+</code></pre></div>    </div>
+
+    <p>Server 엘리먼트의 하위 엘리먼트로는 Service 엘리먼트가 들어가고 이 엘리먼트의 하위 엘리먼트로 Connector 엘리먼트와 Engine 엘리먼트가 들어가게 됩니다. 위의 설정을 살펴보면 Tomcat 서버의 Connector는 두 개가 되고 8000, 8001번 포트에서 요청을 listen하게 됩니다. 즉 저 두 포트로 요청을 보내면 Connector가 받아서 Engine으로 요청을 전달하게 됩니다.</p>
+
+    <p>아래와 같이 설정할 수도 있습니다.</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Server&gt;
+    &lt;Service name="Catalina8000"&gt;
+        &lt;Connector port="8000" protocol="HTTP/1.1"/&gt;
+        &lt;Engine&gt;
+            &lt;Host name="yourhostname"&gt;
+                &lt;Context path="/webapp1"/&gt;
+            &lt;/Host&gt;
+        &lt;/Engine&gt;
+&lt;/Service&gt;
+&lt;Service name="Catalina8001"&gt;
+        &lt;Connector port="8001" protocol="HTTP/1.1"/&gt;
+        &lt;Engine&gt;
+            &lt;Host name="yourhostname"&gt;
+                &lt;Context path="/webapp2"/&gt;
+            &lt;/Host&gt;
+        &lt;/Engine&gt;
+&lt;/Service&gt;
+&lt;/Server&gt;
+</code></pre></div>    </div>
+
+    <p>한 서버에서 두 개의 Service를 구성하고 각각 Connector를 구성하여 포트별로 요청이 전달되는 Engine이 달라지게 구성할 수도 있습니다.</p>
+  </li>
+</ul>
+
+<h2 id="ajp">AJP</h2>
+
+<hr />
+
+<p>앞서 Connector의 통신 프로토콜을 설정할 수 있다고 언급했습니다. 대표적으로 두 가지 타입이 있는데 하나가 우리에게 익숙한 HTTP이고, 다른 하나가 AJP라는 녀석입니다.</p>
+
+<h4 id="http-connector">HTTP Connector</h4>
+
+<p>Tomcat은 그 자체만으로 독립적 웹 서버로 작동합니다. 그게 가능한 이유가 바로 HTTP Connector라는 컴포넌트가 있기 때문입니다. HTTP Connector는 HTTP/1.1 버전을 지원하면서 웹상의 HTTP 요청을 모두 받아줍니다.</p>
+
+<h4 id="ajp-connector">AJP Connector</h4>
+
+<p>AJP는 Apache JServ Protocol의 약자로 Apache 웹 서버와 통신을 하기 위해서 고안된 HTTP 바이너리 프로토콜입니다. 즉 AJP Connector는 Apache를 통해서 전달되는 요청을 받아서 처리하는 역할을 담당하는 특화된 Connector라고 볼 수 있습니다. 당연히 Apache와의 연동이기 때문에 양쪽 모두에 별도의 설정을 해줘야 합니다.</p>
+
+<h2 id="ajp-configuration">AJP Configuration</h2>
+
+<hr />
+
+<p>Apache와 Tomcat의 연동을 위한 설정을 살펴보겠습니다.</p>
+
+<h4 id="tomcat-configuration">Tomcat Configuration</h4>
+
+<p>먼저 상대적으로 간단한 Tomcat부터 살펴보겠습니다.</p>
+
+<ul>
+  <li>server.xml
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;Server&gt;
+    &lt;Service name="Catalina"&gt;
+        &lt;Connector port="8001" protocol="AJP/1.3"/&gt;
+        &lt;Engine name="Catalina"&gt;
+            &lt;Host name="localhost"/&gt;
+                &lt;Context path="/"/&gt;
+            &lt;/Host&gt;
+        &lt;/Engine&gt;
+    &lt;/Service&gt;
+&lt;/Server&gt;
+</code></pre></div>    </div>
+    <p>Connector의 프로토콜을 AJP로 설정해 줬고 포트는 8001번으로 설정했습니다. 간단하죠?</p>
+  </li>
+</ul>
+
+<h4 id="apache-configuration">Apache Configuration</h4>
+
+<p>Apache에서 필요한 설정을 살펴보겠습니다.</p>
+
+<h5 id="1-mod_jk-다운로드">1. mod_jk 다운로드</h5>
+
+<p>mod_jk는 Apache의 HTTPD가 Tomcat과 AJP 프로토콜로 통신을 할 수 있게 해주는 Apache 모듈입니다. 이 모듈을 다운로드합니다. (<a href="http://tomcat.apache.org/download-connectors.cgi">mod_jk 다운로드 링크</a>)</p>
+
+<h5 id="2-mod_jk-설치">2. mod_jk 설치</h5>
+
+<p>다운로드된 패키지에 있는 mod_jk 모듈을 찾아서 그 파일을 Apache의 modules 디렉터리로 옮겨줍니다.(리눅스의 경우 mod_jk.so, 윈도우의 경우 mod_jk.dll)</p>
+
+<h5 id="3-httpdconf-설정">3. httpd.conf 설정</h5>
+
+<p>모듈을 옮겨줬으면 설정 파일에서 그 모듈을 사용하겠다고 선언을 해야 합니다. 아래에 나오는 설정은 mod_jk 모듈이 정상적으로 동작하는 데 필요한 설정들입니다.(각종 파일들의 경로는 예시로 작성된 것이기 때문에 실제 자신의 파일의 경로를 넣어주면 됩니다.)</p>
+
+<ul>
+  <li>
+    <p>httpd.conf</p>
+
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Load the mod<span class="p">_</span>jk module.
+LoadModule    jk<span class="p">_</span>module  path/to/mod<span class="p">_</span>jk.so
+
+# Declare the module for use with the &lt;IfModule directive&gt; element.  (This only applies to versions of HTTPD below 2.x.  For 2.x and above, REMOVE THIS LINE.)
+AddModule     mod<span class="p">_</span>jk.c
+
+# Set path to workers.properties. We will create this file in the next step.  The file will be placed in the same directory as httpd.conf.
+JkWorkersFile /path/to/httpd/conf/workers.properties
+
+# Set path to jk shared memory.  Generally, you'll want this to point to your local state or logs directory.
+JkShmFile     /path/to/log/httpd/mod<span class="p">_</span>jk.shm
+
+# Set path to jk logs.  This path should point to the same logs directory as the HTTPD access<span class="p">_</span>log.
+JkLogFile     /path/to/log/httpd/mod<span class="p">_</span>jk.log
+
+# Set the jk log level.  Valid values for this setting are 'debug', 'error', or 'info'.
+JkLogLevel    level
+
+# Set timestamp log format.  Use provided variables to customize.
+JkLogStampFormat "[<span class="c">%a %b %d %H:%M:%S %Y] "</span>
+
+# Map a worker to a namespace.  Workers represent Tomcat instances that are listening for requests.  We'll configure these in the next section.  For the sake of this example, Tomcat's "examples" context is used, and a default worker named 'worker1', which we will create in Step 4, is designated.  Multiple JkMount attributes can be used simultaneously.
+JkMount  /examples/* worker1
+</code></pre></div>    </div>
+
+    <p>위의 설정에서 JkMount를 보면 worker에 대한 mapping 설정이 존재합니다. Worker는 Tomcat 인스턴스를 의미합니다. 위의 설정을 해석해보자면 /examples/ 이하로 들어오는 요청은 모두 worker1로 라우팅을 해주라는 의미가 됩니다. 즉 요청이 들어오면 ajp로 Tomcat에게 요청을 전달하라는 의미입니다.</p>
+  </li>
+</ul>
+
+<h5 id="4-worker-설정">4. Worker 설정</h5>
+
+<p>3번에서 JkMount 설정으로 worker1을 지정해 줬지만 그 Worker에 대한 정보가 아직 존재하지 않습니다. Worker에 대한 정보는 workers.properties에서 설정하게 됩니다.</p>
+
+<ul>
+  <li>workers.properties
+    <div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>worker.list=worker1
+worker.worker1.type=ajp13
+worker.worker1.host=localhost
+worker.worker1.port=8001
+</code></pre></div>    </div>
+    <ul>
+      <li>worker.list: Worker의 namespace를 지정합니다. 복수의 Worker를 지정하고 싶다면 ‘,’를 쓰고 이어나가면 됩니다.</li>
+      <li>worker.worker1.type: worker1과의 통신 프로토콜을 지정합니다.</li>
+      <li>worker.worker1.host: worker1의 주소를 지정합니다.</li>
+      <li>worker.worker1.port: worker1의 포트번호를 지정합니다. 앞선 Tomcat설정에서 AJP Connector의 포트 번호를 8001로 설정했습니다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>여기까지가 Apache와 Tomcat이 AJP를 통해서 통신하기 위한 기본적인 설정 입니다.</p>
+
+<h2 id="마치며">마치며</h2>
+
+<hr />
+
+<p>기술교육 프로젝트의 웹 서버 구성이 Apache + Tomcat이었는데 정확히 어떻게 연동이 되는지 잘 모르고 사용을 해왔던 터라 공부 차원에서 이 글을 작성합니다. 위의 설정들은 정말 기본적인 설정들이고 그 외에도 사용자의 니즈에 따른 다양한 설정들이 가능합니다. 이런 설정들도 앞으로 개발을 하면서 하나하나 익혀야겠다는 생각이 듭니다.</p>
+
+<p>읽어주셔서 감사합니다!</p>
+
+    
+  </section>
+
+  <!-- Social media shares -->
+  
+
+<div class="share-buttons">
+    <ul class="share-buttons">
+        <div class="meta">Share</div>
+        
+        <li>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fanstn1993.github.io%2F2021%2F03%2F22%2Fajp-tomcat%25EA%25B3%25BC-apache%25EC%259D%2598-%25EB%25A7%258C%25EB%2582%25A8.html" target="_blank" title=" Facebook">
+			<i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Facebook</span>
+		</a>
+        </li>
+         
+        <li>
+            <a href="https://twitter.com/intent/tweet?text=AJP+-+Tomcat%EA%B3%BC+Apache%EC%9D%98+%EB%A7%8C%EB%82%A8%20https%3A%2F%2Fanstn1993.github.io%2F2021%2F03%2F22%2Fajp-tomcat%25EA%25B3%25BC-apache%25EC%259D%2598-%25EB%25A7%258C%25EB%2582%25A8.html" target="_blank" title="">
+			<i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Tweet</span>
+		</a>
+        </li>
+            
+        <li>
+            <a href="http://www.reddit.com/submit?url=https://anstn1993.github.io/2021/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html&title=AJP+-+Tomcat%EA%B3%BC+Apache%EC%9D%98+%EB%A7%8C%EB%82%A8%20%7C%20MunSooKim%27s+devlog" target="_blank" title=" Reddit">
+			<i class="fa fa-reddit-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Share on Reddit</span>
+		</a>
+        </li>
+           
+        <li>
+            <a href="mailto:?subject=AJP+-+Tomcat%EA%B3%BC+Apache%EC%9D%98+%EB%A7%8C%EB%82%A8%20%7C%20MunSooKim%27s+devlog&body=:%20https://anstn1993.github.io/2021/03/22/ajp-tomcat%EA%B3%BC-apache%EC%9D%98-%EB%A7%8C%EB%82%A8.html" target="_blank" title="">
+			<i class="fa fa-envelope-square fa-2x" aria-hidden="true"></i>
+			<span class="sr-only">Email</span>
+		</a>
+        </li>
+        
+    </ul>
+</div>
+
+
+
+
+   <!-- Tag list -->
+  
+  
+
+
+<footer>
+  <div class="tag-list">
+    
+      <div class="meta">Tag</div>
+    
+
+    
+    <a class="button" href="/tags#%EA%B8%B0%EC%88%A0">
+      <p><i class="fa fa-tag fa-fw"></i> 기술</p>
+    </a>
+    
+  </div>
+</footer>
+
+
+</article>
+
+<!-- Disqus -->
+
+<div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'https-anstn1993-github-io';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view comments.</noscript>
+</div>
+
+
+<!-- Post navigation -->
+
+  <div id="post-nav">
+    
+    <div id="previous-post">
+        <a alt="이펙티브자바 - 2장. 객체 생성과 파괴" href="/2021/06/09/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-2%EC%9E%A5.html">
+            <p>Previous post</p>
+            이펙티브자바 - 2장. 객체 생성과 파괴
+        </a>
+    </div>
+    
+
+    
+    <div id="next-post">
+        <a alt="객체지향 정리" href="/2021/03/09/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-%EC%A0%95%EB%A6%AC.html">
+            <p>Next post</p>
+            객체지향 정리
+        </a>
+    </div>
+    
+</div>
+
+
+
+<!-- To change color of links in the page -->
+<style>
+  
+  .feature-image a { color: brown !important; }
+  div#post-nav a { color: brown !important; }
+  footer a { color: brown !important; }
+  .site-header nav a:hover {  color: brown !important; }
+  header#main { background-color: brown !important; }
+  
+
+  header#main {
+    background-repeat:no-repeat;
+  background-image: url('/assets/img/lineart.png');  
+  }
+</style>
+
+    </div>
+    <footer class="site-footer">
+    <p class="text">
+         </p>
+            <div class="footer-icons">
+                <ul>
+                <!-- Social icons from Font Awesome, if enabled -->
+                
+
+
+<li>
+    <a href="mailto:anstn1993@gmail.com" title="Email">
+		<span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+        </span>
+    </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+    <a href="https://github.com/anstn1993" title="Follow on GitHub">
+		<span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+        </span>
+    </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </ul>
+            </div>
+</footer>
+
+
+
+  </body>
+</html>
