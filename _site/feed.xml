@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-07-28T14:31:28+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">이펙티브자바 - 9장. 일반적인 프로그래밍 원칙</title><link href="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html" rel="alternate" type="text/html" title="이펙티브자바 - 9장. 일반적인 프로그래밍 원칙" /><published>2021-07-28T00:00:00+09:00</published><updated>2021-07-28T00:00:00+09:00</updated><id>https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5</id><content type="html" xml:base="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html">&lt;p&gt;조슈아 블로크의 [이펙티브 자바]라는 책을 읽고 개인적으로 정리한 포스트 입니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-07-28T14:35:28+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">이펙티브자바 - 9장. 일반적인 프로그래밍 원칙</title><link href="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html" rel="alternate" type="text/html" title="이펙티브자바 - 9장. 일반적인 프로그래밍 원칙" /><published>2021-07-28T00:00:00+09:00</published><updated>2021-07-28T00:00:00+09:00</updated><id>https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5</id><content type="html" xml:base="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html">&lt;p&gt;조슈아 블로크의 [이펙티브 자바]라는 책을 읽고 개인적으로 정리한 포스트 입니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;9장-일반적인-프로그래밍-원칙&quot;&gt;9장. 일반적인 프로그래밍 원칙&lt;/h1&gt;
 
@@ -350,7 +350,7 @@ for, for-each 모두 반복 변수의 범위가 반복문의 몸체와 반복문
 
 &lt;h2 id=&quot;아이템-67-최적화는-신중히-하라&quot;&gt;아이템 67. 최적화는 신중히 하라&lt;/h2&gt;
 
-&lt;p&gt;–&lt;/p&gt;
+&lt;hr /&gt;
 
 &lt;p&gt;최적화는 보통 좋은 결과보다는 해로운 결과로 이어지기 쉽고, 빠르지도 않고 제대로 동작하지도 않으면서 수정하기 어려운 소프트웨어를 탄생시킬 가능성이 높기 때문에 정말로 명백하고 확실한 해법을 찾지 않는 이상 하지 않는 것이 좋습니다. 그러니 빠른 프로그램을 작성하려고 안달하지 않아도 됩니다. 성능을 개선하겠다는 핑계로 견고한 구조를 파괴하면 안 됩니다. 최적화와 관련하여 지켜야 할 것들을 살펴보겠습니다.&lt;/p&gt;
 
