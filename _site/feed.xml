@@ -1,4 +1,209 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-07-28T14:35:28+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">이펙티브자바 - 9장. 일반적인 프로그래밍 원칙</title><link href="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html" rel="alternate" type="text/html" title="이펙티브자바 - 9장. 일반적인 프로그래밍 원칙" /><published>2021-07-28T00:00:00+09:00</published><updated>2021-07-28T00:00:00+09:00</updated><id>https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5</id><content type="html" xml:base="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html">&lt;p&gt;조슈아 블로크의 [이펙티브 자바]라는 책을 읽고 개인적으로 정리한 포스트 입니다.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="https://anstn1993.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://anstn1993.github.io/" rel="alternate" type="text/html" /><updated>2021-08-04T11:55:01+09:00</updated><id>https://anstn1993.github.io/feed.xml</id><title type="html">MunSooKim’s devlog</title><subtitle>일상, 회고, 개발 지식을 기록하기 위한 공간 입니다.</subtitle><entry><title type="html">이펙티브자바 - 10장. 예외</title><link href="https://anstn1993.github.io/2021/08/04/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-10%EC%9E%A5.html" rel="alternate" type="text/html" title="이펙티브자바 - 10장. 예외" /><published>2021-08-04T00:00:00+09:00</published><updated>2021-08-04T00:00:00+09:00</updated><id>https://anstn1993.github.io/2021/08/04/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-10%EC%9E%A5</id><content type="html" xml:base="https://anstn1993.github.io/2021/08/04/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-10%EC%9E%A5.html">&lt;p&gt;조슈아 블로크의 [이펙티브 자바]라는 책을 읽고 개인적으로 정리한 포스트 입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;10장-예외&quot;&gt;10장. 예외&lt;/h1&gt;
+
+&lt;h2 id=&quot;아이템-69-예외는-진짜-예외-상황에만-사용하라&quot;&gt;아이템 69. 예외는 진짜 예외 상황에만 사용하라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;가끔 예외를 진짜 예외 상황이 아닌데 사용하는 경우가 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++].&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;climb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;ArrayIndexOutOfBoundsException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위의 코드는 배열의 범위를 초과하면 발생하는 예외를 잡아서 반복을 종료시킵니다. 향상된 반복문을 이용하지 않고 위와 같이 작성을 하면 성능이 더 좋다고 생각해서 작성한 것이지만 실상은 그 반대입니다. 하지만 이보다 더 심각한 문제가 있습니다. 의도치 않은 예외의 발생으로 인해서 진짜 문제가 무엇인지 알지 못하고 넘어갈 수 있다는 것입니다. 예를 들면 반복문 몸체 안에서 호출되는 메서드 안에서 배열을 순회하다 ArrayIndexOutOfBoundsException를 던지게 되면 위의 코드로는 예외가 발생했는지조차 알 수 없습니다. 만약 표준 관용구를 사용해서 반복을 했다면 예외를 잡지 않고 스택 추적 정보를 출력하면서 해당 스레드가 종료되어 문제를 인지했을 것입니다. 이처럼 &lt;strong&gt;예외는 절대로 일상적인 제어 흐름용으로 사용하면 안 됩니다.&lt;/strong&gt; 반드시 예외 상황에서만 써야 합니다.&lt;/p&gt;
+
+&lt;p&gt;이런 원칙은 API 설계에도 그대로 적용됩니다. 잘 설계된 API라면 클라이언트가 정상적인 제어 흐름에서 예외를 사용할 일이 없게 해야 합니다. 만약 특정 상태에서만 호출 가능한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;상태 의존적 메서드&lt;/code&gt;를 제공하는 클래스는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;상태 검사 메서드&lt;/code&gt;도 함께 제공해야 합니다. Iterator의 next(상태 의존적 메서드), hasNext(상태 검사 메서드)가 대표적입니다. for-each 관용구도 내부적으로 hasNext를 사용합니다. 상태 검사 메서드의 대안도 존재합니다. 상태가 올바르지 않을 때는 빈 옵셔널이나 null 같은 특수한 값을 반환하는 것입니다. 다음은 상태 검사 메서드, 옵셔널, 특정 값 중 하나를 선택하는 지침입니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;외부 동기화 없이 여러 스레드가 동시에 접근할 수 있거나 외부 요인으로 상태가 변할 수 있다면 옵셔널이나 특정 값을 사용합니다. 상태 검사 메서드 호출과 상태 의존적 메서드 호출 사이에 상태가 변경될 수 있기 때문입니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;성능이 중요한 상황에서 상태 검사 메서드와 상태 의존적 메서드의 일부 로직이 중복된다면 옵셔널이나 특정 값을 선택합니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;나머지 경우에는 상태 검사 메서드 방식이 조금 더 낫습니다. 가독성이 조금 더 좋고, 잘못 사용했을 때 발견하기가 쉽습니다. 왜냐하면 상태 검사 메서드 호출을 하지 않고 상태 의존적 메서드를 호출하면 예외를 던질 것이기 때문입니다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;아이템-70-복구할-수-있는-상황에는-검사-예외를-프로그래밍-오류에는-런타임-예외를-사용하라&quot;&gt;아이템 70. 복구할 수 있는 상황에는 검사 예외를, 프로그래밍 오류에는 런타임 예외를 사용하라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;자바는 문제 상황을 알리는 타입(throwable)으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;검사 예외&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;런타임 예외&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;에러&lt;/code&gt;를 제공합니다. 이 중 어떤 걸 사용해야 하는지 헷갈린다면 다음의 좋은 지침들을 참고하면 좋을 것 같습니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;호출하는-쪽에서-복구하리라-여겨지는-상황이라면-검사-예외를-사용하라&quot;&gt;호출하는 쪽에서 복구하리라 여겨지는 상황이라면 검사 예외를 사용하라.&lt;/h4&gt;
+
+&lt;p&gt;검사 예외는 컴파일 레벨에서 예외 전파의 가능성을 알 수 있기 때문에 try/catch로 잡거나 바깥으로 전파하도록 강제하게 됩니다. 따라서 검사 예외들을 사용한 API는 클라이언트에게 해당 예외들이 발생할 수 있음을 알려주게 됩니다. 물론 클라이언트가 예외를 잡기만 하고 아무 것도 하지 않고 넘길 수도 있지만 별로 좋은 생각은 아닙니다.&lt;/p&gt;
+
+&lt;p&gt;비검사 예외는 검사 예외를 제외한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;런타임 예외&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;에러&lt;/code&gt;에 해당합니다. 이 둘은 프로그램에서 잡을 필요가 없거나 통상적으로 잡지 말아야 하는 예외입니다. 비검사 예외를 던졌다는 건 복구가 불가능하거나 더 실행해도 실이 많은 경우를 의미합니다. 이런 throwable이 던져지면 스레드는 그냥 적절한 오류 메시지를 내뱉으며 중단됩니다.&lt;/p&gt;
+
+&lt;p&gt;그리고 검사 예외가 발생한다면 복구의 가능성이 있다는 것이기 때문에 반드시 복구에 필요한 정보를 알려주는 접근자 메서드를 제공합시다.&lt;/p&gt;
+
+&lt;h4 id=&quot;프로그래밍-오류를-나타낼-때는-런타임-예외를-사용하자&quot;&gt;프로그래밍 오류를 나타낼 때는 런타임 예외를 사용하자.&lt;/h4&gt;
+
+&lt;p&gt;런타임 예외의 대부분은 메서드가 정상적으로 실행되기 위한 전제조건을 만족하지 못할 때 발생합니다. 그런데 간혹 어떤 오류가 복구할 수 있는 상황인지, 프로그래밍 오류인지 구분하기 힘든 경우가 있습니다. 자원 부족 문제가 진짜 자원 부족의 문제일 수도 있지만, 말도 안 되게 큰 범위의 배열을 할당해서 생긴 프로그래밍적인 문제일 수 있습니다. 이때 어떤 예외를 사용할 것인지는 설계자의 판단에 달여있습니다. 만약 일시적으로 트래픽이 몰려서 자원 부족이 발생했고, 시간이 지나면 회복 가능하다고 판단이 되면 검사 예외를, 그렇지 않다면 런타임 예외를 사용하는 것이 좋습니다.&lt;/p&gt;
+
+&lt;p&gt;에러는 보통 JVM의 자원 부족, 불변식 깨짐 등으로 더 이상 수행을 계속할 수 없는 상황을 나타낼 때 사용합니다. 즉 에러는 코드 레벨을 넘어 시스템 레벨에서 발생하는 문제인 경우가 많아서 그것을 코드레벨에서 잡아서 처리하는 것이 무의미합니다. 일반적인 규약상으로 Error의 하위 클래스를 만드는 것은 자제해야 합니다. &lt;strong&gt;직접 구현하는 비검사 throwable은 모두 RuntimeException의 하위 클래스여야 합니다.&lt;/strong&gt; 또한 AssertionError를 제외한 Error를 throw문으로 직접 던지는 일도 없어야 합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;아이템-71-필요-없는-검사-예외-사용은-피하라&quot;&gt;아이템 71. 필요 없는 검사 예외 사용은 피하라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;검사 예외는 발생한 문제를 프로그래머가 처리하여 안정성을 높이게끔 해주기 때문에 API의 질을 높일 수 있습니다. 하지만 모든 경우에 좋은 건 아닙니다. 일단 검사 예외를 던질 수 있는 메서드는 호출쪽에서 try/catch 블록을 두어 처리하거나 더 바깥으로 전파를 하는 처리를 해줘야만 하고 특히 자바 8부터 추가된 스트림 안에서는 검사 예외를 던지는 메서드를 사용할 수 없어서 문제가 더 많아졌습니다. 그래서 만약 검사 예외를 최대한 지양해야만 하는 상황이라면 &lt;strong&gt;적절한 결과 타입을 담은 옵셔널을 반환&lt;/strong&gt;하는 것을 고려해봐야 합니다. 대신 이 방법은 예외의 원인에 대한 구체적인 정보를 담을 수 없다는 단점이 있습니다. 또 다른 방법은 &lt;strong&gt;검사 예외를 던지는 메서드를 2개로 쪼개서 비검사 예외로 바꾸는 것&lt;/strong&gt;입니다. 이때 첫번째 메서드는 예외가 던져질지 여부를 boolean 값으로 변환합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// 리팩토링 전&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;TheCheckedException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// 예외 상황에 대처&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// 리팩토링 후&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;actionPermitted&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// 예외 상황에 대처&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이런 방식을 모든 상황에 적용할 수는 없고 딱히 아름답지도 않지만 스트림에서 사용할 수 있고 try/catch 블록을 사용하지 않아서 더 유연합니다. 하지만 이 방식에서 actionPermitted 메서드와 action 메서드가 결국 상태 검사 메서드, 상태 의존 메서드가 되기 때문에 외부 요인에 의해 상태가 변할 수 있거나 여러 스레드가 동시 접근할 수 있는 상황에서는 사용하면 안 됩니다. 마찬가지로 두 메서드 간의 중복 로직이 존재하면 성능상 손해이니 적용하는 것이 적절하지 않을 수 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;아이템-72-표준-예외를-사용하라&quot;&gt;아이템 72. 표준 예외를 사용하라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;자바 라이브러리는 이미 API에서 사용하기 좋은 충분한 수의 표준 예외를 제공합니다. 그러니까 표준 예외를 재사용하는 것이 좋습니다. 표준 예외를 사용한 API는 다른 사람들이 익히고 사용하기 쉽습니다. 그리고 예외 클래스의 수가 적을수록 메모리 사용량도 줄고 클래스를 적재하는 시간도 적게 걸립니다. 다음은 주로 사용되는 표준 예외들 입니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;IllegalArgumentException: 메서드 인자로 부적절한 값을 넘길 때 던지는 예외&lt;/li&gt;
+  &lt;li&gt;IllegalStateException: 대상 객체의 상태가 호출된 메서드를 수행하기에 적합하지 않을 때 주로 던집니다. 가령 초기화되지 않은 객체를 사용하려 할 때 던질 수 있습니다.&lt;/li&gt;
+  &lt;li&gt;NullPointerException: null을 허용하지 않는 메서드에 null을 전달할 때 던지는 예외&lt;/li&gt;
+  &lt;li&gt;IndexOutOfBoundsException: 어떤 시퀀스의 허용 범위는 넘는 값을 건낼 때 던지는 예외&lt;/li&gt;
+  &lt;li&gt;ConcurrentModificationException: 단일 스레드에서만 사용하려고 설계한 객체를 여러 스레드가 동시에 수정하려고 할 때 던지는 예외&lt;/li&gt;
+  &lt;li&gt;UnsupportedOperationException: 클라이언트가 요청한 동작을 대상 객체가 지원하지 않을 때 던집니다. 가장 대표적으로 사용되는 경우가 구현하려는 인터페이스의 메서드 일부를 구현할 수 없을 때입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이때 Exception, RuntimeException, Throwable, Error는 절대 재사용하지 맙시다. 이 클래스들은 그냥 추상 클래스라고 생각하는 게 좋습니다. 왜냐하면 여러 성격의 예외들을 포괄하는 클래스라서 안정적으로 테스트할 수 없습니다.&lt;/p&gt;
+
+&lt;p&gt;그리고 더 많은 정보 제공을 원해서 예외를 확장하고 싶다면 해도 좋지만 예외는 직렬화할 수 있다는 사실을 기억해야 합니다. 직렬화는 부담이 많이 따르기 때문에 예외 확장은 그렇게 바람직하진 않습니다.&lt;/p&gt;
+
+&lt;p&gt;그런데 앞서 살펴본 예외들 중 쓰임이 상호 배타적이지 않아서 예외를 확정하기 어려울 때도 있습니다. 예를 들어 카드 덱을 표현하는 객체가 있고 인수로 건넨 수만큼 카드를 뽑아 나눠주는 메서드를 제공할 때 덱에 남아 있는 카드 수보다 큰 값을 전달받으면 어떤 예외를 던져야 할까요? 관점에 따라 달라집니다. 인수의 값이 너무 크다고 보면 IllegalArgumentException이겠지만, 덱에 남은 카드의 수가 너무 적다고 본다면 IllegalStateException이 될 것입니다. 이럴 때 일반적으로는 &lt;strong&gt;인수 값이 무엇이었든 어차피 실패했을 거라면 IllegalStateException을, 그렇지 않으면 IllegalArgumentException을&lt;/strong&gt; 던집니다. 즉 이 규칙을 따르면 위의 예에서는 IllegalArgumentException을 던져야 합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;아이템-73-추상화-수준에-맞는-예외를-던지라&quot;&gt;아이템 73. 추상화 수준에 맞는 예외를 던지라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;메서드가 저수준 예외를 그냥 바깥으로 전파하면 수행하려는 일과 관련 없는 예외일 가능성이 있습니다. 이는 프로그래머를 당황하게 하는 것을 넘어 내부 구현을 노출해서 상위 레벨 API를 오염시킵니다. 그리고 다음 릴리즈에서 구현 방식을 바꾸면 다른 예외가 튀어나와서 기존 클라이언트 프로그램을 깨지게 할 수도 있습니다. 이런 문제를 피하기 위해서 &lt;strong&gt;상위 계층에서는 저수준 예외를 잡아 자신의 추상화 수준에 맞는 예외로 바꿔서 던져야 합니다.&lt;/strong&gt; 이를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;예외 번역&lt;/code&gt;이라고 합니다. AbstractSequentialList의 List 인터페이스의 골격 구현을 예로 살펴보겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/**
+* 이 리스트 안의 지정한 위치즤 원소를 반환한다.
+* @throw IndexOutOfBoundsException index가 범위 밖이라면,
+* 즉, ({@code index &amp;lt; 0 || index &amp;gt;= size()}) 이면 발생한다.
+*/&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;E&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nc&quot;&gt;ListIterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;E&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;listIterator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;NoSuchElementException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;IndexOutOfBoundsException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;인덱스: &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;저수준의 NoSuchElementException을 추상화 레벨에 맞게 IndexOutOfBoundsException으로 바꿔서 던지고 있습니다.&lt;/p&gt;
+
+&lt;p&gt;그리고 만약 저수준 예외가 디버깅에 도움이 된다면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;예외 연쇄&lt;/code&gt;를 사용하는 게 좋습니다. 예외 연쇄란 문제의 근본 원인(cause)인 저수준 예외를 고수준 예외에 실어 보내는 방식입니다. 그럼 별도의 접근자 메서드를 통해(getCause) 언제든 저수준 예외를 꺼낼 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;LowerLevelException&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;HigherLevelException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// 고수준 예외에 저수준 예외를 전달&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;고수준 예외의 생성자는 예외 연쇄용으로 설계된 상위 클래스의 생성자에 원인을 건네서 최종적으로 Throwable(Throwable) 생성자까지 전달이 됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HigherLeverException&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nc&quot;&gt;HigherLeverException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Throwable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cause&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;대부분의 표준 예외는 예외 연쇄용 생성자를 갖추고 있고 그렇지 않더라도 Throwable의 initCause 메서드를 통해 원인을 지정할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;하지만 예외 번역보다 더 좋은 건 저수준 메서드가 반드시 성공하도록 해서 예외가 바깥으로 전파되지 않도록 하는 것입니다. 물론 메서드로 인자를 전달하기 전에 미리 검사해서 이 목적을 달성할 수도 있습니다. 또 다른 차선책으로는 상위 계층에서 예외를 조용히 처리하여 문제를 API 호출자까지 전파하지 않는 것입니다. 대신 예외가 발생했을 때 java.util.logging과 같은 적절한 로깅을 통해 기록은 해두는 겁니다. 그럼 클라이언트 코드에 문제를 전파하지 않으면서 로그 분석을 통해 사후 조치가 가능해집니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;아이템-74-메서드가-던지는-모든-예외를-문서화하라&quot;&gt;아이템 74. 메서드가 던지는 모든 예외를 문서화하라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;메서드가 던지는 예외는 그 메서드를 올바로 사용하기 위해 꼭 알아야 하는 중요한 정보입니다. 그래서 이에 대한 문서화를 하는 것이 중요합니다. &lt;strong&gt;검사 예외는 항상 따로따로 선언하고, 각 예외가 발생하는 상황을 자바독의 @throws 태그를 사용해서 문서화합시다.&lt;/strong&gt; 이때 예외 클래스를 공통 상위 클래스로 지정하면 안 됩니다. 메서드 사용자에게 의미있는 정보를 주지 못하고 같은 같은 맥락에서 발생할 여지가 있는 다른 예외까지 삼키게 될 수 있기 때문입니다. 예외적으로 jvm만 호출하는 main메서드에서는 Exception을 던지도록 선언해도 됩니다.&lt;/p&gt;
+
+&lt;p&gt;비검사 예외를 문서화하는 것도 좋습니다. 자신이 일으킬 수 있는 프로그래밍 오류들이 무엇인지 알려주면 프로그래머들은 자연스럽게 해당 오류가 발생하지 않도록 코딩할 것입니다. 특히 비검사 예외의 문서화는 인터페이스 메서드에서 중요합니다. 이 비검사 예외 조건이 인터페이스의 일반 규약에 속하게 되어서 그 인터페이스의 구현체들이 일관되게 동작하도록 해줍니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;검사 예외, 비검사 예외 모두 @throws 태그로 문서화하되, 비검사 예외는 메서드 선언의 throws 목록에 넣지 않는 것이 좋습니다.&lt;/strong&gt; 검사냐, 비검사냐에 따라 API 사용자가 해야 할 일이 달라지기 때문에 확실히 구분해주는 것이 좋습니다. 이를 위해 자바독 유틸리티는 메서드 선언의 throws 절에 등장하고 @throws 태그에도 명시한 예외와 @throws 태그에만 명시한 예외를 시각적으로 구분해줍니다.&lt;/p&gt;
+
+&lt;p&gt;만약 한 클래스에 정의된 많은 메서드가 같은 이유로 같은 예외를 던진다면 그 예외를 클래스 설명에 추가해도 됩니다. NullPointerException이 가장 대표적입니다. 이럴 땐 클래스의 문서화 주석에 “이 클래스의 모든 메서드는 인수로 null이 넘어오면 NullPointerException을 던진다”라고 적어도 됩니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;아이템-75-예외의-상세-메시지에-실패-관련-정보를-담으라&quot;&gt;아이템 75. 예외의 상세 메시지에 실패 관련 정보를 담으라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;예외로 인해서 프로그램이 실패하면 자바는 그 예외의 스택 추적(stack trace) 정보를 자동으로 출력합니다. 이 스택 추적은 예외 객체의 toString 메서드를 호출해서 얻는 문자열로, 보통 예외의 클래스 이름 뒤에 상세 메시지가 붙는 형태 입니다. 이 toString에서 실패 원인에 관한 정보를 가능한 많이 담아서 반환해줘야 합니다. 사후 분석에서 사용할 수 있는 거의 유일한 정보이기 때문입니다. &lt;strong&gt;실패 순간을 정확히 포착하려면 발생한 예외에 관여된 모든 매개변수와 필드의 값을 실패 메시지에 담아야&lt;/strong&gt; 합니다. 그렇다고 메시지가 장황하면 안 됩니다. 문제를 분석할 때는 결국 소스코드도 함께 살펴볼 것이기 때문에 예외가 발생한 파일 이름과 줄번호, 그리고 스택에서 호출한 다른 메서드들의 파일 이름과 줄번호를 기록하면 됩니다.&lt;/p&gt;
+
+&lt;p&gt;그리고 예외에서 실패와 관련된 정보를 얻을 수 있는 접근자 메서드를 적절하게 제공하는 것이 좋습니다. 특히 검사 예외에서는 포착한 실패 정보를 통해 예외 상황을 복구하는 데 유용하게 사용할 수 있기 때문에 더더욱 필요합니다. 하지만 ‘toString이 반환한 값에 포함된 정보를 얻어올 수 있는 API를 제공하자’는 일반 원칙에 비추어 봤을 때 비검사 예외라도 접근자 메서드를 제공하는 것을 권합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;아이템-76-가능한-한-실패-원자적으로-만들라&quot;&gt;아이템 76. 가능한 한 실패 원자적으로 만들라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;실패 원자적이라는 것은 &lt;strong&gt;호출된 메서드가 실패하더라도 해당 객체는 메서드 호출 전 상태를 유지&lt;/strong&gt;하는 것을 의미합니다. 메서드를 실패 원자적으로 만드는 가장 간단한 방법은 불변 객체로 만드는 것입니다. 불변 객체는 태생적으로 속성이 변할 수 없기 때문입니다. 하지만 가변 객체의 메서드를 실패 원자적으로 만들어야 할 때도 있습니다. 이때는 작업 수행에 앞서 매개변수의 유효성을 검사하는 것입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;EmptyStackException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;elements&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;elements&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 다 쓴 객체 참조 해제&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;스택의 pop 메서드 입니다. 작업 수행 전에 size의 유효성을 체크하여 적절하지 않으면 내부 상태를 바꾸지 못하게 막았습니다. 사실 이런 유효성 검사를 하지 않더라도 size가 0이라면 예외를 던지지만 ArrayIndexOutOfBounds 예외가 던져질 것이고 이는 스택의 추상화 수준에 어울리지 않는 저수준 예외가 되기 때문에 어울리지 않습니다.&lt;/p&gt;
+
+&lt;p&gt;비슷한 방법으로 실패할 가능성이 있는 모든 코드를, 객체의 상태를 바꾸는 코드보다 앞에 배치할 수도 있습니다. 이는 계산을 수행해보기 전에는 인수의 유효성 검사가 어려울 때 앞의 방식과 더해서 쓸 수 있는 방법입니다.&lt;/p&gt;
+
+&lt;p&gt;또 다른 방법도 있습니다. 작업 도중에 발생하는 실패를 가로채서 복구 코드를 작성하여 작업 전 상태로 되돌리는 방법입니다. 주로 디스크 기반의 내구성을 보장해야 하는 자료구조에 쓰이는데 자주 사용되는 방법은 아닙니다.&lt;/p&gt;
+
+&lt;p&gt;하지만 실패 원자성을 항상 보장할 수는 없습니다. 대표적으로 다음의 경우가 그렇습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;두 스레드가 동기화 없이 같은 객체를 동시에 수정하는 경우: 이 경우에는 ConcurrentModificationException을 잡아낸다고 해도 객체의 일관성이 깨졌을 수 있어서 여전히 쓸 수 있는 상태라고 가정할 수 없습니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Error가 발생했을 경우: Error는 프로그래밍 레벨에서는 복구할 수 없기 때문에 AssertionError에 대해서는 실패 원자적으로 만들려는 시도조차 필요 없습니다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;만약 메서드 명세에 기술한 예외라면 예외가 발생하더라도 객체의 상태는 메서드 호출 전과 똑같이 유지되어야 한다는 것이 기본 규칙입니다. 이 규칙을 지키지 않는다면 그 사실도 api 설명에 명시해야 합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;아이템-77-예외를-무시하지-말라&quot;&gt;아이템 77. 예외를 무시하지 말라&lt;/h2&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;api 설계자들이 메서드 선언에 예외를 명시하는 이유는 그 메서드를 사용할 때 적절한 조치를 취하라고 신호를 보내는 것입니다. 그럼에도 불구하고 예외를 무시하는 경우가 아주 많습니다. catch 블록을 그냥 비워버려서 무시하기 아주 좋기 때문입니다. &lt;strong&gt;catch 블록을 비워버리면 예외가 존재할 이유가 사라지게 됩니다.&lt;/strong&gt; 물론 예외를 무시해야 하는 케이스도 있습니다. FileInputStream을 닫을 때가 대표적입니다. FileInputStream은 파일을 읽어들일 뿐, 파일의 상태를 변경하지 않으니 예외가 발생해도 복구할 것이 없으며, 스트림을 닫는다는 건 필요한 정보는 다 읽었다는 뜻이니 남은 작업을 중단할 이유도 없습니다. 그래도 같은 예외가 자주 발생하면 조사 차원에서 파일을 닫지 못했다는 사실을 로그로 남기는 것 정도는 좋은 생각입니다. 어찌 되었든 예외를 무시해야만 한다면 catch 블록 안에 그렇게 결정을 한 이유를 남겨야 하고, 예외 변수의 이름도 ignored로 바꾸도록 합시다.&lt;/p&gt;
+
+&lt;p&gt;이 내용은 검사, 비검사 예외 모두에 적용됩니다. 검사 예외라면 catch 블록에서 문제의 원인을 적절히 해결하고 비검사 예외라도 그걸 잡아서 빈 catch 블록으로 무시해선 안 됩니다. 차라리 바깥으로 전파되게만 놔두더라도 최소한 디버깅 정보를 남기면서 프로그램이 중단되게 할 수 있습니다.&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><category term="자바" /><summary type="html">조슈아 블로크의 [이펙티브 자바]라는 책을 읽고 개인적으로 정리한 포스트 입니다.</summary></entry><entry><title type="html">이펙티브자바 - 9장. 일반적인 프로그래밍 원칙</title><link href="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html" rel="alternate" type="text/html" title="이펙티브자바 - 9장. 일반적인 프로그래밍 원칙" /><published>2021-07-28T00:00:00+09:00</published><updated>2021-07-28T00:00:00+09:00</updated><id>https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5</id><content type="html" xml:base="https://anstn1993.github.io/2021/07/28/%EC%9D%B4%ED%8E%99%ED%8B%B0%EB%B8%8C-%EC%9E%90%EB%B0%94-9%EC%9E%A5.html">&lt;p&gt;조슈아 블로크의 [이펙티브 자바]라는 책을 읽고 개인적으로 정리한 포스트 입니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;9장-일반적인-프로그래밍-원칙&quot;&gt;9장. 일반적인 프로그래밍 원칙&lt;/h1&gt;
 
@@ -4479,49 +4684,4 @@ worker.worker1.port=8001
 
 &lt;p&gt;기술교육 프로젝트의 웹 서버 구성이 Apache + Tomcat이었는데 정확히 어떻게 연동이 되는지 잘 모르고 사용을 해왔던 터라 공부 차원에서 이 글을 작성합니다. 위의 설정들은 정말 기본적인 설정들이고 그 외에도 사용자의 니즈에 따른 다양한 설정들이 가능합니다. 이런 설정들도 앞으로 개발을 하면서 하나하나 익혀야겠다는 생각이 듭니다.&lt;/p&gt;
 
-&lt;p&gt;읽어주셔서 감사합니다!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><summary type="html">이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.</summary></entry><entry><title type="html">nhn 기술교육 sprint6, 7 회고</title><link href="https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html" rel="alternate" type="text/html" title="nhn 기술교육 sprint6, 7 회고" /><published>2021-03-09T00:00:00+09:00</published><updated>2021-03-09T00:00:00+09:00</updated><id>https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0</id><content type="html" xml:base="https://anstn1993.github.io/2021/03/09/nhn-%EA%B8%B0%EC%88%A0%EA%B5%90%EC%9C%A1-sprint6,7-%ED%9A%8C%EA%B3%A0.html">&lt;p&gt;sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.&lt;/p&gt;
-
-&lt;h3 id=&quot;sprint6---개발만-했다고-끝이-아니다-꾸준한-개선의-연속&quot;&gt;sprint6 - 개발만 했다고 끝이 아니다. 꾸준한 개선의 연속&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;sprint 6의 메인 과제는 우리가 개발 기간에 작성한 덩어리 같은 코드들을 깨끗한, 유지 보수에 좀 더 용이한 코드로 개선하는 것이었다.&lt;/p&gt;
-
-&lt;h5 id=&quot;코드리뷰&quot;&gt;코드리뷰&lt;/h5&gt;
-
-&lt;p&gt;코드 리뷰를 처음 진행해봤다. 우리 TF는 이사님에게 리뷰를 받았는데 친절하고 유쾌하면서도 핵심은 놓치지 않고 콕콕 찌르는 지적을 받게 됐다. 많은 내용들을 배울 수 있었는데, 크게 코딩 스타일과 책임의 적절한 분리에 대해서 다시 생각해 보게 됐다. 특히 책임의 적절한 분리에 대해서 얘기를 해보자면, 서비스 레이어가 가져가야 할 책임이 컨트롤러 레이어에게 전가되고 있는 문제가 있었다. 이사님의 표현을 빌리자면 값싼 알바(?)인 컨트롤러는 흐름 제어라는 최소한의 역할만 수행하고 실제 비즈니스 로직은 고오급 인력(?)인 서비스가 담당하게 해야 한다. 앞으로는 이 내용을 잊지 않고 주의하면서 코딩을 해야겠다.&lt;/p&gt;
-
-&lt;h5 id=&quot;소나큐브를-통한-코드-개선&quot;&gt;소나큐브를 통한 코드 개선&lt;/h5&gt;
-
-&lt;p&gt;정적 분석 툴인 소나 큐브를 처음 접했다. 젠킨스로 우리 프로젝트를 빌드 하면 그 결과가 소나 큐브에 반영되는데 우리가 작성한 코드에 어떤 문제나 잠재적 위험이 존재하는지, 테스트 코드 커버리지는 얼마나 되는지 등의 정보를 제공해 준다. 이 툴을 이용해서 코드 개선 작업을 진행했다. 일차적으로 코드 스멜을 많이 없애는 작업을 진행했고, 이후에는 코드 리뷰 때 받은 지적사항들을 개선하는 작업을 진행했다. 그리고 junit5를 이용해서 테스트 코드를 작성했고, 커버리지를 높일 수 있었다.(테스트 코드 자체가 잘 작성됐는지는 미지수지만…)
-코드 개선 방향에 무조건적인 정답은 있을 수 없겠지만, 소나 큐브가 어느 정도 기준점이 되어줬다. 코드 스타일이 전반적으로 통일되고, 잠재적 위험을 많이 제거했으며, 커버리지를 높여서 서비스의 신뢰성을 확보할 수 있었다. 이런 좋은 툴을 알게 되어서 아주 기쁘다.&lt;/p&gt;
-
-&lt;h5 id=&quot;cli-구축&quot;&gt;cli 구축&lt;/h5&gt;
-
-&lt;p&gt;cli 환경에서 이벤트의 예약 리스트 및 상세 예약 내역을 조회할 수 있도록 구현하는 과제를 받았다. 과제의 의도는 코드 리뷰 때 받았던 지적과 맥을 함께 한다. 이 과제는 컨트롤러와 서비스의 책임 분리가 잘 되어있어야 쉽게 구현할 수 있기 때문이다. 만약 그렇지 않다면 이 과제를 통해서 책임을 올바르게 분리하라는 의도로 과제를 내주신 것 같다. 서비스는 인터페이스 환경과 무관하게 비즈니스 로직을 처리하는 역할만 수행해야 한다. 만약 서비스 레이어에 웹과 관련된 컴포넌트가 들어오게 된다면 cli에서는 재사용할 수 없게 될 가능성이 높아진다. 사실 처음에는 이 과제의 의도가 도대체 뭘까 생각을 했는데, 의도를 들은 순간 무릎을 탁! 치게 됐다. 다시 한번 각 레이어의 책임에 대해서 생각해 볼 수 있었다.&lt;/p&gt;
-
-&lt;h3 id=&quot;sprint7---스케일-아웃&quot;&gt;sprint7 - 스케일 아웃&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;sprint7 때는 웹 서버가 여러 대로 늘어나는 상황에 대해서 배웠다. 그리고 그런 상황에서 필요한 것들을 사전 준비하는 느낌의 과제들을 진행했다.&lt;/p&gt;
-
-&lt;h5 id=&quot;세션의-구현&quot;&gt;세션의 구현&lt;/h5&gt;
-
-&lt;p&gt;세션을 직접 구현하라는 과제가 주어졌다. 웹 서버가 여러 대로 늘어나게 되면 세션을 관리가 큰 이슈가 된다. 여러 방법이 있지만 이번 교육에서는 여러 웹 서버가 공유해서 사용할 수 있는 세션 스토리지를 만드는 방식을 채택했다. 여기에 추가적으로 세션 스토리지를 db, redis 두 가지 스토리지로 구현해야 된다는 조건이 붙었다. 우리 TF는 세션을 관리하는 데 필요한 기능들을 추상화하여 인터페이스로 먼저 뽑아내고 db session과 redis session이라는 구현체를 만드는 방식으로 진행했다. redis는 처음 접해봤고 심지어 세션 기능도 직접 만들어보는 건 처음이라서 아주 재밌었던 과제였다.&lt;/p&gt;
-
-&lt;h5 id=&quot;object-storage&quot;&gt;object storage&lt;/h5&gt;
-
-&lt;p&gt;기존에는 웹 서버가 하나였기 때문에 뮤지컬 이미지와 같은 리소스들은 서버에서 별도의 디렉토리를 만들어서 관리했다. 하지만 여러 노드에 웹 서버가 운영되면 웹 서버가 공통적으로 참조해야 할 스토리지가 필요해진다. 그래서 nhn cloud의 object storage에서 이미지를 관리하는 방식으로 변경하라는 과제가 주어졌다. 특정 운영 서버가 아닌 클라우드 환경에 별도 저장을 하게 되기 때문에 문제가 해결된다. api 이용 가이드도 너무 잘 돼있어서 금방 적용할 수 있었다.&lt;/p&gt;
-
-&lt;h5 id=&quot;deploy를-이용한-배포&quot;&gt;deploy를 이용한 배포&lt;/h5&gt;
-
-&lt;p&gt;배포를 nhn cloud의 deploy를 이용해서 하는 방식으로 바꾸라는 과제도 주어졌다. 기존에는 서버에 직접 접근해서 스크립트를 실행하여 배포를 진행했는데 deploy를 이용하면 간단한 설정과 시나리오를 적용해서 클릭 한 번으로 배포를 완료할 수 있게 된다. 배포에 대한 부담감이 줄어들어서 개발한 내용을 좀 더 빠르게 적용할 수 있게 된 것 같다.&lt;/p&gt;
-
-&lt;h3 id=&quot;마치며&quot;&gt;마치며&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;매 sprint마다 그랬지만 이번 sprint는 특히 처음 접해보고, 시도해보는 것들이 많아서 개인적으로 더 좋았던 것 같고 자신감도 붙은 것 같다. 이때 배운 내용들을 잘 기억하고 익혀서 부서 배치를 받고 나서도 잘 활용할 수 있게 되면 좋겠다.&lt;/p&gt;
-
-&lt;p&gt;회고 끝!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="회고" /><summary type="html">sprint6, 7에 대한 회고록이다. 짧은 시간 동안 개발을 마치고 sprint 6 때는 리팩토링, 테스트 코드 작성을 통한 소나 큐브 커버리지 높이기, 서비스의 cli 구축 등의 과제를 진행했고, sprint 7에서는 웹 서버의 스케일 아웃을 위한 여러 과제들을 진행했다.</summary></entry></feed>
+&lt;p&gt;읽어주셔서 감사합니다!&lt;/p&gt;</content><author><name>Mun Soo Kim</name></author><category term="기술" /><summary type="html">이번 글에서는 Tomcat과 Apache가 어떻게 연결되는지에 대해서 간단하게 살펴보겠습니다. 여기서 Apache는 Tomcat의 앞단에 위치한 Proxy 서버가 됩니다.</summary></entry></feed>
