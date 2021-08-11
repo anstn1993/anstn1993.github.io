@@ -1,0 +1,508 @@
+I"�F<p>조슈아 블로크의 [이펙티브 자바]라는 책을 읽고 개인적으로 정리한 포스트 입니다.</p>
+
+<h1 id="11장-동시성">11장. 동시성</h1>
+
+<p>동시성 프로그래밍은 단일 스레드 프로그래밍보다 어렵지만 오늘날은 당연하게 쓰이는 멀티코어 프로세서의 힘을 제대로 활용하기 위해서는 꼭 알아야 합니다. 이번 장에서는 동시성 프로그램을 정확하게 만들고 잘 문서화하기 위한 내용들을 살펴봅니다.</p>
+
+<h2 id="아이템-78-공유-중인-가변-데이터는-동기화해-사용하라">아이템 78. 공유 중인 가변 데이터는 동기화해 사용하라</h2>
+
+<hr />
+
+<p><code class="language-plaintext highlighter-rouge">synchronized</code>키워드는 메서드나 블록에 사용하여 한 스레드만 수행되도록 보장합니다. 대부분의 프로그래머들이 동기화를 <code class="language-plaintext highlighter-rouge">배타적 실행(한 스레드가 객체의 상태를 변경하는 동안 다른 스레드가 보지 못하게 막아서 일관되지 않은 객체의 상태를 보지 못 하게 함)</code>의 용도로만 생각합니다. 하지만 사실 하나가 더 있습니다. 바로 <strong>동기화된 메서드나 블록에 들어간 스레드가 같은 락의 보호하에 수행된 모든 이전 수정의 최종 결과를 보게 해준다는 것입니다.</strong> 자바 언어 명세상 long, double 외의 변수를 읽고 쓰는 동작은 원자적입니다. 즉 굳이 동기화를 하지 않더라도 항상 어떤 스레드가 정상적으로 저장한 값을 온전히 읽어옴을 보장합니다. 하지만 그 저장된(혹은 수정된) 값이 다른 스레드에게 ‘보이는가(가시성)’는 보장하지 않습니다. 이는 다르게 말하면 시간상으로 가장 직전에 저장(수정)된 값을 다른 스레드가 읽을 수 있음을 보장하지 않는다는 것을 의미합니다. 이해를 돕기 위해 잠시 관련된 내용을 살펴보겠습니다.</p>
+
+<h4 id="멀티스레드-환경에서의-가시성">멀티스레드 환경에서의 ‘가시성’</h4>
+
+<p>멀티스레드로 동작하는 프로그램에서는 성능의 향상을 위해서 각 스레드는 변수를 각자의 캐시로 복사해서 읽어들이게 됩니다. 그렇기 때문에 가시성에 문제가 생기게 됩니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">nextSerialNumber</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</code></pre></div></div>
+
+<p>위의 변수를 두 개의 스레드가 공유한다고 가정하겠습니다. 스레드 A는 우선 메인 메모리에 올라간 변수를 캐시 메모리로 복사해옵니다. 그리고 변수의 값을 1 증가시켰습니다. 일반적으로 우리가 원하는 결과는 나머지 스레드인 B가 다시 변수의 값을 사용할 때 1이 증가된 값으로 사용하는 것입니다. 하지만 그렇게 동작하지 않을 수 있습니다. 왜냐하면 스레드 A가 값을 1 증가시키더라도 그것은 캐시 메모리에 저장되지, 메인 메모리에 바로 저장되는 것은 아니기 때문입니다. 그리고 캐시 메모리에 저장된 값이 언제 메인 메모리로 반영될지 알 수 없습니다. 앞서 언급한 <code class="language-plaintext highlighter-rouge">저장된(혹은 수정된) 값이 다른 스레드에게 '보이는가(가시성)'는 보장하지 않는다</code>는 것은 이처럼 값을 저장하더라도 그것이 메인 메모리에 바로 반영되지 않아서 다른 스레드가 그 저장된 값을 바로 읽을 수 있다는 보장이 없음을 의미합니다. 그래서 다음의 코드는 우리가 생각한대로 동작하지 않습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StopThread</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="n">stopRequested</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+    <span class="nc">Thread</span> <span class="n">backgroundThread</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+      <span class="k">while</span> <span class="o">(!</span><span class="n">stopRequested</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">i</span><span class="o">++;</span>
+      <span class="o">}</span>
+    <span class="o">});</span>
+    <span class="n">backgroundThread</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+    <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="n">stopRequested</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>위의 코드는 stopRequested 필드를 backgroundThread가 계속 폴링하다가 true가 되면 스레드 실행을 종료시킬 목적으로 작성을 했습니다. 하지만 위 코드를 실행시켜보면 종료되지 않고 계속 실행됩니다. 원인은 가시성이 보장되지 않기 때문입니다. 메인 스레드가 stopRequested의 값을 true로 바꾸더라도 그것은 메인 스레드의 캐시 메모리에만 반영됐을뿐이고, backgroundThread가 읽어들인 stopRequested의 값은 여전히 false이기 때문에 프로그램은 종료되지 않습니다. 특히 위의 코드는 JVM이 다음과 같이 최적화할 수도 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 원래 코드</span>
+<span class="k">while</span> <span class="o">(!</span><span class="n">stopRequested</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">i</span><span class="o">++;</span>
+<span class="o">}</span>
+
+<span class="c1">// 최적화된 코드</span>
+<span class="k">if</span> <span class="o">(!</span><span class="n">stopRequested</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">i</span><span class="o">++;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이는 OpenJDK 서버의 VM이 실제로 적용하는 끌어올리기(hoisting)라는 최적화 기법입니다. 이렇게 프로그램은 응답 불가 상태가 됩니다. 그럼 이런 가시성의 문제를 해결하려면 어떻게 하면 될까요?</p>
+
+<h4 id="synchronized-volatile을-사용하여-가시성의-문제를-해결하자">synchronized, volatile을 사용하여 가시성의 문제를 해결하자</h4>
+
+<p>가시성 문제를 해결하는 첫번째 방법은 공유되는 필드를 synchronized 키워드로 동기화하는 것입니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StopThread</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="n">stopRequested</span><span class="o">;</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">requestStop</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">stopRequested</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">synchronized</span> <span class="kt">boolean</span> <span class="nf">stopRequested</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">stopRequested</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+    <span class="nc">Thread</span> <span class="n">backgroundThread</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+      <span class="k">while</span> <span class="o">(!</span><span class="n">stopRequested</span><span class="o">())</span> <span class="o">{</span>
+        <span class="n">i</span><span class="o">++;</span>
+      <span class="o">}</span>
+    <span class="o">});</span>
+    <span class="n">backgroundThread</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+    <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="n">requestStop</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">stopRequested</code> 변수를 쓰는 메서드(requestStop)와 읽는 메서드(stopRequested)를 모두 동기화했습니다. 이때 <strong>읽기, 쓰기 메서드를 모두 동기화</strong>하는 것이 중요합니다. 간혹 쓰기 메서드만 동기화하면 된다고 생각할 수 있지만 그것으로는 충분하지 않습니다. 쓰기만 동기화하여 메인 메모리까지 값을 반영하더라도 읽기를 동기화하지 않으면 여전히 <code class="language-plaintext highlighter-rouge">backgroundThread</code>는 캐싱된 값을 가져올 것이기 때문입니다. 그렇기 때문에 읽기도 동기화를 하여 메인 메모리에서 값을 읽어오게 해야 합니다.
+다음은 큰 성능 차이는 없지만 <code class="language-plaintext highlighter-rouge">synchronized</code>보다 좀 더 빠른 <code class="language-plaintext highlighter-rouge">volatile</code> 한정자를 공유되는 변수에 사용해서 가시성 문제를 해결할 수도 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StopThread</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="kt">boolean</span> <span class="n">stopRequested</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+    <span class="nc">Thread</span> <span class="n">backgroundThread</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Thread</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+      <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+      <span class="k">while</span> <span class="o">(!</span><span class="n">stopRequested</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">i</span><span class="o">++;</span>
+      <span class="o">}</span>
+    <span class="o">});</span>
+    <span class="n">backgroundThread</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+
+    <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="n">stopRequested</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>아까와 달리 <code class="language-plaintext highlighter-rouge">stopRequested</code>변수에 <code class="language-plaintext highlighter-rouge">volatile</code> 한정자만 붙여서 코드가 간결해졌습니다. <code class="language-plaintext highlighter-rouge">volatile</code> 한정자는 <strong>배타적 수행과는 상관없지만 항상 가장 최근에 기록된 값을 읽게 됨을 보장</strong>합니다. 즉 변수에 대한 쓰기와 읽기 작업이 캐시 메모리가 아닌 메인 메모리에서 이루어지게 됩니다.</p>
+
+<h4 id="volatile을-사용할-때-주의할-점">volatile을 사용할 때 주의할 점</h4>
+
+<p>앞의 내용을 보면서 <code class="language-plaintext highlighter-rouge">volatile</code>이 <code class="language-plaintext highlighter-rouge">synchronized</code>를 완벽히 대체할 수 있다고 생각할 수 있지만 그렇지 않습니다. 이미 언급했듯이 <code class="language-plaintext highlighter-rouge">volatile</code>한정자는 <strong>배타적 수행과는 무관</strong>합니다. 그래서 배타적 수행이 필요한 상황에서 <code class="language-plaintext highlighter-rouge">volatile</code>만 사용하면 완전히 잘못된 결과를 가져올 수 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="kt">int</span> <span class="n">nextSerialNumber</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">generateSerialNumber</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">nextSerialNumber</span><span class="o">++;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>위의 메서드는 멀티스레드 환경에서 매번 고유한 값을 반환하게 하기 위해서 작성되었지만 고유한 값을 반환하지 못합니다. 만약 스레드 A가 <code class="language-plaintext highlighter-rouge">generateSerialNumber</code> 메서드를 호출하여 <code class="language-plaintext highlighter-rouge">++</code>연산자가 수행되기 직전에 스레드 B가 <code class="language-plaintext highlighter-rouge">generateSerialNumber</code> 메서드에서 <code class="language-plaintext highlighter-rouge">nextSerialNumber</code> 값을 읽어버리면 스레드 A, B 모두 같은 값을 가지게 됩니다.(안전 실패) 이는 공유 변수의 값이 <code class="language-plaintext highlighter-rouge">volatile</code> 한정자로 인해서 증가된 값이 메인 메모리에 바로 저장되는 것과는 별개의 문제입니다. 그렇기 때문에 <code class="language-plaintext highlighter-rouge">generateSerialNumber</code> 메서드를 동기화해서 배타적 실행이 되게 해줘야 합니다.
+정리하자면, <strong>한 스레드는 값을 쓰기만 하고, 한 스레드는 값을 읽기만 한다면 <code class="language-plaintext highlighter-rouge">volatile</code>을 쓰면 되지만, 두 스레드가 모두 읽기/쓰기에 관여한다면 그땐 반드시 <code class="language-plaintext highlighter-rouge">synchronized</code>를 사용해야 합니다.</strong></p>
+
+<h4 id="동시성-라이브러리를-적극-활용하자">동시성 라이브러리를 적극 활용하자</h4>
+
+<p>사실 위에서 살펴본 문제를 이미 해결해둔 라이브러리가 존재합니다. 바로 <code class="language-plaintext highlighter-rouge">java.util.concurrent.atomic</code>인데요. 이 패키지에는 락 없이도 스레드 안전한 프로그래밍을 지원하는 클래스들이 담겨 있습니다. <code class="language-plaintext highlighter-rouge">volatile</code>을 통한 가시성을 보장하면서도 배타적 실행까지 지원합니다. 대표적으로 <code class="language-plaintext highlighter-rouge">AtomicLong</code>을 보겠습니다. 이 클래스는 앞서 살펴봤던 <code class="language-plaintext highlighter-rouge">generateSerialNumber</code>를 더 우수한 성능으로 제공합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">AtomicLong</span> <span class="n">nextSerialNum</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AtomicLong</span><span class="o">();</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">generateSerialNumber</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">nextSerialNum</span><span class="o">.</span><span class="na">getAndIncrement</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="가장-좋은-방법은-가변-데이터를-공유하지-않는-것이다">가장 좋은 방법은 가변 데이터를 공유하지 않는 것이다</h4>
+
+<p>위와 같은 문제를 해결하는 가장 좋은 방법은 가능하다면 <strong>가변 데이터는 단일 스레드에서만 사용</strong>하고 공유하지 않는 것입니다. 이 정책을 한 번 정했다면 그 사실을 문서에도 남겨서 이후 유지보수 과정에서도 정책이 잘 지켜지도록 해야 합니다. 그리고 사용하려는 프레임워크와 라이브러리를 깊게 이해해야 합니다. 외부 코드로 인해서 데이터의 공유 정책이 깨질 수 있기 때문입니다.</p>
+
+<h4 id="전체를-동기화하기보단-공유하는-부분만-동기화하자">전체를 동기화하기보단 공유하는 부분만 동기화하자</h4>
+
+<p>한 스레드가 데이터를 다 수정하고 다른 스레드에 공유할 때 공유하는 부분만 동기화하는 것이 좋습니다. 그럼 그 객체를 다시 수정할 일이 생기기 전까지 다른 스레드들은 동기화 없이 자유롭게 값을 읽어갈 수 있습니다. 이런 객체를 <code class="language-plaintext highlighter-rouge">사실상 불변</code>이라고 합니다. 그리고 다른 스레드에 이런 객체를 건네는 행위를 <code class="language-plaintext highlighter-rouge">안전 발행</code>이라고 합니다. 안전 발행을 하는 방법은 많습니다. 클래스의 초기화 과정에서 객체를 <code class="language-plaintext highlighter-rouge">정적 필드</code>, <code class="language-plaintext highlighter-rouge">volatile 필드</code>, <code class="language-plaintext highlighter-rouge">final 필드</code>, <code class="language-plaintext highlighter-rouge">락을 통해 접근하는 필드</code>에 저장하면 됩니다. 또는 <code class="language-plaintext highlighter-rouge">동시성 컬렉션</code>에 저장하는 방법도 있습니다.</p>
+
+<h2 id="아이템-79-과도한-동기화는-피하라">아이템 79. 과도한 동기화는 피하라</h2>
+
+<hr />
+
+<p>이번 아이템에서는 아이템 78과 대조적으로 너무 과도한 동기화로 인한 성능 저하, 교착상태 등과 같은 부작용에 대해서 살펴보겠습니다.</p>
+
+<p><strong>가시성이 보장되지 않아서 발생한 <code class="language-plaintext highlighter-rouge">응답 불가</code>와 배타적 실행이 보장되지 않아서 발생한 <code class="language-plaintext highlighter-rouge">안전 실패</code>를 피하려면 동기화 메서드나 동기화 블록 안에서는 제어를 클라이언트에 양도하면 안 됩니다.</strong> 예를 들면 동기화 영역 안에서 재정의할 수 있는 메서드는 호출하면 안 되고 클라이언트가 넘겨준 함수 객체를 호출해서도 안 됩니다. 이런 메서드들은 동기화 영역의 입장에서는 외계인과 같기 때문에 무슨 짓을 할지 알 수 없고 통제할 수도 없기에 이런 메서드들 때문에 예외가 발생하거나 교착상태에 빠지거나 데이터가 훼손될 수도 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObservableSet</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="nc">ForwardingSet</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="nf">ObservableSet</span><span class="o">(</span><span class="nc">Set</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">set</span><span class="o">)</span> <span class="o">{</span> <span class="kd">super</span><span class="o">(</span><span class="n">set</span><span class="o">);</span> <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">SetObserver</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;&gt;</span> <span class="n">observers</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">addObserver</span><span class="o">(</span><span class="nc">SetObserver</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">observer</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">synchronized</span><span class="o">(</span><span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">observer</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">removeObserver</span><span class="o">(</span><span class="nc">SetObserver</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">observer</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">synchronized</span><span class="o">(</span><span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">observers</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">observer</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">notifyElementAdded</span><span class="o">(</span><span class="no">E</span> <span class="n">element</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">synchronized</span><span class="o">(</span><span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">for</span> <span class="o">(</span><span class="nc">SetObserver</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">observer</span> <span class="o">:</span> <span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">observer</span><span class="o">.</span><span class="na">added</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">element</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">add</span><span class="o">(</span><span class="no">E</span> <span class="n">element</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">added</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">element</span><span class="o">);</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">added</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">notifyElementAdded</span><span class="o">(</span><span class="n">element</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">added</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">addAll</span><span class="o">(</span><span class="nc">Collection</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="no">E</span><span class="o">&gt;</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">result</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="k">for</span><span class="o">(</span><span class="no">E</span> <span class="n">element</span> <span class="o">:</span> <span class="n">c</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">result</span> <span class="o">=</span> <span class="n">add</span><span class="o">(</span><span class="n">element</span><span class="o">);</span> <span class="c1">// nofityElementAdded 호출</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이 클래스는 집합에 원소가 추가되면 알림을 받을 수 있습니다. 즉 관찰자 패턴입니다. 알림을 받기 위해서 관찰자들은 <code class="language-plaintext highlighter-rouge">addObserver</code>를 통해서 구독을 할 수 있고, 반대로 <code class="language-plaintext highlighter-rouge">removeObserver</code>를 통해 해제할 수도 있습니다. 두 메서드에는 모두 아래의 함수형 인터페이스를 전달합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@FunctionalInterface</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SetObserver</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="c1">// ObservableSet에 원소가 추가되면 호출</span>
+  <span class="kt">void</span> <span class="nf">added</span><span class="o">(</span><span class="nc">ObservableSet</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">set</span><span class="o">,</span> <span class="no">E</span> <span class="n">element</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이제 이상한 시도를 해보겠습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 인자로 람다를 전달하면 this로 자신을 참조하지 못하기 때문에 익명클래스를 전달</span>
+<span class="n">set</span><span class="o">.</span><span class="na">addObserver</span><span class="o">(</span><span class="k">new</span> <span class="nc">SetObserver</span><span class="o">&lt;&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">added</span><span class="o">(</span><span class="nc">ObservableSet</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">s</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">e</span> <span class="o">==</span> <span class="mi">23</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">s</span><span class="o">.</span><span class="na">removeObserver</span><span class="o">(</span><span class="k">this</span><span class="o">);</span> <span class="c1">// ConcurrentModificationException 유발!</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">added</code> 메서드에서 원소가 23이 되면 자기 자신을 구독 해제하는 관찰자를 추가했습니다. 우리의 예상으로는 23까지 출력을 하고 종료가 될 것이라고 생각하지만 23까지 출력하고 <code class="language-plaintext highlighter-rouge">ConcurrentModificationException</code>을 던집니다. 왜냐하면 관찰자의 <code class="language-plaintext highlighter-rouge">added</code>메서드가 호출되는 영역이 <code class="language-plaintext highlighter-rouge">observers</code>를 순회하는 도중이기 때문입니다. 이는 허용되지 않은 동작이기 때문에 예외가 발생한 겁니다. 그런데 순회를 할 때 <code class="language-plaintext highlighter-rouge">observers</code>로 락을 걸고 동기화를 한 상태이고 <code class="language-plaintext highlighter-rouge">added</code> 메서드가 호출하는 <code class="language-plaintext highlighter-rouge">removeObserver</code> 메서드도 <code class="language-plaintext highlighter-rouge">observers</code>로 락을 걸어서 둘은 동시에 실행되지 않을 것 같은데 왜 이런 문제가 발생한 걸까요? 그것은 바로 자신이 콜백을 거쳐 되돌아와 수정하는 것까지는 막지 못하기 때문입니다.</p>
+
+<p>이번에는 구독해지를 실행자 서비스를 이용해 다른 스레드가 수행하는 코드를 작성해보겠습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">set</span><span class="o">.</span><span class="na">addObserver</span><span class="o">(</span><span class="k">new</span> <span class="nc">SetObserver</span><span class="o">&lt;&gt;()</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">added</span><span class="o">(</span><span class="nc">ObservableSet</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">s</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">e</span> <span class="o">==</span> <span class="mi">23</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">ExecutorService</span> <span class="n">exec</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newSingleThreadExecutor</span><span class="o">();</span>
+      <span class="k">try</span> <span class="o">{</span>
+        <span class="n">exec</span><span class="o">.</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="o">.</span><span class="na">removeObserver</span><span class="o">(</span><span class="k">this</span><span class="o">)).</span><span class="na">get</span><span class="o">();</span><span class="c1">// 스레드가 종료될 때까지 대기</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">ExecutionException</span> <span class="o">|</span> <span class="nc">InterruptedException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">AssertionError</span><span class="o">(</span><span class="n">ex</span><span class="o">);</span>
+      <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+        <span class="n">exec</span><span class="o">.</span><span class="na">shutDown</span><span class="o">();</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">});</span>
+</code></pre></div></div>
+
+<p>이 코드는 교착상태를 유발하는 코드입니다. 백그라운드 스레드가 <code class="language-plaintext highlighter-rouge">s.removeObserver</code>를 호출하면 <code class="language-plaintext highlighter-rouge">observers</code>에 대한 락을 획득하려고 하지만 획득하지 못합니다. 이미 <code class="language-plaintext highlighter-rouge">added</code>를 호출한 <code class="language-plaintext highlighter-rouge">notifyElementAdded</code> 메서드가 <code class="language-plaintext highlighter-rouge">observers</code>에 대한 락을 획득했기 때문입니다. 그런데 <code class="language-plaintext highlighter-rouge">notifyElementAdded</code> 메서드는 관찰자를 제거하기만을 기다리고 있는 상황이기 때문에 교착상태가 됩니다.</p>
+
+<p>이처럼 <code class="language-plaintext highlighter-rouge">added</code>메서드를 외계인 메서드로 삼아서 다양한 부작용에 대해서 살펴봤습니다. 이런 예외 발생이나 교착상태 증상을 해결하는 방법은 간단합니다. 외계인 메서드 호출을 동기화 블록 바깥으로 옮기면 됩니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">void</span> <span class="nf">notifyElementAdded</span><span class="o">(</span><span class="no">E</span> <span class="n">element</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">SetObserver</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;&gt;</span> <span class="n">snapshot</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="kd">synchronized</span><span class="o">(</span><span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">snapshot</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;(</span><span class="n">observers</span><span class="o">);</span> <span class="c1">// 복사본을 만들어서 복사본으로 순회</span>
+    <span class="o">}</span>
+    <span class="k">for</span> <span class="o">(</span><span class="nc">SetObserver</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">observer</span> <span class="o">:</span> <span class="n">snapshot</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">observer</span><span class="o">.</span><span class="na">added</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">element</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+</code></pre></div></div>
+
+<p>위의 코드처럼 복사본을 만들고 그 복사본으로 순회를 하면 됩니다. 사실 이런 역할을 하는 라이브러리도 이미 존재합니다. 바로 자바의 동시성 컬렉션 라이브러리인 <code class="language-plaintext highlighter-rouge">CopyOnWriteArrayList</code>입니다. 이 클래스의 이름이 말해주듯이 내부를 수정하는 작업은 항상 복사본을 만들어서 수행해줍니다. 이 클래스를 사용하면 기존 코드에서 동기화 블록은 모두 제거해도 됩니다.</p>
+
+<p>지금까지는 올바른 동작에 관해 살펴봤다면 성능 측면에서도 살펴보겠습니다. 멀티코어가 일반화된 오늘날 과도한 동기화를 피하는 것이 어느 때보다 중요해졌습니다. 오늘날 <strong>과도한 동기화가 초래하는 진짜 비용은 락을 얻는 과정에서 발생하는 것이 나리나 경쟁하느라 낭비하는 시간, 즉 병렬로 실행할 기회를 잃고, 모든 코어가 메모리를 일관되게 보기 위한 지연 시간에서 발생</strong>합니다. 또한 동기화는 VM의 코드 최적화를 제한한다는 점에서도 비용이라고 할 수 있습니다.</p>
+
+<p>만약 가변 클래스를 작성해야 한다면 다음 둘 중 하나를 따릅시다.</p>
+
+<ul>
+  <li>동기화를 전혀 하지 말고 그 클래스를 동시에 사용해야 하는 클라이언트 쪽에서 동기화하도록 하자.</li>
+  <li>동기화를 클래스 내부에서 수행해 스레드 안전한 클래스로 만들자.</li>
+</ul>
+
+<p>이때 가능하다면 첫번째 방식을 선택하고 클라이언트가 외부에서 객체 전체에 락을 거는 것보다 동시성을 월등하게 개선할 수 있을 때만 두번째 방법을 선택해야 합니다. <code class="language-plaintext highlighter-rouge">java.util(Vector, HashTable 제외)</code>은 클라이언트가 동기화하도록 했고, <code class="language-plaintext highlighter-rouge">java.util.concurrent</code>는 스스로 동기화를 하는 방식을 취했습니다. <code class="language-plaintext highlighter-rouge">StringBuffer</code>, <code class="language-plaintext highlighter-rouge">Random</code> 클래스는 거의 항상 단일 스레드에서만 사용되었음에도 불구하고 위의 조언을 지키지 않고 내부적으로 동기화를 수행했습니다. 그래서 <code class="language-plaintext highlighter-rouge">StringBuilder</code>, <code class="language-plaintext highlighter-rouge">ThreadLocalRandom</code>같이 내부적으로 동기화를 지원하지 않는 클래스도 등장한 겁니다. 하지만 반대로 내부적으로 반드시 동기화를 해야만 하는 경우도 있습니다. 대표적으로 앞에서 살펴봤던 <code class="language-plaintext highlighter-rouge">generateSerialNumber</code>메서드 입니다.</p>
+
+<h2 id="아이템-80-스레드보다는-실행자-테스크-스트림을-애용하라">아이템 80. 스레드보다는 실행자, 테스크, 스트림을 애용하라</h2>
+
+<hr />
+
+<p><code class="language-plaintext highlighter-rouge">java.util.concurrent</code> 패키지는 실행자 프레임워크라는 인터페이스 기반의 유연한 태스크 실행 기능을 담고 있습니다. 이를 통해 성능이 뛰어난 작업 큐를 단 한 줄로 생성할 수 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ExecutorService</span> <span class="n">exec</span> <span class="o">=</span> <span class="nc">Executors</span><span class="o">.</span><span class="na">newsingleThreadExecutor</span><span class="o">();</span>
+</code></pre></div></div>
+
+<p>태스트를 실행자에게 넘기려면 다음과 같이 하면 됩니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">exec</span><span class="o">.</span><span class="na">submit</span><span class="o">(</span><span class="n">runnable</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>실행자를 종료시키려면 다음과 같이 하면 됩니다. 종료에 실패하면 vm 자체가 종료되지 않을 것입니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">exec</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span>
+</code></pre></div></div>
+
+<p>이외에도 실행자 서비스의 기능은 아래와 같이 다양합니다.</p>
+
+<ul>
+  <li>특정 태스크가 완료되기를 기다린다(<code class="language-plaintext highlighter-rouge">get</code> 메서드)</li>
+  <li>태스크 모음 중 아무거나 하나(<code class="language-plaintext highlighter-rouge">invokeAny</code> 메서드) 혹은 모든 태스크(<code class="language-plaintext highlighter-rouge">invokeAll</code>)가 완료되기를 기다린다.</li>
+  <li>실행자 서비스가 종료하기를 기다린다.(<code class="language-plaintext highlighter-rouge">awaitTermination</code> 메서드)</li>
+  <li>완료된 태스크들의 결과를 차례로 받는다(<code class="language-plaintext highlighter-rouge">ExecutorCompletionService</code> 이용)</li>
+  <li>태스크를 특정 시간에 혹은 주기적으로 실행하게 한다(<code class="language-plaintext highlighter-rouge">ScheduledThreadPoolExecutor</code> 이용)</li>
+</ul>
+
+<p>큐를 둘 이상의 스레드가 처리하게 하고 싶다면 다른 정적 팩터리를 이용하여 다른 종류의 실행자 서비스(스레드 풀)를 생성하면 됩니다. 스레드 풀의 스레드 개수는 고정할 수도 있고 유동적으로 늘어나거나 줄어들게 설정할 수도 있습니다. 이때 필요한 실행자 대부분은 java.util.concurrent.Executors의 정적 팩토리들을 이용해서 생성할 수 있을 것입니다. 만약 평범하지 않은 실행자를 원한다면 ThreadPoolExecutor 클래스를 직접 사용해도 됩니다. 이 클래스로 스레드 풀 동작을 결정하는 거의 모든 속성을 설정할 수 있습니다.</p>
+
+<p>실행자 서비스는 애플리케이션의 특성을 고려하여 잘 선택해야 합니다. 만약 작은 프로그램이나 가벼운 서버라면 <code class="language-plaintext highlighter-rouge">Executors.newCachedThreadPool</code>이 일반적으로 좋은 선택이 될 것입니다. 하지만 무거운 프로덕션 서버에서 사용하기에는 부적합합니다. <code class="language-plaintext highlighter-rouge">CachedThreadPool</code>은 요청받은 태스크들이 큐에 쌓이지 않고 즉시 스레드에 위임되어 실행됩니다. 이게 가능한 이유가 가용한 스레드가 없으면 바로 새로 하나를 생성하기 때문입니다. 만약 서버가 무겁다면 CPU 이용률이 100%로 치닫게 될 것이고, 새로운 태스크가 도착할 때마다 스레드를 생성하여 상황이 악화됩니다. 그래서 이럴 때는 스레드 개수가 고정되는 <code class="language-plaintext highlighter-rouge">Executors.newFixedThreadPool</code>을 선택하거나 완전히 통제할 수 있는 <code class="language-plaintext highlighter-rouge">ThreadPoolExecutor</code>를 직접 사용하는 편이 훨씬 낫습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">java.util.concurrent</code>가 추가되면서 이제 작업 큐를 손수 만들고 스레드를 직접 다루는 것은 일반적으로 지양해야 합니다. 스레드를 직접 다루면 <code class="language-plaintext highlighter-rouge">Thread</code>가 <code class="language-plaintext highlighter-rouge">작업 단위(task)</code>와 <code class="language-plaintext highlighter-rouge">수행 메커니즘 역할(ExecutorService)</code>을 모두 수행하게 됩니다. 이 둘을 분리하여 태스크 수행을 실행자 서비스에 맡기게 되면 원하는 태스크 수행 정책을 선택할 수 있고 변경도 쉽습니다.</p>
+
+<p>자바 7이 되면서 실행자 프레임워크는 <code class="language-plaintext highlighter-rouge">포크-조인(fork-join)</code> 태스크도 지원하기 시작했습니다. 이 태스크는 <code class="language-plaintext highlighter-rouge">포크-조인 풀</code>이라는 특별한 실행자 서비스가 실행해줍니다. 포크-조인 태스크는 작은 하위 태스크로 나뉠 수 있고 포크 조인 풀을 구성하는 스레드들이 이 태스크를 처리하고 먼저 일을 끝낸 스레드가 다른 스레드의 남은 태스크를 가져와서 대신 처리할 수 있습니다. 이렇게 노는 스레드 없이 CPU를 최대한 활용하여 높은 처리량과 낮은 지연시간을 달성할 수 있습니다. 병렬 스트림도 이 포크-조인 풀을 이용해서 구현했습니다.</p>
+
+<h2 id="아이템-81-wait와-notify보다는-동시성-유틸리티를-애용하라">아이템 81. wait와 notify보다는 동시성 유틸리티를 애용하라</h2>
+
+<hr />
+
+<p>자바 5에서 도입된 고수준의 동시성 유틸리티로 인해서 <code class="language-plaintext highlighter-rouge">wait</code>와 <code class="language-plaintext highlighter-rouge">notify</code>를 사용할 일이 거의 없어졌습니다. 그러니 고수준 동시성 유틸리티를 사용하는 것이 좋습니다. <code class="language-plaintext highlighter-rouge">java.util.concurrent</code>의 고수준 유틸리티는 세 범주로 나눌 수 있습니다. <code class="language-plaintext highlighter-rouge">실행자 프레임워크</code>, <code class="language-plaintext highlighter-rouge">동시성 컬렉션</code>, <code class="language-plaintext highlighter-rouge">동기화 장치</code>입니다. <code class="language-plaintext highlighter-rouge">실행자 프레임워크</code>는 이미 살펴봤으니 <code class="language-plaintext highlighter-rouge">동시성 컬렉션</code>과 <code class="language-plaintext highlighter-rouge">동기화 장치</code>를 살펴보겠습니다.</p>
+
+<h4 id="동시성-컬렉션">동시성 컬렉션</h4>
+
+<p><code class="language-plaintext highlighter-rouge">동시성 컬렉션</code>은 <code class="language-plaintext highlighter-rouge">List</code>, <code class="language-plaintext highlighter-rouge">Queue</code>, <code class="language-plaintext highlighter-rouge">Map</code>과 같은 표준 컬렉션 인터페이스에 동시성을 가미해 구현한 고성능 컬렉션입니다. 이 컬렉션은 동기화를 내부에서 구현했습니다. 따라서 동시성을 무력화하는 것은 불가능하며 외부에서 락을 추가로 사용하면 오히려 속도가 느려집니다. 동시성의 무력화가 불가능해서 여러 메서드를 하나로 묶어서 원자적으로 호출하는 것도 불가능하여 자주 사용되는 기본 동작들을 조합하여 원자적으로 실행시켜주는 <code class="language-plaintext highlighter-rouge">상태 의존적 수정 메서드</code>들이 추가되었습니다. 이 메서드들은 아주 유용해서 일반 컬렉션 인터페이스에도 디폴트 메서드로 추가되었습니다. 가장 대표적인 메서드가 <code class="language-plaintext highlighter-rouge">Map.putIfAbsent(key, value)</code>입니다. 이 메서드는 인자로 주어진 키에 매핑된 값이 있으면 그냥 그 값을 반환하고, 없다면 인자로 전달된 value로 설정을 하고 null을 반환합니다. 이 메서드 덕분에 스레드 안전한 정규화 맵을 쉽게 구현할 수 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="nc">String</span> <span class="nf">intern</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+  <span class="nc">String</span> <span class="n">result</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+  <span class="k">if</span><span class="o">(</span><span class="n">result</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">putIfAbsent</span><span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="n">s</span><span class="o">);</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">result</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">result</span> <span class="o">=</span> <span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>위 코드는 <code class="language-plaintext highlighter-rouge">ConcurrentHashMap</code>을 이용해서 <code class="language-plaintext highlighter-rouge">String.intern</code>메서드를 흉내냈습니다. <code class="language-plaintext highlighter-rouge">putIfAbsent</code>를 호출하기 전에 <code class="language-plaintext highlighter-rouge">get</code>메서드로 1차 검사를 수행하여 필요할 때만 <code class="language-plaintext highlighter-rouge">putIfAbsent</code>가 호출되도록 만든 아주 훌륭한 코드입니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">동시성 컬렉션</code>이 나오면서 기존의 동기화한 컬렉션(<code class="language-plaintext highlighter-rouge">Collections.synchronizedMap</code>)을 사용할 이유가 사라졌습니다. <code class="language-plaintext highlighter-rouge">동시성 컬렉션</code>이 훨씬 훌륭한 성능을 보입니다.</p>
+
+<p>한 가지 더 볼만한 컬렉션 인터페이스는 <code class="language-plaintext highlighter-rouge">BlockingQueue</code>입니다. <code class="language-plaintext highlighter-rouge">Queue</code>를 확장한 클래스로 <code class="language-plaintext highlighter-rouge">take</code>메서드는 큐의 첫 원소를 거냅니다. 이때 큐가 비어있으면 새로운 원소가 추가될 때까지 대기하게 됩니다. 이런 특성 덕분에 이 큐는 작업 큐(생산자-소비자 큐)로 쓰기에 적합합니다. 하나 이상의 생산자 스레드가 태스크를 큐에 추가하면 하나 이상의 소비자 스레드가 큐에 있는 작업을 꺼내 처리하는 형태입니다. <code class="language-plaintext highlighter-rouge">ThreadPoolExecutor</code>를 포함한 대부분의 실행자 서비스 구현체는 이 <code class="language-plaintext highlighter-rouge">BlockingQueue</code>를 이용하여 구현됐습니다.</p>
+
+<h4 id="동기화-장치">동기화 장치</h4>
+
+<p><code class="language-plaintext highlighter-rouge">동기화 장치</code>는 스레드가 다른 스레드를 기다릴 수 있게 제어하여 작업을 조율할 수 있습니다. 가장 자주 쓰이는 것으로 <code class="language-plaintext highlighter-rouge">CountDownLatch</code>, <code class="language-plaintext highlighter-rouge">Semaphore</code>입니다. <code class="language-plaintext highlighter-rouge">CyclicBarrier</code>, <code class="language-plaintext highlighter-rouge">Exchanger</code>도 있지만 덜 쓰입니다. 그리고 가장 강력한 장치는 <code class="language-plaintext highlighter-rouge">Phaser</code>입니다. 이 장에서는 <code class="language-plaintext highlighter-rouge">CountDownLatch</code>만 간단히 알아보겠습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">CountDownLatch</code>는 하나 이상의 스레드가 또 다른 하나 이상의 스레드 작업이 끝날 때까지 기다리게 합니다. 이 클래스의 생성자는 int값을 받으며 이 값이 <code class="language-plaintext highlighter-rouge">countDown</code>메서드를 몇번 호출해야 대기 중인 스레드들을 깨우는지 결정합니다. 이 장치를 이용하면 아주 유용한 기능들을 매우 쉽게 구현할 수 있습니다. 어떤 동작들을 동시에 시작해서 모두 완료하기까지의 시간을 재는 프로그램을 구축한다고 해보겠습니다. 이 프로그램은 메서드 하나로 구성되고 이 메서드는 동작들을 실행할 실행자와 동작을 몇 개나 동시에 수행할 수 있는지를 의미하는 동시성 수준(concurrency)을 매개변수로 받습니다. 타이머 스레드가 시계를 시작하기 전에 모든 작업자 스레드는 동작 수행 준비를 마칩니다. 그리고 타이머 스레드가 시간 측정을 시작하면 작업자 스레드들은 일을 시작합니다. 그리고 마지막 작업자 스레드가 동작을 마치면 타이머 스레드는 시계를 멈춥니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kt">long</span> <span class="nf">time</span><span class="o">(</span><span class="nc">Executor</span> <span class="n">executor</span><span class="o">,</span> <span class="kt">int</span> <span class="n">concurrency</span><span class="o">,</span> <span class="nc">Runnable</span> <span class="n">action</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+  <span class="nc">CountDownLatch</span> <span class="n">ready</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CountDownLatch</span><span class="o">(</span><span class="n">concurrency</span><span class="o">);</span>
+  <span class="nc">CountDownLatch</span> <span class="n">start</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CountDownLatch</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+  <span class="nc">CountDownLatch</span> <span class="n">done</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CountDownLatch</span><span class="o">(</span><span class="n">concurrency</span><span class="o">);</span>
+
+  <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">concurrnecy</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+    <span class="n">executor</span><span class="o">.</span><span class="na">execute</span><span class="o">(()-&gt;</span> <span class="o">{</span>
+      <span class="c1">// 각각의 태스크가 ready를 카운트다운해서 준비가 완료됐음을 알린다.</span>
+      <span class="n">ready</span><span class="o">.</span><span class="na">countDown</span><span class="o">();</span>
+      <span class="k">try</span> <span class="o">{</span>
+        <span class="c1">// ready의 카운트가 모두 소진될 때까지(즉 모든 태스크가 준비 완료된 상태) 태스크가 진행되지 못하게 대기</span>
+        <span class="n">start</span><span class="o">.</span><span class="na">await</span><span class="o">();</span>
+        <span class="n">action</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">currenThread</span><span class="o">().</span><span class="na">interrupt</span><span class="o">();</span>
+      <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+        <span class="n">done</span><span class="o">.</span><span class="na">countDown</span><span class="o">();</span> <span class="c1">// 태스크가 완료되면 done을 카운트 다운하여 작업이 완료됐음을 알린다.</span>
+      <span class="o">}</span>
+    <span class="o">});</span>
+  <span class="o">}</span>
+
+  <span class="n">ready</span><span class="o">.</span><span class="na">await</span><span class="o">();</span> <span class="c1">// 각각의 태스크가 모두 카운트다운하여 카운트가 0이 될때까지 대기(0이 되면 모든 태스크가 준비가 완료되었음을 의미)</span>
+  <span class="kt">long</span> <span class="n">startNanos</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">();</span> <span class="c1">// 시간 측정 시작</span>
+  <span class="n">start</span><span class="o">.</span><span class="na">countDown</span><span class="o">();</span> <span class="c1">// start.await()로 대기 상태에 있는 태스크들이 실행되도록 카운트다운 처리</span>
+  <span class="n">done</span><span class="o">.</span><span class="na">await</span><span class="o">();</span><span class="c1">// 태스크가 작업을 실행하면서 done의 카운트가 0이 될때까지 대기(0이 되면 모든 태스크의 작업이 완료되었음을 의미)</span>
+  <span class="k">return</span> <span class="nc">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">()</span> <span class="o">-</span> <span class="n">startNanos</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>코드에 대한 설명은 주석을 참고해주세요. 그 외에 위 코드에서 살펴볼 것들이 있습니다. 우선 <code class="language-plaintext highlighter-rouge">time</code> 메서드에 넘겨진 <code class="language-plaintext highlighter-rouge">실행자(executor)</code>는 <code class="language-plaintext highlighter-rouge">concurrency</code> 매개변수로 지정한 동시성 수준만큼의 스레드를 생성할 수 있는 상태로 세팅이 되어서 전달되어야 합니다. 그렇지 않으면 이 메서드는 스레드 기아 교착상태에 빠져서 결코 끝나지 않습니다.</p>
+
+<p>그리고 <code class="language-plaintext highlighter-rouge">InterruptedException</code>이 발생하면 <code class="language-plaintext highlighter-rouge">Thread.currentThread().interrupt()</code> 관용구를 사용하여 인터럽트를 되살려 <code class="language-plaintext highlighter-rouge">run</code> 메서드에서 빠져나오게 합니다. 이렇게 해야 실행자가 인터럽트를 적절히 처리할 수 있습니다.</p>
+
+<p>마지막으로 시간을 <code class="language-plaintext highlighter-rouge">System.nanoTime</code>으로 측정한 것에 주목해야 합니다. 시간 간격을 측정할 때는 항상 <code class="language-plaintext highlighter-rouge">System.currentTimeMillis</code>대신 <code class="language-plaintext highlighter-rouge">System.nanoTime</code>을 사용합시다. 그게 더 정확하고 정밀하며 시스템의 실시간 시계의 시간 보정에 영향을 받지 않습니다.</p>
+
+<h4 id="레거시-코드를-다뤄야-할-때">레거시 코드를 다뤄야 할 때…</h4>
+
+<p>새로운 코드는 항상 고수준의 동시성 유틸리티를 사용해야겠지만 불가피하게 레거시 코드를 다룰 때는 <code class="language-plaintext highlighter-rouge">wait/notify</code>를 다루어야 할 때도 있을 것입니다. 그런 상황에 대비하여 이 둘의 사용에서 주의해야 할 내용들을 살펴보겠습니다. 우선 <code class="language-plaintext highlighter-rouge">wait</code>는 자신이 잡고 있던 락을 놓고 대기하며 다른 스레드가 실행되게끔 합니다. 그리고 <code class="language-plaintext highlighter-rouge">notify</code>는 <code class="language-plaintext highlighter-rouge">wait</code>상태에 있는 다른 스레드가 깨어나서 락을 잡고 실행을 재개하게 합니다. 즉 <code class="language-plaintext highlighter-rouge">wait</code>를 호출하여 대기상태에 있던 스레드가 있을 때, 다른 스레드가 <code class="language-plaintext highlighter-rouge">notify</code>를 호출하면 깨어나서 락을 잡고 실행을 이어가는 것입니다.</p>
+
+<p>그럼 <code class="language-plaintext highlighter-rouge">wait</code>를 사용하는 표준 방식을 살펴보겠습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">synchronizde</span><span class="o">(</span><span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">while</span> <span class="o">(&lt;</span><span class="n">조건이</span> <span class="n">충족되지</span> <span class="n">않았다</span><span class="o">&gt;)</span> <span class="o">{</span>
+    <span class="n">obj</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span> <span class="c1">// 락을 놓고, 깨어나면 다시 잡는다.</span>
+  <span class="o">}</span>
+  <span class="o">...</span> <span class="c1">// 조건이 충족됐을 때의 동작 수행</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">wait</code> 메서드는 반드시 객체를 잠근 동기화 영역 안에서 호출해야 합니다. 그리고 <strong>반드시 대기 반복문 관용구를 사용하여 반복문 안에서만 호출합시다.</strong> 이렇게 하는 이유는 대기로 가기 전에 조건 검사를 하고 조건에 충족하면 바로 작업을 하게 하여 <code class="language-plaintext highlighter-rouge">응답 불가</code>상태에 빠지지 않게 예방하는 것입니다. 그리고 대기 후에 조건 검사를 하여 충족되지 않으면 다시 대기하도록 하는 것은 <code class="language-plaintext highlighter-rouge">안전 실패</code>를 막는 조치입니다.</p>
+
+<p>그런데 조건이 충족되지 않았는데도 스레드가 깨어날 수 있는 상황이 있습니다.</p>
+
+<ul>
+  <li>스레드가 <code class="language-plaintext highlighter-rouge">notify</code>를 호출한 다음 대기 중이던 스레드가 깨어나는 사이에 다른 스레드가 락을 얻어 그 락이 보호하는 상태를 변경한다.</li>
+  <li>조건이 만족되지 않았음에도 다른 스레드가 실수로 혹은 악의적으로 <code class="language-plaintext highlighter-rouge">notify</code>를 호출한다. 공개된 객체를 락으로 사용해서 대기하는 클래스는 이런 위험에 노출된다.</li>
+  <li>깨우는 스레드가 대기 중인 스레드들 중 일부만 조건이 충족되어도 <code class="language-plaintext highlighter-rouge">notifyAll</code>을 호출해 모든 스레드를 깨워버린다.</li>
+  <li>대기중인 스레드가 <code class="language-plaintext highlighter-rouge">notify</code>없이도 깨어나는 경우가 있다. 이를 허위 각성이라고 한다.</li>
+</ul>
+
+<p>이러한 이유 때문에 대기 반복문 관용구를 사용해야 합니다.</p>
+
+<p>그럼 이제 <code class="language-plaintext highlighter-rouge">notify</code>와 <code class="language-plaintext highlighter-rouge">notifyAll</code> 중에서는 무엇을 선택하느냐도 문제가 되는데 일반적으로는 <code class="language-plaintext highlighter-rouge">notifyAll</code>을 사용합시다. 그렇게 해야 깨어나야 하는 모든 스레드가 깨어남을 보장하니 더 정확한 결과를 얻을 것입니다. 비록 깨어나지 말아야 할 스레드가 깨어난다고 할지라도 대기 반복문 관용구를 잘 적용했다면 그런 스레드는 다시 대기 상태로 들어갈 것이니 정확성에는 영향을 미치지 않을 것입니다.</p>
+
+<h2 id="아이템-82-스레드-안전성-수준을-문서화하라">아이템 82. 스레드 안전성 수준을 문서화하라</h2>
+
+<hr />
+
+<p>여러 스레드가 동시에 호출하는 메서드의 동작을 문서화하는 것은 클라이언트가 적절한 수준의 동기화를 하기 위한 중요한 정보를 제공하기 때문에 꼭 필요합니다. 그럼 문서화에서 주의해야 할 점이나 알아야 할 점들에 대해서 살펴보겠습니다.</p>
+
+<h4 id="api-문서에-synchronized-한정자가-보이는-메서드는-스레드-안전하다">API 문서에 <code class="language-plaintext highlighter-rouge">synchronized</code> 한정자가 보이는 메서드는 스레드 안전하다?</h4>
+
+<p>우선 이 말은 두 가지 측면에서 틀렸습니다. 자바독은 기본 옵션으로 생성한 문서에 <code class="language-plaintext highlighter-rouge">synchronized</code> 한정자를 포함하지 않습니다. 메서드 선언에 <code class="language-plaintext highlighter-rouge">synchronized</code> 한정자를 선언할지는 구현 이슈이지, api에 속하는 내용은 아니기 때문입니다. 그래서 그 메서드가 스레드 안전하다고 믿을 수 없습니다. 그리고 <code class="language-plaintext highlighter-rouge">synchronized</code> 유무로 스레드 안전성을 알 수 있다는 주장의 전제는 ‘스레드 안전성은 모 아니면 도’가 되어야 하는데 이 또한 잘못된 내용입니다. 스레드 안전성도 수준이 존재합니다. 그리고 멀테스레드 환경세어 api를 안전하게 사용하려면 클래스가 지원하는 스레드 안전성 수준을 정확히 명시해야 합니다. 다음 목록은 스레드 안전성이 높은 순으로 나열한 것입니다.</p>
+
+<ul>
+  <li><strong>불변</strong>: 해당 클래스의 인스턴스는 상수와 같아서 외부 동기화도 필요 없습니다. <code class="language-plaintext highlighter-rouge">String</code>, <code class="language-plaintext highlighter-rouge">Long</code>, <code class="language-plaintext highlighter-rouge">BigInteger</code>가 대표적입니다.</li>
+  <li><strong>무조건적 스레드 안전</strong>: 해당 클래스의 인스턴스는 가변이긴 하지만 내부에서 동기화처리를 하여 외부에서 동기화 없이 사용해도 안전합니다. <code class="language-plaintext highlighter-rouge">AtomicLong</code>, <code class="language-plaintext highlighter-rouge">ConcurrentHashMap</code>이 대표적입니다.</li>
+  <li><strong>조건부 스레드 안전</strong>: 무조건적 스레드 안전과 같지만 일부 메서드는 동시에 사용하기 위해 외부 동기화가 필요합니다. <code class="language-plaintext highlighter-rouge">Collections.synchronized</code> 래퍼 메서드가 반환한 컬렉션들이 여기에 속합니다. 이 컬렉션들이 반환한 반복자는 외부 동기화가 필요합니다.</li>
+  <li><strong>스레드 안전하지 않음</strong>: 해당 클래스의 인스턴스는 수정될 수 있습니다. 동시에 사용하려면 각각의 메서드 호출을 클라이언트가 선택한 외부 동기화 메커니즘으로 감싸야 합니다. <code class="language-plaintext highlighter-rouge">ArrayList</code>, <code class="language-plaintext highlighter-rouge">HashMap</code> 같은 기본 컬렉션이 대표적입니다.</li>
+  <li><strong>스레드 적대적</strong>: 해당 클래스는 모든 메서드 호출을 외부에서 동기화로 감싸도 멀티스레드 환경에서 안전하지 않습니다. 이런 클래스는 정적 데이터를 동기화 없이 수정합니다. 이런 클래스는 일반적으로 문제를 고쳐서 재배포하거나 <code class="language-plaintext highlighter-rouge">deprecated API</code>로 지정합니다. 앞서 살펴본 <code class="language-plaintext highlighter-rouge">generateSerialNumber</code> 메서드에서 내부 동기화를 하지 않으면 스레드 적대적이게 됩니다.</li>
+</ul>
+
+<h4 id="문서화시-주의할-점">문서화시 주의할 점</h4>
+
+<p><code class="language-plaintext highlighter-rouge">조건부 스레드 안전</code> 클래스는 주의해서 문서화해야 합니다. 어떤 순서로 호출할 때 외부 동기화가 필요한지, 그 순서로 호출하려면 어떤 락 혹은 드물게 락들을 얻어야 하는지 알려줘야 합니다. 보통 인스턴스 자체를 락으로 얻지만 예외도 있습니다. <code class="language-plaintext highlighter-rouge">Collections.synchronizedMap</code>의 문서에는 다음과 같이 써 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">synchronizedMap이</span> <span class="n">반환한</span> <span class="n">맵의</span> <span class="n">컬렉션</span> <span class="n">뷰를</span> <span class="n">순회하려면</span> <span class="n">반드시</span> <span class="n">그</span> <span class="n">맵을</span> <span class="n">락으로</span> <span class="n">사용해</span> <span class="n">수동으로</span> <span class="n">동기화하라</span><span class="o">.</span>
+<span class="nc">Map</span><span class="o">&lt;</span><span class="no">K</span><span class="o">,</span> <span class="no">V</span><span class="o">&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="nc">Collections</span><span class="o">.</span><span class="na">synchronizedMap</span><span class="o">(</span><span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;());</span>
+<span class="nc">Set</span><span class="o">&lt;</span><span class="no">K</span><span class="o">&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="na">keySet</span><span class="o">();</span> <span class="c1">// 동기화 블록 밖에 있어도 된다.</span>
+<span class="o">...</span>
+<span class="kd">synchronized</span><span class="o">(</span><span class="n">m</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// s가 아닌 m으로 동기화해야 함</span>
+  <span class="k">for</span> <span class="o">(</span><span class="no">K</span> <span class="n">key</span> <span class="o">:</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">key</span><span class="o">.</span><span class="na">f</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+<span class="n">이대로</span> <span class="n">따르지</span> <span class="n">않으면</span> <span class="n">동작을</span> <span class="n">예측할</span> <span class="n">수</span> <span class="n">없다</span><span class="o">.</span>
+</code></pre></div></div>
+
+<p>추가적으로 클래스의 스레드 안전성은 보통 클래스의 문서화 주석에 작성하지만, 독특한 특성의 메서드라면 해당 메서드의 주석에 기재합니다. 열거 타입은 굳이 불변이라고 스지 않아도 되고 반환 타입만으로는 명확히 알 수 없는 정적 팩토리라면 자신이 반환하는 객체의 스레드 안전성을 문서화해야 합니다.</p>
+
+<p>클래스 외부에서 사용할 수 있는 락을 제공하면 클라이언트에서 일련의 메서드 호출을 원자적으로 할 수 있습니다. 대신 내부에서 처리하는 고성능 동시성 제어 메커니즘과 혼용할 수 없게 됩니다. 그래서 ConcurrentHashMap 같은 동시성 컬렉션과 함께 사용하지 못합니다. 또한 공개된 락을 오래 쥐고 놓지 않는 서비스 거부 공격을 수행할 수도 있습니다. 이런 공격을 막으려면 <code class="language-plaintext highlighter-rouge">synchronized</code> 메서드 대신 비공개 락 객체를 사용하면 됩니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">final</span> <span class="nc">Object</span> <span class="n">lock</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">();</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+  <span class="kd">synchronized</span><span class="o">(</span><span class="n">lock</span><span class="o">)</span> <span class="o">{</span>
+      <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>클라이언트 바깥에서는 락 객체를 볼 수 없으니 동기화에 관여할 수 없습니다. 그리고 이런 비공개 락은 무조건적 스레드 안전 클래스에서만 사용할 수 있습니다. 조건부 스레드 안전 클래스에서는 호출 순서에 필요한 락이 무엇인지 공개해야 하기 때문입니다. 특히 이런 락 객체는 상속용으로 설계한 클래스에서 활용하기 좋습니다. 상속용 클래스에서 자신의 인스턴스를 락으로 사용하면 하위 클래스는 아주 쉽게 기반 클래스의 동작을 방해할 수 있기 때문입니다.</p>
+
+<h2 id="아이템-83-지연-초기화는-신중히-사용하라">아이템 83. 지연 초기화는 신중히 사용하라</h2>
+
+<hr />
+
+<p>지연 초기화를 하면 값이 실제로 쓰이는 순간까지 초기화를 미룰 수 있어서 주로 최적화 용도로 쓰이지만 초기화 때 발생하는 위험한 순환 문제를 해결하는 효과도 있습니다. 하지만 지연 초기화는 꼭 필요할 때까지는 하지 맙시다. 지연 초기화는 클래스나 인스턴스 생성 시의 초기화 비용은 줄지만 최초에 그 초기화가 이루어지는 필드에 접근하는 비용은 커집니다. 그래서 상황에 따라 오히려 성능을 더 악화시킬 수도 있습니다. <strong>지연 초기화가 명백하게 좋은 경우는 해당 클래스의 인스턴스 중 그 필드를 사용하는 인스턴스의 비율은 낮은데, 그 필드를 초기화하는 비용은 큰 경우입니다.</strong> 하지만 이마저도 정말 그러한지 확인할 수 있는 유일한 방법은 지연 초기화 적용 전후의 성능을 비교해보는 것입니다.</p>
+
+<p>멀티스레드 환경으로 가면 지연 초기화를 하기가 어려워집니다. 지연 초기화를 적용하는 필드를 둘 이상의 스레드가 공유하면 무조건 동기화해야 합니다. 가장 좋은 건 일반적인 초기화를 적용하는 것이겠지만 멀티스레드 환경에서 지연초기화를 하는 방법들을 살펴보겠습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">FieldType</span> <span class="n">field</span><span class="o">;</span>
+
+<span class="kd">private</span> <span class="kd">synchronized</span> <span class="nc">FieldType</span> <span class="nf">getField</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">if</span><span class="o">(</span><span class="n">field</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">computeFieldValue</span><span class="o">();</span>
+  <span class="o">}</span>
+  <span class="k">return</span> <span class="n">field</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>만약 성능 때문에 <strong>정적 필드</strong>를 지연 초기화해야 한다면 <strong>지연 초기화 홀더 클래스 관용구</strong>를 사용하는 것입니다. 클래스는 클래스가 처음 쓰일 때 비로소 초기화된다는 특성을 이용한 관용구입니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">FieldHolder</span> <span class="o">{</span>
+  <span class="kd">static</span> <span class="kd">final</span> <span class="nc">FieldType</span> <span class="n">field</span> <span class="o">=</span> <span class="n">computeFieldValue</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="kd">private</span> <span class="kd">static</span> <span class="nc">FieldType</span> <span class="nf">getField</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="nc">FieldHolder</span><span class="o">.</span><span class="na">field</span><span class="o">;</span> <span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">getField</code>메서드가 처음 호출되는 순간 <code class="language-plaintext highlighter-rouge">FieldHolder.field</code>가 처음 읽히면서 <code class="language-plaintext highlighter-rouge">FieldHolder</code>클래스 초기화를 촉발하게 됩니다. 이 관용구는 <code class="language-plaintext highlighter-rouge">getField</code>메서드가 필드에 접근할 때 동기화를 전혀 하지 않아서 성능 걱정을 할 필요가 없습니다. 일반적인 VM은 클래스를 초기화할 때만 필드 접근을 동기화할 것입니다.</p>
+
+<p>성능 때문에 <strong>비정적 인스턴스 필드</strong>를 지연 초기화를 해야 한다면 <strong>이중 검사 관용구</strong>를 사용합시다. 이 방식은 초기화된 필드에 접근할 때 동기화 비용을 없애줍니다. 이름처럼 필드의 값을 두 번 검사하는데 처음에는 동기화 없이 검사를 하고 다음에는 동기화하여 검사합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">volatile</span> <span class="nc">FieldType</span> <span class="n">field</span><span class="o">;</span>
+
+<span class="kd">private</span> <span class="nc">FieldType</span> <span class="nf">getField</span><span class="o">()</span> <span class="o">{</span>
+  <span class="nc">FieldType</span> <span class="n">result</span> <span class="o">=</span> <span class="n">field</span><span class="o">;</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 첫 번째 검사 (동기화하지 않음)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">field</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// 두 번째 검사 (동기화)</span>
+      <span class="n">field</span> <span class="o">=</span> <span class="n">computeFieldValue</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">field</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이때 주목할 점은 필드를 <code class="language-plaintext highlighter-rouge">volatile</code> 한정자로 선언했다는 점과 <code class="language-plaintext highlighter-rouge">getField</code>메서드에서 <code class="language-plaintext highlighter-rouge">result</code>라는 지역변수를 사용했다는 것입니다. <code class="language-plaintext highlighter-rouge">volatile</code>을 쓴 이유는 두번째 검사에서 먼저 진입한 스레드가 필드를 초기화하더라도 그것이 다른 스레드에게는 보이지 않아서 여전히 필드를 null로 인식하여 초기화하는 가시성 문제를 막기 위해서입니다. 그리고 지역변수를 별도로 사용한 이유는 그 필드를 딱 한 번만 읽도록 보장하여 성능을 향상시키기 위함입니다. 이는 저수준 동시성 프로그래밍에서 표준적으로 적용되는 우아한 방법입니다.</p>
+
+<h2 id="아이템-84-프로그램의-동작을-스레드-스케줄러에-기대지-말라">아이템 84. 프로그램의 동작을 스레드 스케줄러에 기대지 말라</h2>
+
+<hr />
+
+<p>멀티 스레드 프로그램을 작성할 때 운영체제의 스레드 스케줄러에 의해서 실행이 좌지우지되게 하면 안 됩니다. 그렇게 해야 여러 플랫폼에 이식하기 좋습니다. 그런 이식성 좋은 프로그램을 작성하는 가장 좋은 방법은 <strong>실행 가능한 스레드의 평균적인 수를 프로세서 수보다 지나치게 많아지지 않도록 하는 것입니다.</strong> 그래야 스레드 스케줄러의 기민이 줄어들고 스케줄링 정책이 아주 상이한 시스템에서도 동작이 크게 달라지지 않습니다. 핵심은 실행 가능한 스레드의 수를 적게 유지하는 것입니다. 그러기 위해서는 각 스레드가 작업을 완료한 후에는 다음 일거리가 생길 때까지 대기하도록 하는 것입니다. <strong>스레드는 당장 처리해야 할 작업이 없으면 실행돼서는 안 됩니다.</strong> 실행자 프레임워크를 예로 들면, 스레드 풀 크기를 적절히 설정하고 작업은 짧게 유지하면 됩니다. 이때 너무 짧으면 작업을 분배하는 부하가 너무 커질 수 있으니 주의합시다.</p>
+
+<p>그리고 스레드가 절대로 <code class="language-plaintext highlighter-rouge">busy waiting</code> 상태가 되면 안 됩니다. 즉 공유 객체의 상태가 바뀔 때까지 쉬지 않고 검사해서는 안 된다는 의미입니다. <code class="language-plaintext highlighter-rouge">busy waiting</code>은 스레드 스케줄러의 변덕에 취약하고 프로세서에 부하를 많이 가해서 다른 유용한 작업이 실행될 기회를 박탈합니다. 스레드가 <code class="language-plaintext highlighter-rouge">bounded waiting</code> 상태가 유지되도록 합시다.</p>
+:ET
